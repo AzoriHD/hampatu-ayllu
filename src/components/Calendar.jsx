@@ -9,6 +9,8 @@ import { Datos, DelBtns, JoinBlock, JoinButton, Msg } from "./Shared.jsx";
 export default function Calendar() {
   const { t, en, lang, data, canPost, canEdit, calMes, setCalMes, calSel, setCalSel, contactoDe, goAviso } = useApp();
   const [form, setForm] = useState(null); // {k, fecha}
+  const [vista, setVista] = useState("proximas"); // or "pasadas"
+  const [cuantas, setCuantas] = useState(8);
   const selRef = useRef(null);
   const loc = localeOf(lang), hoy = ymd(new Date()), puede = canEdit && canPost;
 
@@ -20,7 +22,12 @@ export default function Calendar() {
   const cuenta = {};
   todas.forEach((f) => { cuenta[f.fecha] = (cuenta[f.fecha] || 0) + 1; });
   const delDia = todas.filter((f) => f.fecha === calSel).sort((a, b) => String(a.hora || "99").localeCompare(String(b.hora || "99")));
-  const prox = todas.filter((f) => f.fecha >= hoy).sort((a, b) => (a.fecha + (a.hora || "")).localeCompare(b.fecha + (b.hora || ""))).slice(0, 8);
+  /* Upcoming: soonest first. Past: most recent first. */
+  const pasadas = vista === "pasadas";
+  const lista = todas.filter((f) => f.fecha && (pasadas ? f.fecha < hoy : f.fecha >= hoy))
+    .sort((a, b) => (a.fecha + (a.hora || "")).localeCompare(b.fecha + (b.hora || "")) * (pasadas ? -1 : 1));
+  const prox = lista.slice(0, cuantas);
+  const verLista = (v) => { setVista(v); setCuantas(8); };
 
   const elegirDia = (ds, desdeToque) => {
     const d = deYmd(ds); if (!d) return;
@@ -108,21 +115,31 @@ export default function Calendar() {
           {form && puede && <FechaForm key={form.k} editar={form.editar} onClose={() => setForm(null)} />}
         </div>
       </div>
-      <h3 className="sub cal-prox-h">{t("Próximas fechas")}</h3>
-      <ul className="proximas" id="cal-proximas">
+      <h3 className="sub cal-prox-h">{t(pasadas ? "Fechas pasadas" : "Próximas fechas")}</h3>
+      <div className="orden" role="group" aria-label={t("Qué fechas ver")}>
+        <button type="button" className="chipbtn" id="px-prox" aria-pressed={!pasadas} onClick={() => verLista("proximas")}>{t("Próximas")}</button>
+        <button type="button" className="chipbtn" id="px-pas" aria-pressed={pasadas} onClick={() => verLista("pasadas")}>{t("Pasadas")}</button>
+      </div>
+      <ul className={"proximas" + (pasadas ? " pasadas" : "")} id="cal-proximas">
         {prox.length ? prox.map((f) => {
           const d = deYmd(f.fecha) || new Date();
+          const mes = d.toLocaleDateString(loc, { month: "short" }).replace(".", "") + (d.getFullYear() !== new Date().getFullYear() ? " " + String(d.getFullYear()).slice(2) : "");
           return (
             <li key={f.id}>
               <button type="button" id={"px-" + f.id} onClick={() => elegirDia(f.fecha, false)}>
-                <span className="cuando"><b>{d.getDate()}</b><span>{d.toLocaleDateString(loc, { month: "short" }).replace(".", "")}</span></span>
+                <span className="cuando"><b>{d.getDate()}</b><span>{mes}</span></span>
                 <span className="que"><strong>{f.titulo}</strong>
                   <span className="meta">{t(f.aviso ? "Evento del tablón" : (TF[f.tipo] || TF.otro)) + (f.hora ? " · " + f.hora : "") + (f.lugar ? " · " + f.lugar : "")}</span></span>
               </button>
             </li>
           );
-        }) : <li className="meta" style={{ padding: "10px 14px" }}>{t("Todavía no hay fechas próximas.")}</li>}
+        }) : <li className="meta" style={{ padding: "10px 14px" }}>{t(pasadas ? "Todavía no hay fechas pasadas." : "Todavía no hay fechas próximas.")}</li>}
       </ul>
+      {lista.length > cuantas && (
+        <button type="button" className="btn-ghost cal-mas" id="px-mas" onClick={() => setCuantas((n) => n + 8)}>
+          {t("Ver más")} ({lista.length - cuantas})
+        </button>
+      )}
     </section>
   );
 }

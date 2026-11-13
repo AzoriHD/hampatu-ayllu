@@ -364,6 +364,8 @@ input[type=file]{padding:8px}
 .cuando span{font-size:12px;font-weight:700;text-transform:uppercase}
 .proximas .que{display:grid;gap:2px;min-width:0}
 .proximas .que strong{font-size:17px;overflow-wrap:anywhere}
+.proximas.pasadas .cuando{background:var(--surface);border-style:dashed}
+.cal-mas{margin-top:12px}
 
 /* Dark mode: brown page with key-yellow cards, half and half */
 @media (prefers-color-scheme:dark){

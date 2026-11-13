@@ -69,7 +69,7 @@ Object.assign(EN,{
   "Versión de demostración: lo que publiques se guarda solo en este navegador. Para usarla como red real necesita su propia base de datos.":"Demo version: anything you post is saved only in this browser. To run it as a real network it needs its own database.",
   "Restablecer los ejemplos":"Reset the examples","Filtrar por tipo de aviso":"Filter by type of post","Ordenar avisos":"Sort posts","Publicar aviso":"New post",
   "Añadir comunidad":"Add community","Buscar comunidad":"Search communities","Buscar nombre, lugar o necesidad":"Search name, place or need","Filtrar diseños":"Filter designs",
-  "Marcar fecha":"Add a date","Solo quien coordina la red puede marcar fechas.":"Only the network's coordinators can add dates.","Próximas fechas":"Coming up",
+  "Marcar fecha":"Add a date","Solo quien coordina la red puede marcar fechas.":"Only the network's coordinators can add dates.","Próximas fechas":"Coming up","Fechas pasadas":"Past dates","Qué fechas ver":"Which dates to show","Próximas":"Upcoming","Pasadas":"Past","Todavía no hay fechas pasadas.":"No past dates yet.","Ver más":"Show more",
   "Mes anterior":"Previous month","Mes siguiente":"Next month","Guardar fecha":"Save date","Guardar comunidad":"Save community","La foto es demasiado grande para guardarla en este navegador.":"The photo is too big to save in this browser."
 });
 
