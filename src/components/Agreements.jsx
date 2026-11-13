@@ -21,7 +21,7 @@ export function Footer() {
   return (
     <footer className="pie">
   <div className="wrap"><div className="pie-card">
-  <p><span>{en ? "Hampatu Ayllu means «community of the toad» in Quechua. More about harlequin toads:" : "Hampatu Ayllu significa «comunidad del sapo» en quechua. Más sobre los sapos arlequín:"}</span> <a href="https://www.iucn-amphibians.org/?p=3862">Atelopus Survival Initiative</a> · <a href="https://www.rewild.org/wildlife/harlequin-toads">{en ? "Harlequin toads at Re:wild" : "Sapos arlequín en Re:wild"}</a></p>
+  <p>{en ? "Hampatu Ayllu means «community of the toad» in Quechua." : "Hampatu Ayllu significa «comunidad del sapo» en quechua."}</p>
   <AdminLink />
   </div></div>
 </footer>
