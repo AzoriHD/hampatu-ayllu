@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AppContext } from "./AppContext.jsx";
 import { makeT } from "./i18n.js";
 import { P } from "./data/constants.js";
-import { store, useData, getUid } from "./lib/store.js";
+import { ensureUid, store, useData, useMeta } from "./lib/store.js";
 import { ago as agoBase, avisoDelHash, errMsg, marcarHash, viewOf, VIEWS, ymd } from "./lib/utils.js";
 import Hero from "./components/Hero.jsx";
 import { Msg } from "./components/Shared.jsx";
@@ -13,6 +13,7 @@ import Crafts from "./components/Crafts.jsx";
 import Species from "./components/Species.jsx";
 import Rewards from "./components/Rewards.jsx";
 import { Agreements, Footer } from "./components/Agreements.jsx";
+import AdminZone from "./components/Admin.jsx";
 
 const TABS = [
   ["tablon", "Tablón", "Board"],
@@ -37,7 +38,9 @@ function idiomaInicial() {
 
 export default function App() {
   const data = useData();
-  const uid = useMemo(getUid, []);
+  const meta = useMeta();
+  const uid = meta.uid;
+  const [login, setLogin] = useState(() => window.location.hash === "#admin");
   const [lang, setLang] = useState(idiomaInicial);
   const t = useMemo(() => makeT(lang), [lang]);
   const en = lang === "en";
@@ -143,7 +146,10 @@ export default function App() {
   };
   const zonaDe = (c) => (c.zona === "otra" && c.zonaOtra ? String(c.zonaOtra) : t(P[c.zona] || ""));
   const apuntesDe = (clave) => data.apuntes.filter((a) => a.aviso === clave).sort((a, b) => (a.ts || 0) - (b.ts || 0));
-  const apuntar = (clave, nombre) => store.set("apuntes", clave + "__" + uid, { aviso: clave, by: uid, firma: nombre, ts: Date.now() });
+  const apuntar = async (clave, nombre) => {
+    const u = await ensureUid();
+    return store.set("apuntes", clave + "__" + u, { aviso: clave, by: u, firma: nombre, ts: Date.now() });
+  };
   const quitarApunte = (clave) => {
     const ya = data.apuntes.find((x) => x.aviso === clave && x.by === uid);
     setRecien((r) => { const n = { ...r }; delete n[clave]; return n; });
@@ -151,7 +157,7 @@ export default function App() {
   };
   const votar = (id) => {
     const mio = data.votos.find((v) => v.aviso === id && v.by === uid);
-    (mio ? store.removeMany([["votos", mio.id]]) : store.set("votos", id + "__" + uid, { aviso: id, by: uid, ts: Date.now() }))
+    (mio ? store.removeMany([["votos", mio.id]]) : ensureUid().then((u) => store.set("votos", id + "__" + u, { aviso: id, by: u, ts: Date.now() })))
       .catch(() => setMsg("No se pudo guardar el voto. Inténtalo otra vez."));
   };
   const enlaceAviso = (id) => window.location.origin + window.location.pathname + "#aviso-" + id;
@@ -180,8 +186,8 @@ export default function App() {
   };
 
   const ctx = {
-    data, uid, lang, en, t, ago: (ts) => agoBase(ts, lang, t),
-    canPost: true, canEdit: true,
+    data, uid, meta, lang, en, t, ago: (ts) => agoBase(ts, lang, t),
+    canPost: true, canEdit: meta.admin, login, setLogin, reiniciar,
     view, irVista, zona, setZona, q, setQ, abiertos, setAbiertos, goAviso, goCom,
     firma, keepFirma, msg, setMsg, confirmar, setConfirmar, write,
     apuntando, setApuntando, recien, setRecien, apuntesDe, apuntar, quitarApunte,
@@ -198,10 +204,7 @@ export default function App() {
     <AppContext.Provider value={ctx}>
       <Hero />
       <main className="wrap">
-        <p className="notice demo">
-          {t("Versión de demostración: lo que publiques se guarda solo en este navegador. Para usarla como red real necesita su propia base de datos.")}{" "}
-          <button type="button" className="linkbtn" onClick={reiniciar}>{t("Restablecer los ejemplos")}</button>
-        </p>
+        <AdminZone />
 
         {rail && (
           <nav className="rail" id="railnav" aria-label={en ? "Filter by area" : "Filtrar por zona"}>

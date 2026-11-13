@@ -43,16 +43,31 @@ vercel          # la primera vez te pide iniciar sesión y unas preguntas (acept
 vercel --prod   # publica la versión definitiva
 ```
 
-## Importante: los datos
+## Datos compartidos (Supabase) y modo coordinación
 
-Ahora mismo todo lo que se publica (avisos, comunidades, fechas, apuntados, votos) se guarda
-**solo en el navegador de cada persona** (`localStorage`). Es una demostración: lo que escribe uno
-no lo ven los demás.
+Sin configurar nada, la app funciona como demostración: cada navegador guarda lo suyo.
+Para que todo el mundo vea lo mismo:
 
-Para que funcione como red real hace falta una base de datos compartida (por ejemplo
-[Supabase](https://supabase.com) o Firebase, ambas con plan gratuito). Todo el acceso a datos está
-en un solo archivo, `src/lib/store.js`: basta con cambiar ese archivo para conectar la base de datos
-sin tocar el resto de la app.
+1. **Vercel → tu proyecto → Storage → Create Database → Supabase** (plan gratuito) y conéctalo
+   al proyecto. Vercel añade solo las claves (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`…).
+2. **Open in Supabase → SQL Editor**: pega el contenido de `supabase.sql`, cambia `TU_CORREO@gmail.com`
+   por tu correo y pulsa **Run**.
+3. **Authentication → Sign In / Providers**: activa **Allow anonymous sign-ins**
+   (así cualquiera publica sin registrarse).
+4. **Authentication → Users → Add user → Create new user**: tu correo + una contraseña,
+   con **Auto Confirm User** marcado.
+5. En Vercel, **Deployments → ⋯ → Redeploy** (o sube cualquier cambio a GitHub).
+
+Para entrar como coordinación: enlace **Acceso de coordinación** al pie de la página
+(o añade `#admin` a la dirección). Desde ahí puedes marcar fechas, verificar fotos, editar o
+borrar cualquier cosa y **Cargar ejemplos / Borrar ejemplos**.
+
+Para probar en tu ordenador con la base de datos, crea un archivo `.env.local` con:
+
+```
+VITE_SUPABASE_URL=https://xxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=tu_clave_anon
+```
 
 ## Estructura
 
@@ -62,6 +77,7 @@ src/App.jsx          estado general, navegación por pestañas (#tablon, #calend
 src/components/      Tablón, Comunidades, Calendario, Artesanía, Especie, Recompensas…
 src/data/            zonas, tipos, diseños y ejemplos
 src/i18n.js          textos en inglés
-src/lib/store.js     guardado de datos (cambiar aquí para usar una base de datos real)
+src/lib/store.js     guardado de datos (Supabase o, sin configurar, este navegador)
+supabase.sql         tablas y permisos para Supabase
 src/styles.css       estilos (amarillo #ebae25 y marrón #1e130a, modo claro/oscuro)
 ```

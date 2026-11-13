@@ -73,6 +73,20 @@ Object.assign(EN,{
   "Mes anterior":"Previous month","Mes siguiente":"Next month","Guardar fecha":"Save date","Guardar comunidad":"Save community","La foto es demasiado grande para guardarla en este navegador.":"The photo is too big to save in this browser."
 });
 
+Object.assign(EN, {
+  "No se pudo conectar con la red. Revisa la conexión y recarga la página.": "Could not connect to the network. Check your connection and reload the page.",
+  "Modo coordinación": "Coordination mode",
+  "Puedes marcar fechas, verificar fotos y editar o borrar cualquier aviso o comunidad.": "You can add dates, verify photos and edit or delete any post or community.",
+  "Cargar ejemplos": "Load the examples", "Borrar ejemplos": "Delete the examples", "Sí, borrar los ejemplos": "Yes, delete the examples",
+  "Ejemplos cargados.": "Examples loaded.", "Ejemplos borrados.": "Examples deleted.", "Salir": "Sign out",
+  "Acceso de coordinación": "Coordinator sign-in", "Solo para quien coordina la red. El resto puede publicar sin entrar.": "Only for the network's coordinators. Everyone else can post without signing in.",
+  "Correo": "Email", "Contraseña": "Password", "Entrar": "Sign in", "Cancelar": "Cancel",
+  "Escribe tu correo y tu contraseña.": "Write your email and password.",
+  "No tienes permiso para hacer eso.": "You are not allowed to do that.",
+  "No se pudo conectar con la red. Inténtalo otra vez en un momento.": "Could not connect to the network. Try again in a moment.",
+  "Correo o contraseña incorrectos.": "Wrong email or password.", "Esa cuenta no es de coordinación.": "That account is not a coordinator account.",
+});
+
 export function makeT(lang){
   return function t(s){ return (lang==="en"&&Object.prototype.hasOwnProperty.call(EN,s))?EN[s]:s; };
 }

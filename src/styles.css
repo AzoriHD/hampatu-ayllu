@@ -377,3 +377,8 @@ input[type=file]{padding:8px}
 :root[data-theme="dark"] .chipbtn[aria-pressed="true"]{background:#1e130a;color:#ebae25;border-color:#ebae25}
 :root[data-theme="dark"] :is(main .vista-h,.esp-main h2,.esp-main h3,.acuerdos h2,.recompensas h3.sub){color:var(--accent)}
 @media (max-width:440px){.cal .cal-head{flex-wrap:wrap;row-gap:8px}.cal .cal-head h3{flex:0 0 100%;order:0;font-size:20px}.cal #cal-prev{order:1}.cal .cal-hoy{order:2}.cal #cal-next{order:3}}
+.admin-bar{display:grid;gap:4px}
+.admin-bar p{margin:0}
+.admin-bar .row{gap:16px}
+.admin-link{margin:10px 0 0;font-size:14px}
+#f-login{margin-top:16px}
