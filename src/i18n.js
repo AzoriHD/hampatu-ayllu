@@ -1,0 +1,78 @@
+import { COORD_MSG } from "./data/constants.js";
+
+export const EN={
+  "Otra zona":"Other area","Toda la red":"Whole network","Todos":"All",
+  "Avistamiento":"Sighting","Necesitamos":"We need","Ofrecemos":"We offer","Evento":"Event","Pregunta":"Question",
+  "Comunidad local":"Local community","Guías y guardaparques":"Guides and rangers","Escuela":"School","ONG":"NGO","Investigación":"Research","Otro":"Other",
+  "Vivo y activo":"Alive and active","Débil o enfermo":"Weak or sick","Muerto":"Dead","Renacuajos":"Tadpoles",
+  "No lo sé":"I don't know","Elige la zona":"Choose the area","Ninguna, a título personal":"None, posting as myself",
+  "día":"day","días":"days","respuesta":"reply","respuestas":"replies","aviso":"post","avisos":"posts","comunidad":"community","comunidades":"communities",
+  "en el tablón":"on the board","Cargando la red…":"Loading the network…",
+  "Sin datos que mostrar en esta vista.":"No data to show in this view.","Quitar filtros":"Clear filters",
+  "Ningún aviso con este filtro.":"No posts match this filter.",
+  "Todavía no hay avisos. Publica el primero: un avistamiento, algo que tu comunidad necesita o algo que puede ofrecer.":"No posts yet. Write the first one: a sighting, something your community needs or something it can offer.",
+  "Ninguna comunidad con este filtro.":"No communities match this filter.",
+  "Todavía no hay comunidades. Añade la primera para que otras puedan encontrarla.":"No communities yet. Add the first one so others can find it.",
+  "Sí, borrar":"Yes, delete","No":"No","Borrar":"Delete","Editar":"Edit","Copiar":"Copy","Copiado":"Copied","No se pudo copiar":"Could not copy","Quitar":"Remove",
+  "Sin firma":"Unsigned","Ejemplo":"Example","Responder":"Reply","Tu respuesta":"Your reply","Tu firma":"Your name","Aún sin respuestas.":"No replies yet.",
+  "Foto":"Photo","del aviso":"of the post","lista para subir":"ready to upload","Ampliar o reducir la foto":"Enlarge or shrink photo",
+  "Allí lo llaman":"Local name","Ofrece":"Offers","Necesita":"Needs","Contacto":"Contact",
+  "Nueva comunidad":"New community","Editar comunidad":"Edit community",
+  "Esta vista no tiene conexión con los datos compartidos. Abre la red desde su enlace, con tu sesión iniciada.":"This view is not connected to the shared data. Open the network from its link while signed in.",
+  "Se perdió la conexión con los datos. Recarga la página para volver a conectar.":"The connection to the data was lost. Reload the page to reconnect.",
+  "Todavía no se puede llegar a los datos. Lo que ves puede estar desactualizado.":"The data cannot be reached yet. What you see may be out of date.",
+  "Estás en modo lectura. Para publicar, pide acceso de editor a quien te compartió la red.":"You are in read-only mode. To post, ask whoever shared the network with you for editor access.",
+  "Lo marcado como Ejemplo es contenido de muestra. Bórralo cuando entren comunidades reales.":"Anything marked Example is sample content. Delete it once real communities join.",
+  "No hay conexión con los datos compartidos.":"There is no connection to the shared data.","Guardando…":"Saving…",
+  "No se pudieron subir las fotos. Inténtalo otra vez o quítalas y publica sin ellas.":"The photos could not be uploaded. Try again, or remove them and post without them.",
+  "No se pudo guardar. Puede que tu acceso sea solo de lectura: pide acceso de editor a quien te compartió la red.":"Could not save. Your access may be read-only: ask whoever shared the network with you for editor access.",
+  "La red ha llegado a su límite de entradas. Hay que borrar avisos antiguos antes de añadir más.":"The network has reached its limit of entries. Old posts must be deleted before adding more.",
+  "Demasiadas acciones seguidas. Espera un momento y vuelve a intentarlo.":"Too many actions in a row. Wait a moment and try again.",
+  "Esta vista ya no tiene acceso a los datos.":"This view no longer has access to the data.",
+  "No se pudo guardar. Revisa la conexión e inténtalo otra vez.":"Could not save. Check your connection and try again.",
+  "Escribe un título para el aviso.":"Write a title for the post.",
+  "Firma el aviso para que sepan quién lo publica.":"Add your name so people know who is posting.",
+  "Escribe el nombre de la comunidad o grupo.":"Write the name of the community or group.",
+  "Elige la zona.":"Choose the area.","Escribe qué zona es.":"Write which area it is.",
+  "Firma la respuesta para que sepan quién contesta.":"Add your name so people know who is replying.",
+  "No se pudo leer alguna foto. Prueba con una imagen JPG o PNG.":"One of the photos could not be read. Try a JPG or PNG image.",
+  "Solo caben 3 fotos por aviso.":"A post can hold up to 3 photos.",
+  "Todos los avisos, del más reciente al más antiguo.":"All posts, newest first.",
+  "Has visto un sapo, renacuajos o uno muerto. Di cómo estaba y en qué zona, y sube una foto: si se verifica, puede tener recompensa.":"You saw a toad, tadpoles or a dead one. Say what state it was in and which area, and add a photo: if it is verified, it can earn a reward.",
+  "Algo que le falta a tu comunidad para ayudar al sapo: material, formación, transporte o contactos.":"Something your community is missing to help the toad: equipment, training, transport or contacts.",
+  "Algo que puedes dar a otras comunidades: talleres, material, tiempo o movilidad.":"Something you can give other communities: workshops, materials, time or transport.",
+  "Una faena, charla, salida o reunión. Pon fecha, hora y punto de encuentro.":"A work day, talk, field trip or meeting. Give the date, time and meeting point.",
+  "Una duda para el resto de la red. Quien sepa, responde debajo.":"A question for the rest of the network. Whoever knows replies below.",
+  "Comunidad campesina, ronda, comité de regantes o junta vecinal.":"Rural community, ronda campesina, irrigation committee or neighbourhood board.",
+  "Guías, guardaparques o gente que recorre la zona por trabajo.":"Guides, rangers or people who travel the area for work.",
+  "Escuelas, colegios y docentes.":"Schools and teachers.",
+  "Asociaciones y ONG, peruanas o extranjeras.":"Associations and NGOs, Peruvian or international.",
+  "Universidades, estudiantes e investigadores.":"Universities, students and researchers.",
+  "Municipalidades, empresas locales o cualquier otro grupo.":"Municipalities, local businesses or any other group.",
+  "Recompensa: ":"Reward: ","Puedo hacerlo":"I can make it","Pueden hacerlo":"Can make it","Lo quiero":"I want it","Lo quieren":"Want it","Todos los diseños":"All designs","Hola, vi en Hampatu Ayllu":"Hi, I saw on Hampatu Ayllu","Soy":"I'm","tú":"you","Cuándo":"When","Dónde":"Where","Contacto":"Contact","Me apunto":"Count me in","Me interesa":"I'm interested","Puedo ayudar":"I can help",
+  "Apuntado":"You're in","Quitarme":"Leave","Tu nombre o comunidad":"Your name or community","Confirmar":"Confirm","Cancelar":"Cancel",
+  "Se apuntaron":"Joined","Interesados":"Interested","Pueden ayudar":"Can help","Avisa por WhatsApp":"Tell them on WhatsApp",
+  "Listo. Avisa también a quien lo organiza para que cuente contigo.":"Done. Let the organiser know too so they count on you.",
+  "Contacto de ejemplo: no es un número real.":"Example contact: not a real number.","Ya pasó":"Past","Ver aviso":"See post","Evento del tablón":"Board event",
+  "Escribe tu nombre o el de tu comunidad.":"Write your name or your community's.","Pon el día del evento.":"Add the day of the event.",
+  "Cuándo y dónde":"When and where","Cuándo y dónde (si tiene fecha)":"When and where (if it has a date)","Votar":"Vote","Votado":"Voted","Compartir":"Share","Copiar enlace":"Copy link","Enlace copiado":"Link copied","Otras apps":"Other apps",
+  "Mira este aviso en Hampatu Ayllu":"See this post on Hampatu Ayllu","Recientes":"Newest","Más votados":"Most voted",
+  "Faena":"Work day","Taller o charla":"Workshop or talk","Entrega de recompensas":"Reward handover","Reunión":"Meeting","Recorrido de monitoreo":"Monitoring walk",
+  "Nueva fecha":"New date","Editar fecha":"Edit date","No hay nada marcado este día.":"Nothing marked on this day.","Todavía no hay fechas próximas.":"No upcoming dates yet.",
+  "Escribe qué se hace ese día.":"Write what happens that day.","Elige el día.":"Choose the day.","Hoy":"Today","fecha":"date","fechas":"dates",
+  "No se pudo guardar el voto. Inténtalo otra vez.":"The vote could not be saved. Try again.","Modo claro":"Light mode","Modo oscuro":"Dark mode","Foto verificada":"Verified photo","Marcar foto verificada":"Mark photo as verified","Quitar verificación":"Remove verification","Ver en el tablón":"See on the board",
+  "Todavía no hay ofrecimientos en el tablón.":"There are no offers on the board yet."
+};
+EN[COORD_MSG]="Remove the exact coordinates and give only the region. Wildlife traffickers look for that information.";
+
+Object.assign(EN,{
+  "Versión de demostración: lo que publiques se guarda solo en este navegador. Para usarla como red real necesita su propia base de datos.":"Demo version: anything you post is saved only in this browser. To run it as a real network it needs its own database.",
+  "Restablecer los ejemplos":"Reset the examples","Filtrar por tipo de aviso":"Filter by type of post","Ordenar avisos":"Sort posts","Publicar aviso":"New post",
+  "Añadir comunidad":"Add community","Buscar comunidad":"Search communities","Buscar nombre, lugar o necesidad":"Search name, place or need","Filtrar diseños":"Filter designs",
+  "Marcar fecha":"Add a date","Solo quien coordina la red puede marcar fechas.":"Only the network's coordinators can add dates.","Próximas fechas":"Coming up",
+  "Mes anterior":"Previous month","Mes siguiente":"Next month","Guardar fecha":"Save date","Guardar comunidad":"Save community","La foto es demasiado grande para guardarla en este navegador.":"The photo is too big to save in this browser."
+});
+
+export function makeT(lang){
+  return function t(s){ return (lang==="en"&&Object.prototype.hasOwnProperty.call(EN,s))?EN[s]:s; };
+}
