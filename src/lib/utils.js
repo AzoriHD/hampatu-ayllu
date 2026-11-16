@@ -112,7 +112,8 @@ export function enlaceRed(red, v) {
   return REDES[red] && /^[A-Za-z0-9._-]{1,60}$/.test(h) ? REDES[red] + h : "";
 }
 export const correoValido = (v) => /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(String(v || "").trim());
-export const fotoSegura = (u) => (/^(https:\/\/|data:image\/(jpeg|png|webp);)/.test(String(u || "")) ? String(u) : "");
+/* https for saved photos, data: in the demo, blob: for the preview before saving. */
+export const fotoSegura = (u) => (/^(https:\/\/|blob:|data:image\/(jpeg|png|webp);)/.test(String(u || "")) ? String(u) : "");
 export function iniciales(nombre) {
   const p = String(nombre || "").trim().split(/\s+/).filter(Boolean);
   return ((p[0] || "?").charAt(0) + (p.length > 1 ? p[p.length - 1].charAt(0) : "")).toUpperCase();
