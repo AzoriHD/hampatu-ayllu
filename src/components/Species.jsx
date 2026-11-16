@@ -5,10 +5,12 @@ export default function Species() {
   const { en } = useApp();
   return (
     <section id="v-especie" className="especie" aria-labelledby="tab-especie">
+    <div className="caja caja-cabeza">
     <header className="vista-head">
       <div><h2 className="vista-h">{en ? "Meet the hampatu" : "Conoce al hampatu"}</h2>
       <p className="intro">{en ? "What is known about the Peruvian harlequin toad, with its sources, and what to do if you come across one." : "Lo que se sabe del sapo arlequín peruano, con sus fuentes, y qué hacer si te cruzas con uno."}</p></div>
     </header>
+    </div>
     <div className="esp-grid">
       <div className="esp-main">
         <h2>{en ? "The Peruvian harlequin toad" : "El sapo arlequín peruano"}</h2>

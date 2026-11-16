@@ -39,6 +39,7 @@ export function People() {
 
   return (
     <section id="v-personas" aria-labelledby="tab-personas">
+      <div className="caja caja-cabeza">
       <header className="vista-head">
         <div><h2 className="vista-h">{en ? "The people in the network" : "La gente de la red"}</h2>
           <p className="intro">{en ? "Guides, farmers, teachers, rangers, students and researchers. Each person says who they are, where they are and how to reach them." : "Guías, comuneros, maestras, guardaparques, estudiantes e investigadores. Cada persona cuenta quién es, dónde está y cómo contactarla."}</p></div>
@@ -49,6 +50,7 @@ export function People() {
         {meta.cuenta
           ? <button className="btn" type="button" id="b-mi-perfil" onClick={() => irPerfil(uid)}>{t(perfilDe(uid) ? "Ver mi perfil" : "Mi perfil")}</button>
           : <button className="btn" type="button" id="b-crear-perfil" onClick={() => setCuentaPanel({ modo: "crear", k: Date.now() })}>{t("Crear mi perfil")}</button>}
+      </div>
       </div>
       <div className="grid" id="lista-personas">
         {list.length ? list.map((p) => {
@@ -144,6 +146,7 @@ export function Profile({ id, editar }) {
         </div>
       </article>
       {editando && mio && <ProfileForm p={p} onClose={() => setEditando(false)} />}
+      <div className="caja">
       <h3 className="sub cal-prox-h">{en ? "Posts" : "Avisos publicados"}</h3>
       <ul className="proximas" id="perfil-avisos">
         {avisos.length ? avisos.map((a) => (
@@ -154,6 +157,7 @@ export function Profile({ id, editar }) {
           </li>
         )) : <li className="meta" style={{ padding: "10px 14px" }}>{t("Todavía no ha publicado nada.")}</li>}
       </ul>
+      </div>
     </section>
   );
 }

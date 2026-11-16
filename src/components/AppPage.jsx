@@ -118,7 +118,7 @@ export default function AppPage() {
 
   return (
     <section id="v-app" className="app-vista" aria-labelledby="h-app">
-      <header className="vista-head">
+      <header className="vista-head caja caja-cabeza">
         <div>
           <h2 className="vista-h" id="h-app">{en ? "The Hampatu Ayllu app" : "La app de Hampatu Ayllu"}</h2>
           <p className="intro">{en ? "The same network, with its own icon on your phone or computer. It installs from here, it is free and it takes up very little space." : "La misma red, con su propio icono en tu celular o tu computadora. Se instala desde aquí, es gratis y ocupa muy poco."}</p>
@@ -131,7 +131,7 @@ export default function AppPage() {
           <div className="cel"><div className="cel-pantalla"><img src="/img/app-celular.webp" width="824" height="1784" alt="" loading="lazy" /></div></div>
         </div>
         <div className="app-accion">
-          <img className="app-icono" src="/icon-maskable-192.png" width="192" height="192" alt="" />
+          <img className="app-icono" src="/apple-touch-icon.png" width="180" height="180" alt="" />
           <p className="app-nombre"><strong>Hampatu Ayllu</strong><span>{en ? "Free for Android, iPhone, Windows, Mac and Linux" : "Gratis para Android, iPhone, Windows, Mac y Linux"}</span></p>
           {estado}
           <p className="msg soft" role="status" hidden={!aviso}>{aviso}</p>
@@ -145,6 +145,7 @@ export default function AppPage() {
         </div>
       </div>
 
+      <div className="caja">
       <h3 className="app-sub">{en ? "Step by step on each device" : "Paso a paso en cada dispositivo"}</h3>
       <div className="app-plataformas">
         {ORDEN.map((k) => {
@@ -159,11 +160,15 @@ export default function AppPage() {
         })}
       </div>
 
+      </div>
+
+      <div className="caja">
       <h3 className="app-sub">{en ? "Questions" : "Preguntas"}</h3>
       <div className="app-preguntas">
         {PREGUNTAS.map(([qe, ae, qn, an]) => (
           <details key={qe}><summary>{en ? qn : qe}</summary><p>{en ? an : ae}</p></details>
         ))}
+      </div>
       </div>
     </section>
   );

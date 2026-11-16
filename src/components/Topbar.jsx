@@ -37,6 +37,8 @@ export function Topbar() {
   const inicio = (ev) => { ev.preventDefault(); irVista("tablon"); window.scrollTo({ top: 0, behavior: "smooth" }); };
 
   return (
+    <>
+    <div className="faja-top" aria-hidden="true"></div>
     <header className="topbar">
       <div className="topbar-in">
         <a className="marca" href="#tablon" onClick={inicio} aria-label={en ? "Hampatu Ayllu, home" : "Hampatu Ayllu, inicio"}>
@@ -60,6 +62,7 @@ export function Topbar() {
         </div>
       </div>
     </header>
+    </>
   );
 }
 

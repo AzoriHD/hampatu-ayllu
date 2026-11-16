@@ -53,7 +53,7 @@ export default function Calendar() {
 
   return (
     <section id="v-calendario" className="calendario" aria-labelledby="tab-calendario">
-      <CalendarHeader />
+      <div className="caja caja-cabeza"><CalendarHeader /></div>
       <div className="cal-wrap">
         <div className="cal">
           <div className="cal-head">
@@ -115,6 +115,7 @@ export default function Calendar() {
           {form && puede && <FechaForm key={form.k} editar={form.editar} onClose={() => setForm(null)} />}
         </div>
       </div>
+      <div className="caja">
       <h3 className="sub cal-prox-h">{t(pasadas ? "Fechas pasadas" : "Próximas fechas")}</h3>
       <div className="orden" role="group" aria-label={t("Qué fechas ver")}>
         <button type="button" className="chipbtn" id="px-prox" aria-pressed={!pasadas} onClick={() => verLista("proximas")}>{t("Próximas")}</button>
@@ -140,6 +141,7 @@ export default function Calendar() {
           {t("Ver más")} ({lista.length - cuantas})
         </button>
       )}
+      </div>
     </section>
   );
 }

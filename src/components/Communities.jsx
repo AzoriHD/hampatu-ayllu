@@ -3,6 +3,7 @@ import { useApp } from "../AppContext.jsx";
 import { COORD, COORD_MSG, P, SIMB, SIMB_K, TC, TCD } from "../data/constants.js";
 import { newId, store } from "../lib/store.js";
 import { plural, simboloDe, str } from "../lib/utils.js";
+import ZonaRail from "./Rail.jsx";
 import { CommunitiesHeader } from "./Headers.jsx";
 import { CopyBtn, DelBtns, EmptyBox, Msg, Simbolo } from "./Shared.jsx";
 
@@ -20,11 +21,14 @@ export default function Communities() {
 
   return (
     <section id="v-comunidades" aria-labelledby="tab-comunidades">
+      <div className="caja caja-cabeza">
       <CommunitiesHeader />
+      <ZonaRail />
       <div className="bar">
         <div className="search"><label htmlFor="q" className="sr">{t("Buscar comunidad")}</label>
           <input id="q" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("Buscar nombre, lugar o necesidad")} /></div>
         <button className="btn" type="button" id="b-com" onClick={() => (canPost ? setForm(form ? null : { k: Date.now(), id: "" }) : pedirCuenta("Para añadir una comunidad necesitas una cuenta. Es gratis y tarda un minuto."))}>{t("Añadir comunidad")}</button>
+      </div>
       </div>
       {form && canPost && <CommunityForm key={form.k} editId={form.id} onClose={() => setForm(null)} />}
       <div className="grid" id="lista-coms">

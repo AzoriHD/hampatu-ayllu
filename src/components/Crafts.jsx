@@ -12,12 +12,14 @@ export default function Crafts() {
   DIS.forEach((d) => { cnt[d[1]] = (cnt[d[1]] || 0) + 1; });
   return (
     <section id="v-artesania" className="artesania" aria-labelledby="tab-artesania">
+      <div className="caja caja-cabeza">
       <CraftsHeader />
       <div className="chips dis-cats" id="dis-cats" role="group" aria-label={t("Filtrar diseños")}>
         <Chip id="dc-all" label={t("Todos los diseños")} n={DIS.length} on={!cat} onClick={() => setCat("")} />
         {Object.keys(DCAT).map((k) => <Chip key={k} id={"dc-" + k} label={DCAT[k][en ? 1 : 0]} n={cnt[k] || 0} on={cat === k} onClick={() => setCat(k)} />)}
       </div>
       <CraftsNote />
+      </div>
       <div className="dis-grid" id="dis-grid">
         {DIS.filter((d) => !cat || d[1] === cat).map((d) => {
           const nom = en ? d[3] : d[2], kh = "d:" + d[0] + ":hacer", kq = "d:" + d[0] + ":querer";

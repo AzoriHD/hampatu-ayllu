@@ -21,11 +21,13 @@ export default function Rewards() {
   const { en, ofrecer } = useApp();
   return (
     <section id="v-recompensas" className="recompensas" aria-labelledby="tab-recompensas">
+    <div className="caja caja-cabeza">
     <header className="vista-head">
       <div><h2 className="vista-h">{en ? "Rewards for those who protect" : "Recompensas para quien protege"}</h2>
       <p className="intro">{en ? "Looking after a stream takes time and work. This is what the network's NGOs, universities, municipalities and donors can offer the communities, rondas, schools and guides that protect the toad." : "Cuidar una quebrada cuesta tiempo y trabajo. Aquí está lo que las ONG, universidades, municipalidades y donantes de la red pueden ofrecer a las comunidades, rondas, escuelas y guías que protegen al sapo."}</p></div>
     </header>
     <p className="regla">{en ? <><strong>We pay for photos, never for captured toads.</strong> A photo of the toad where it lives can earn a reward if it meets the conditions below. Catching, moving or keeping toads is never rewarded.</> : <><strong>Se paga por foto, nunca por sapo capturado.</strong> Una foto del sapo en su sitio puede tener recompensa si cumple las condiciones de abajo. Coger, mover o tener sapos en casa nunca se premia.</>}</p>
+    </div>
 
     <div className="rec-grid">
       <article className="rec rec-dest"><h4>{en ? "Payment per verified photo" : "Pago por foto verificada"}</h4><p>{en ? "A payment for the first verified photo of the toad in each stream each month. It shows where the species is still alive." : "Un pago por la primera foto verificada del sapo en cada quebrada y cada mes. Sirve para saber dónde sigue vivo."}</p><p className="quien">{en ? "Given by: NGOs, research projects" : "Lo dan: ONG, proyectos de investigación"}</p></article>
@@ -39,6 +41,7 @@ export default function Rewards() {
       <article className="rec"><h4>{en ? "Grants and exchanges" : "Becas e intercambios"}</h4><p>{en ? "Study grants for young people and trips to meet other communities that protect amphibians." : "Becas de estudio para jóvenes y viajes para conocer otras comunidades que cuidan anfibios."}</p><p className="quien">{en ? "Given by: universities, international NGOs" : "Lo dan: universidades, ONG extranjeras"}</p></article>
     </div>
 
+    <div className="caja">
     <h3 className="sub">{en ? "Conditions for the photo payment" : "Condiciones del pago por foto"}</h3>
     <ol className="como">
       <li>{en ? "The toad is photographed where it is, without being touched or moved. Photos of a toad in someone's hand, in a container or away from the stream are not paid." : "El sapo sale en su sitio, sin tocarlo ni moverlo. Las fotos con el sapo en la mano, en un envase o fuera de la quebrada no se pagan."}</li>
@@ -47,7 +50,9 @@ export default function Rewards() {
       <li>{en ? "The first photo from each stream each month is paid. More photos from the same place still help, but are not paid again." : "Se paga la primera foto de cada quebrada cada mes. Más fotos del mismo sitio ayudan, pero no se cobran otra vez."}</li>
       <li>{en ? "Dead toads are reported the same way but not paid, so nobody has a reason to harm them. A photo copied from the internet or from someone else cancels the payment." : "Los sapos muertos se avisan igual, pero no se pagan, para que nadie tenga motivo de hacerles daño. Una foto copiada de internet o de otra persona anula el pago."}</li>
     </ol>
+    </div>
 
+    <div className="caja">
     <h3 className="sub">{en ? "How a reward is earned" : "Cómo se gana una recompensa"}</h3>
     <ol className="como">
       <li>{en ? "Photograph the toad where it is, without touching it, and post the photo on the board." : "Fotografiar al sapo en su sitio, sin tocarlo, y subir la foto al tablón."}</li>
@@ -56,12 +61,15 @@ export default function Rewards() {
       <li>{en ? "Take part in work days, workshops and talks." : "Participar en faenas, talleres y charlas."}</li>
       <li>{en ? "Teach others: schools, visitors, neighbouring communities." : "Enseñar a otros: escuelas, visitantes, comunidades vecinas."}</li>
     </ol>
+    </div>
 
+    <div className="caja">
     <h3 className="sub">{en ? "Already on offer in the network" : "Lo que ya se ofrece en la red"}</h3>
     <Ofertas />
     <div className="cta">
       <button className="btn" type="button" id="b-ofrecer" onClick={ofrecer}>{en ? "Offer a reward" : "Ofrecer una recompensa"}</button>
       <span className="meta">{en ? "It is posted on the board as «We offer», so communities can reply." : "Se publica en el tablón como «Ofrecemos», para que las comunidades puedan responder."}</span>
+    </div>
     </div>
   </section>
   );

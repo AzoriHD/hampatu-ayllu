@@ -3,6 +3,7 @@ import { useApp } from "../AppContext.jsx";
 import { COORD, COORD_MSG, ES, P, TA, TD } from "../data/constants.js";
 import { newId, store, uploadPhoto } from "../lib/store.js";
 import { deYmd, plural, shrink, simboloDe, str, ymd } from "../lib/utils.js";
+import ZonaRail from "./Rail.jsx";
 import { BoardHeader } from "./Headers.jsx";
 import { Chip, CopyBtn, Datos, DelBtns, EmptyBox, JoinBlock, JoinButton, Msg, Simbolo, Svg } from "./Shared.jsx";
 import { Autor } from "./People.jsx";
@@ -27,7 +28,9 @@ export default function Board() {
 
   return (
     <section id="v-tablon" aria-labelledby="tab-tablon">
+      <div className="caja caja-cabeza">
       <BoardHeader />
+      <ZonaRail />
       <div className="bar">
         <div className="chips" id="tipos" role="group" aria-label={t("Filtrar por tipo de aviso")}>
           <Chip id="tp-all" label={t("Todos")} n={base.length} on={!tipo} onClick={() => setTipo("")} />
@@ -39,6 +42,7 @@ export default function Board() {
       <div className="orden" role="group" aria-label={t("Ordenar avisos")}>
         <button type="button" className="chipbtn" id="o-rec" aria-pressed={orden !== "votados"} onClick={() => setOrden("recientes")}>{t("Recientes")}</button>
         <button type="button" className="chipbtn" id="o-vot" aria-pressed={orden === "votados"} onClick={() => setOrden("votados")}>{t("Más votados")}</button>
+      </div>
       </div>
       {formAviso && canPost && <PostForm key={formAviso.k} preset={formAviso.preset} enfocar={formAviso.enfocar} onDone={alPublicar} onCancel={() => setFormAviso(null)} />}
       <div className="lista" id="lista-avisos">
