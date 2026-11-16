@@ -88,15 +88,38 @@ VITE_SUPABASE_URL=https://xxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=tu_clave_anon
 ```
 
+## App instalable (celular y computadora)
+
+La web es también una app (PWA): se instala gratis desde la propia web, sin tiendas, y se actualiza sola.
+
+- Página **#app** (botón «Descargar app» arriba): botón de instalar cuando el navegador lo permite,
+  pasos para Android, iPhone y iPad, Windows, Mac y Linux, código QR para abrirla en el celular y botón para compartirla.
+- Aviso flotante «Instala la app» a los pocos segundos de entrar (no sale si ya está instalada o si se cierra).
+- Sin conexión se abre y muestra lo último que se cargó (`public/sw.js`). Al publicar, `vite.config.js`
+  le pone una versión nueva y la lista de archivos, así que no hay que tocar nada en cada cambio.
+- Iconos en `public/icon-*.png`, capturas para la ventana de instalación en `public/img/app-*.webp`
+  y la imagen para compartir el enlace (WhatsApp, Facebook…) en `public/og.jpg`.
+
+## Imagen de perfil
+
+Al editar el perfil se puede **subir una foto** o **elegir un dibujo** de la red (sapos, gente de la jalca,
+animales y paisajes). Los dibujos están en `public/img/avatares/` y la lista en `src/data/avatares.js`.
+
+## Diseño
+
+Patrones de tejido andino (`public/img/tejido-*.webp`, `faja-*.webp`) y un medallón tejido para cada sección
+(`med-*.webp`). Letras propias, sin Google Fonts: Bricolage Grotesque (títulos) y Atkinson Hyperlegible (texto),
+instaladas con npm, así que la primera vez que lo bajes haz `npm install`.
+
 ## Estructura
 
 ```
-public/img/          imágenes (logo, bandas, sapos, diseños de artesanía)
+public/img/          imágenes (logo, tejidos, fajas, medallones, avatares, sapos, artesanía)
 src/App.jsx          estado general, navegación por pestañas (#tablon, #calendario…)
-src/components/      Tablón, Comunidades, Personas y perfiles, Cuenta, Calendario, Artesanía…
+src/components/      Tablón, Comunidades, Personas y perfiles, Cuenta, Calendario, Artesanía, App…
 src/data/            zonas, tipos, diseños y ejemplos
 src/i18n.js          textos en inglés
 src/lib/store.js     guardado de datos (Supabase o, sin configurar, este navegador)
 supabase.sql         tablas y permisos para Supabase
-src/styles.css       estilos (amarillo #ebae25 y marrón #1e130a, modo claro/oscuro)
+src/styles.css       estilos (lana #fbf0d4, ocre #e8a42a y tierra #2b190b, modo claro/oscuro)
 ```

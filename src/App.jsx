@@ -4,7 +4,9 @@ import { makeT } from "./i18n.js";
 import { P } from "./data/constants.js";
 import { ensureUid, perfilVisto, store, useData, useMeta } from "./lib/store.js";
 import { ago as agoBase, avisoDelHash, errMsg, marcarHash, perfilDelHash, viewOf, VIEWS, ymd } from "./lib/utils.js";
-import Hero from "./components/Hero.jsx";
+import Hero, { FajaRanas } from "./components/Hero.jsx";
+import { BottomNav, Topbar } from "./components/Topbar.jsx";
+import AppPage from "./components/AppPage.jsx";
 import { Msg } from "./components/Shared.jsx";
 import Board from "./components/Board.jsx";
 import Communities from "./components/Communities.jsx";
@@ -16,16 +18,6 @@ import { Agreements, Footer } from "./components/Agreements.jsx";
 import AdminZone from "./components/Admin.jsx";
 import { AccountPanel } from "./components/Account.jsx";
 import { People, Profile } from "./components/People.jsx";
-
-const TABS = [
-  ["tablon", "Tablón", "Board"],
-  ["comunidades", "Comunidades", "Communities"],
-  ["personas", "Personas", "People"],
-  ["calendario", "Calendario", "Calendar"],
-  ["artesania", "Artesanía", "Crafts"],
-  ["especie", "La especie", "The species"],
-  ["recompensas", "Recompensas", "Rewards"],
-];
 
 function leer(clave, porDefecto) {
   try { return localStorage.getItem(clave) || porDefecto; } catch (e) { return porDefecto; }
@@ -78,37 +70,40 @@ export default function App() {
   const [destino, setDestino] = useState(() => (inicioAviso ? { id: "a-" + inicioAviso, block: "start" } : null));
   const tabsRef = useRef(null);
 
-  const irVista = useCallback((v, bajarATabs) => {
+  /* Al cambiar de sección se baja (o se sube) hasta el principio del contenido */
+  const irVista = useCallback((v, bajar) => {
     setView(v); marcarHash(v);
-    if (bajarATabs) setTimeout(() => tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+    if (bajar) setTimeout(() => tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
   }, []);
+
+  /* Si se entra con un enlace a una sección (#app, #calendario…), se abre ya en ella */
+  useEffect(() => {
+    const h = window.location.hash;
+    if (!inicioAviso && h && h !== "#tablon" && h !== "#admin" && (perfilDelHash() || VIEWS.includes(h.slice(1)))) {
+      requestAnimationFrame(() => tabsRef.current?.scrollIntoView({ block: "start" }));
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const onHash = () => {
       const a = avisoDelHash(), pf = perfilDelHash();
       if (pf) { setPerfil({ id: pf, k: Date.now() }); setView("perfil"); }
       else if (a) { setView("tablon"); setZona(""); setAbiertos((o) => ({ ...o, [a]: 1 })); setDestino({ id: "a-" + a, block: "start" }); }
-      else setView(viewOf(window.location.hash));
+      else { setView(viewOf(window.location.hash)); tabsRef.current?.scrollIntoView({ block: "start" }); }
     };
     const onClick = (ev) => {
+      if (ev.defaultPrevented) return;
       const enl = ev.target.closest?.('a[href^="#"]');
       if (!enl) return;
       const v = enl.getAttribute("href").slice(1);
       if (!VIEWS.includes(v)) return;
       ev.preventDefault();
-      irVista(v, !enl.closest(".tabs"));
+      irVista(v, true);
     };
     window.addEventListener("hashchange", onHash);
     document.addEventListener("click", onClick);
     return () => { window.removeEventListener("hashchange", onHash); document.removeEventListener("click", onClick); };
   }, [irVista]);
-
-  /* keep the active tab visible on narrow screens */
-  useEffect(() => {
-    const w = tabsRef.current, tb = document.getElementById("tab-" + view);
-    if (!w || !tb) return;
-    if (tb.offsetLeft < w.scrollLeft || tb.offsetLeft + tb.offsetWidth > w.scrollLeft + w.clientWidth) w.scrollLeft = Math.max(0, tb.offsetLeft - 16);
-  }, [view]);
 
   /* scroll to and highlight a post or a community once it is on screen */
   useEffect(() => {
@@ -226,8 +221,11 @@ export default function App() {
 
   return (
     <AppContext.Provider value={ctx}>
+      <Topbar />
       <Hero />
+      <FajaRanas />
       <main className="wrap">
+        <div className="ancla" ref={tabsRef} aria-hidden="true"></div>
         <AdminZone />
         {(cuentaPanel || meta.recovery) && <AccountPanel key={meta.recovery ? "nueva" : cuentaPanel.k} />}
 
@@ -243,11 +241,6 @@ export default function App() {
           </nav>
         )}
 
-        <div className="tabs" ref={tabsRef}>
-          {TABS.map(([v, es, enl]) => (
-            <a key={v} href={"#" + v} id={"tab-" + v} aria-current={view === v || (v === "personas" && view === "perfil") ? "page" : "false"}>{en ? enl : es}</a>
-          ))}
-        </div>
         <Msg id="m-global" role="status" text={msg} />
 
         {view === "tablon" && <Board />}
@@ -258,10 +251,12 @@ export default function App() {
         {view === "artesania" && <Crafts />}
         {view === "especie" && <Species />}
         {view === "recompensas" && <Rewards />}
+        {view === "app" && <AppPage />}
 
-        <Agreements />
+        {view !== "app" && <Agreements />}
       </main>
       <Footer />
+      <BottomNav />
     </AppContext.Provider>
   );
 }

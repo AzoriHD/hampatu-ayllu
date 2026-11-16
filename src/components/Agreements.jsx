@@ -16,12 +16,23 @@ export function Agreements() {
 }
 
 export function Footer() {
-  const { en } = useApp();
+  const { en, view } = useApp();
   return (
     <footer className="pie">
-  <div className="wrap"><div className="pie-card">
-  <p>{en ? "Hampatu Ayllu means «community of the toad» in Quechua." : "Hampatu Ayllu significa «comunidad del sapo» en quechua."}</p>
-  </div></div>
-</footer>
+      <div className="wrap">
+        <div className="pie-card">
+          <div className="pie-marca">
+            <img src="/img/logo.webp" width="440" height="423" alt="" loading="lazy" />
+            <p><strong>Hampatu Ayllu</strong> {en ? "means «community of the toad» in Quechua." : "significa «comunidad del sapo» en quechua."}</p>
+          </div>
+          {view !== "app" && (
+            <div className="pie-app">
+              <p>{en ? "Keep the network on your phone or computer. It installs from here, free, in a few seconds." : "Lleva la red en tu celular o tu computadora. Se instala desde aquí, gratis y en unos segundos."}</p>
+              <a className="btn-acc" href="#app">{en ? "Get the app" : "Descarga la app"}</a>
+            </div>
+          )}
+        </div>
+      </div>
+    </footer>
   );
 }

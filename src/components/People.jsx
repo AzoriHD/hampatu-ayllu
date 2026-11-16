@@ -4,11 +4,13 @@ import { COORD, COORD_MSG, TA } from "../data/constants.js";
 import { salir, store, uploadPhoto } from "../lib/store.js";
 import { correoValido, enlaceRed, fotoSegura, iniciales, localeOf, shrink, simboloDe, str, waEnlace } from "../lib/utils.js";
 import { DelBtns, EmptyBox, Msg, Simbolo } from "./Shared.jsx";
+import { AVATARES, avatarUrl, avatarValido } from "../data/avatares.js";
 
 const REDES = [["facebook", "Facebook"], ["instagram", "Instagram"], ["tiktok", "TikTok"], ["youtube", "YouTube"], ["x", "X"]];
 
+/* Foto subida, dibujo elegido o, si no hay ninguno, las iniciales */
 export function Avatar({ p, size = 56 }) {
-  const src = fotoSegura(p && p.foto);
+  const src = fotoSegura(p && p.foto) || avatarUrl(p && p.avatar);
   const st = { width: size, height: size, fontSize: Math.round(size * 0.4) };
   return src
     ? <img className="avatar" src={src} alt="" width={size} height={size} style={st} loading="lazy" />
@@ -164,6 +166,7 @@ function ProfileForm({ p, onClose }) {
     return o;
   });
   const [foto, setFoto] = useState(() => ({ url: fotoSegura(p.foto), blob: null }));
+  const [avatar, setAvatar] = useState(() => (fotoSegura(p.foto) ? "" : avatarValido(p.avatar) ? p.avatar : ""));
   const [m, setM] = useState("");
   const ref = useRef(null);
   const L = (es, eng) => (en ? eng : es);
@@ -175,7 +178,7 @@ function ProfileForm({ p, onClose }) {
   const elegirFoto = async (ev) => {
     const file = ev.target.files && ev.target.files[0]; ev.target.value = "";
     if (!file) return;
-    try { const b = await shrink(file, 400); setFoto({ url: URL.createObjectURL(b), blob: b }); setM(""); }
+    try { const b = await shrink(file, 400); setFoto({ url: URL.createObjectURL(b), blob: b }); setAvatar(""); setM(""); }
     catch (e) { setM("No se pudo leer alguna foto. Prueba con una imagen JPG o PNG."); }
   };
 
@@ -198,6 +201,7 @@ function ProfileForm({ p, onClose }) {
     write(setM, async () => {
       if (foto.blob) d.foto = await uploadPhoto(foto.blob);
       else if (foto.url) d.foto = foto.url;
+      else if (avatar) d.avatar = avatar;
       await store.set("perfiles", uid, d);
     }, onClose);
   };
@@ -213,12 +217,27 @@ function ProfileForm({ p, onClose }) {
       <h2 className="panel-h">{t("Editar perfil")}</h2>
       <p className="notice aviso-privado">{L("Todo lo que pongas aquí lo verá cualquiera que entre en la web. Rellena solo lo que quieras compartir.", "Anyone who visits the site will see what you put here. Only fill in what you want to share.")}</p>
       <div className="fields">
-        <div className="full perfil-foto">
-          <Avatar p={{ nombre: f.nombre, foto: foto.url }} size={72} />
-          <div><label htmlFor="pf-foto">{L("Foto (opcional)", "Photo (optional)")}</label>
-            <input id="pf-foto" type="file" accept="image/*" onChange={elegirFoto} />
-            {foto.url && <button type="button" className="linkbtn danger" onClick={() => setFoto({ url: "", blob: null })}>{t("Quitar foto")}</button>}</div>
-        </div>
+        <fieldset className="full imagen-campo">
+          <legend>{L("Tu imagen (opcional)", "Your picture (optional)")}</legend>
+          <div className="perfil-foto">
+            <Avatar p={{ nombre: f.nombre, foto: foto.url, avatar }} size={88} />
+            <div>
+              <label className="btn-ghost subir-foto" htmlFor="pf-foto">{foto.url ? L("Cambiar la foto", "Change photo") : L("Subir una foto", "Upload a photo")}</label>
+              <input id="pf-foto" className="sr" type="file" accept="image/*" onChange={elegirFoto} />
+              {(foto.url || avatar) && <button type="button" className="linkbtn danger" onClick={() => { setFoto({ url: "", blob: null }); setAvatar(""); }}>{L("Quitar imagen", "Remove picture")}</button>}
+              <p className="hint">{L("Si no quieres poner una foto tuya, elige un dibujo de la red.", "If you would rather not use a photo of yourself, choose a drawing from the network.")}</p>
+            </div>
+          </div>
+          <div className="avatares" role="radiogroup" aria-label={L("Dibujos para tu perfil", "Drawings for your profile")}>
+            {AVATARES.map(([k, es, eng]) => (
+              <label key={k} className="avatar-op" title={en ? eng : es}>
+                <input type="radio" name="avatar" value={k} checked={avatar === k}
+                  onChange={() => { setFoto({ url: "", blob: null }); setAvatar(k); }} />
+                <img src={avatarUrl(k)} width="200" height="200" alt={en ? eng : es} loading="lazy" />
+              </label>
+            ))}
+          </div>
+        </fieldset>
         {campo("nombre", L("Nombre", "Name"), { max: 60, ac: "name" })}
         {campo("rol", L("A qué te dedicas", "What you do"), { max: 90, ph: L("Guía local, maestra, comunero…", "Local guide, teacher, farmer…") })}
         {campo("lugar", L("Dónde estás", "Where you are"), { max: 80, ph: L("Distrito o provincia", "District or province") })}

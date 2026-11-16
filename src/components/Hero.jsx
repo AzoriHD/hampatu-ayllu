@@ -1,25 +1,16 @@
 import { useApp } from "../AppContext.jsx";
-import { SIMB } from "../data/constants.js";
-import { plural } from "../lib/utils.js";
 import { HeroText } from "./Headers.jsx";
 import { Svg } from "./Shared.jsx";
-import { AccountButton } from "./Account.jsx";
+import { ICONO_APP } from "./Topbar.jsx";
 
+/* Portada: el tejido de rombos de fondo y, encima, la «manta» con el nombre. */
 export default function Hero() {
-  const { t, en, data, oscuro, cambiarTema, cambiarIdioma } = useApp();
+  const { t, en, data } = useApp();
+  const nc = data.comunidades.length, na = data.avisos.length;
   return (
-    <header className="hero">
-      <div className="hero-art">
-        <div className="wrap hero-top">
-          <AccountButton />
-          <button className="lang tema" type="button" id="b-tema" aria-label={t(oscuro ? "Modo claro" : "Modo oscuro")} onClick={cambiarTema}>
-            <Svg width="2" d={SIMB[oscuro ? "sol" : "luna"][2]} /><span>{t(oscuro ? "Modo claro" : "Modo oscuro")}</span>
-          </button>
-          <button className="lang" type="button" id="b-lang" lang={en ? "es" : "en"} onClick={cambiarIdioma}>{en ? "Español" : "English"}</button>
-        </div>
-      </div>
-      <div className="wrap card-wrap">
-        <div className="hero-card">
+    <section className="portada" aria-labelledby="h-portada">
+      <div className="wrap portada-in">
+        <div className="manta">
           <div className="paseo" aria-hidden="true">
             <div className="andarin"><div className="brinco">
               <picture>
@@ -28,17 +19,24 @@ export default function Hero() {
               </picture>
             </div></div>
           </div>
-          <img className="hero-logo" src="/img/logo.webp" width="440" height="423"
+          <img className="manta-logo" src="/img/logo.webp" width="440" height="423"
             alt={en ? "Hampatu Ayllu logo: a harlequin toad on a rock, with hills and a stream behind it" : "Logo de Hampatu Ayllu: un sapo arlequín sobre una piedra, con cerros y una quebrada al fondo"} />
-          <div className="hero-text">
-            <HeroText />
-            <p className="stats" id="stats" aria-live="polite">
-              {plural(t, data.comunidades.length, "comunidad", "comunidades") + " · " + plural(t, data.avisos.length, "aviso", "avisos")}
-            </p>
+          <HeroText />
+          <p className="cifras" id="stats" aria-live="polite">
+            <span><b>{nc}</b> {t(nc === 1 ? "comunidad" : "comunidades")}</span>
+            <span><b>{na}</b> {t(na === 1 ? "aviso" : "avisos")}</span>
+          </p>
+          <div className="portada-cta">
             <a className="btn-acc" href="#recompensas">{en ? "Rewards for those who protect" : "Recompensas para quien protege"}</a>
+            <a className="btn-linea" href="#app"><Svg width="2" d={ICONO_APP} />{en ? "Get the app" : "Descarga la app"}</a>
           </div>
         </div>
       </div>
-    </header>
+    </section>
   );
+}
+
+/* Faja de ranas tejidas entre la portada y el contenido */
+export function FajaRanas() {
+  return <div className="faja-ranas" aria-hidden="true"></div>;
 }
