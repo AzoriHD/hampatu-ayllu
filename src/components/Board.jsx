@@ -5,11 +5,12 @@ import { newId, store, uploadPhoto } from "../lib/store.js";
 import { deYmd, plural, shrink, simboloDe, str, ymd } from "../lib/utils.js";
 import { BoardHeader } from "./Headers.jsx";
 import { Chip, CopyBtn, Datos, DelBtns, EmptyBox, JoinBlock, JoinButton, Msg, Simbolo, Svg } from "./Shared.jsx";
+import { Autor } from "./People.jsx";
 
 const tipoDe = (a) => (TA[a.tipo] ? a.tipo : "pregunta");
 
 export default function Board() {
-  const { t, data, zona, setZona, formAviso, setFormAviso, uid } = useApp();
+  const { t, data, zona, setZona, formAviso, setFormAviso, uid, canPost, pedirCuenta } = useApp();
   const [tipo, setTipo] = useState("");
   const [orden, setOrden] = useState("recientes");
   const inZona = (x) => !zona || x.zona === zona || !P[x.zona];
@@ -32,14 +33,14 @@ export default function Board() {
           <Chip id="tp-all" label={t("Todos")} n={base.length} on={!tipo} onClick={() => setTipo("")} />
           {Object.keys(TA).map((x) => <Chip key={x} id={"tp-" + x} label={t(TA[x])} n={cnt[x] || 0} on={tipo === x} onClick={() => setTipo(x)} />)}
         </div>
-        <button className="btn" type="button" id="b-aviso" onClick={() => setFormAviso(formAviso ? null : { k: Date.now(), preset: {} })}>{t("Publicar aviso")}</button>
+        <button className="btn" type="button" id="b-aviso" onClick={() => (canPost ? setFormAviso(formAviso ? null : { k: Date.now(), preset: {} }) : pedirCuenta("Para publicar necesitas una cuenta. Es gratis y tarda un minuto."))}>{t("Publicar aviso")}</button>
       </div>
       <p className={"explica" + (k ? " t-" + k : "")} id="tipo-exp" aria-live="polite">{t(TD[k])}</p>
       <div className="orden" role="group" aria-label={t("Ordenar avisos")}>
         <button type="button" className="chipbtn" id="o-rec" aria-pressed={orden !== "votados"} onClick={() => setOrden("recientes")}>{t("Recientes")}</button>
         <button type="button" className="chipbtn" id="o-vot" aria-pressed={orden === "votados"} onClick={() => setOrden("votados")}>{t("Más votados")}</button>
       </div>
-      {formAviso && <PostForm key={formAviso.k} preset={formAviso.preset} enfocar={formAviso.enfocar} onDone={alPublicar} onCancel={() => setFormAviso(null)} />}
+      {formAviso && canPost && <PostForm key={formAviso.k} preset={formAviso.preset} enfocar={formAviso.enfocar} onDone={alPublicar} onCancel={() => setFormAviso(null)} />}
       <div className="lista" id="lista-avisos">
         {list.length ? list.map((a) => <Post key={a.id} a={a} votos={votosDe[a.id] || 0} mio={!!misVotos[a.id]} />)
           : <EmptyBox text={data.avisos.length ? "Ningún aviso con este filtro." : "Todavía no hay avisos. Publica el primero: un avistamiento, algo que tu comunidad necesita o algo que puede ofrecer."}
@@ -196,7 +197,7 @@ function Foto({ src, i }) {
 }
 
 function Post({ a, votos, mio }) {
-  const { t, data, uid, canPost, canEdit, ago, zonaDe, contactoDe, goCom, abiertos, setAbiertos, votar, enlaceAviso, write, setMsg } = useApp();
+  const { t, data, uid, canPost, canEdit, ago, zonaDe, contactoDe, goCom, abiertos, setAbiertos, votar, enlaceAviso, write, setMsg, pedirCuenta } = useApp();
   const [compartir, setCompartir] = useState(false);
   const tp = tipoDe(a), id = a.id;
   const rs = data.respuestas.filter((r) => r.aviso === id).sort((x, y) => (x.ts || 0) - (y.ts || 0));
@@ -231,7 +232,7 @@ function Post({ a, votos, mio }) {
         </>
       )}
       <p className="meta">
-        {firmaEsCom ? enlaceCom : <>{a.firma || t("Sin firma")}{c && <> · {enlaceCom}</>}</>}
+        {firmaEsCom ? enlaceCom : <><Autor by={a.by} firma={a.firma} />{c && <> · {enlaceCom}</>}</>}
         {" · " + (P[a.zona] ? zonaDe(a) : t("Toda la red"))}
       </p>
       <div className="row">
@@ -239,7 +240,7 @@ function Post({ a, votos, mio }) {
           onClick={() => setAbiertos((o) => { const n = { ...o }; if (n[id]) delete n[id]; else n[id] = 1; return n; })}>
           {rs.length ? plural(t, rs.length, "respuesta", "respuestas") : t("Responder")}
         </button>
-        <button type="button" className="voto" id={"vt-" + id} aria-pressed={mio} disabled={!canPost} onClick={() => votar(id)}>
+        <button type="button" className="voto" id={"vt-" + id} aria-pressed={mio} onClick={() => votar(id)}>
           <Svg width="2.2" d='<path d="M12 19V5M5 12l7-7 7 7"/>' />{t(mio ? "Votado" : "Votar")} <b>{votos}</b>
         </button>
         <button type="button" className="linkbtn" id={"sh-" + id} aria-expanded={compartir} onClick={() => setCompartir(!compartir)}>{t("Compartir")}</button>
@@ -262,11 +263,11 @@ function Post({ a, votos, mio }) {
           {rs.map((r) => (
             <div className="resp" key={r.id}>
               <p>{r.texto}</p>
-              <p className="meta">{(r.firma || t("Sin firma")) + " · " + ago(r.ts)}</p>
+              <p className="meta"><Autor by={r.by} firma={r.firma} />{" · " + ago(r.ts)}</p>
               {canPost && (canEdit || r.by === uid) && <DelBtns k={"resp:" + r.id} />}
             </div>
           ))}
-          {canPost ? <ReplyForm id={id} /> : !rs.length && <p className="meta">{t("Aún sin respuestas.")}</p>}
+          {canPost ? <ReplyForm id={id} /> : <button type="button" className="linkbtn" onClick={() => pedirCuenta("Para responder necesitas una cuenta. Es gratis y tarda un minuto.")}>{t("Entra para responder")}</button>}
         </div>
       )}
     </article>

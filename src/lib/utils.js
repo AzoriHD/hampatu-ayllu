@@ -55,7 +55,15 @@ export function errMsg(e) {
   if (c === "42501") return "No tienes permiso para hacer eso.";
   if (c === "sesion") return "No se pudo conectar con la red. Inténtalo otra vez en un momento.";
   if (c === "login") return "Correo o contraseña incorrectos.";
-  if (c === "no_admin") return "Esa cuenta no es de coordinación.";
+  if (c === "cuenta") return "Entra o crea tu cuenta para hacerlo.";
+  if (c === "ya_existe") return "Ya hay una cuenta con ese correo. Entra con tu contraseña.";
+  if (c === "clave_debil") return "Elige una contraseña más larga, de 8 letras o números como mínimo.";
+  if (c === "sin_confirmar") return "Primero abre el enlace que te enviamos por correo para activar la cuenta.";
+  if (c === "correo_mal") return "Revisa el correo: parece que está mal escrito.";
+  if (c === "muchos_correos") return "Se han enviado muchos correos seguidos. Espera unos minutos y vuelve a intentarlo.";
+  if (c === "sin_registro") return "Ahora mismo no se pueden crear cuentas nuevas.";
+  if (c === "registro") return "No se pudo crear la cuenta. Inténtalo otra vez en un momento.";
+  if (c === "sin_red") return "En la versión de demostración no se envían correos.";
   if (c === "invalid_argument") return "No se pudo guardar. Revisa la conexión e inténtalo otra vez.";
   return "No se pudo guardar. Revisa la conexión e inténtalo otra vez.";
 }
@@ -79,13 +87,33 @@ export function copiar(texto) {
   try { return navigator.clipboard.writeText(texto); } catch (e) { return Promise.reject(e); }
 }
 
-export const VIEWS = ["tablon", "comunidades", "calendario", "artesania", "especie", "recompensas"];
+export const VIEWS = ["tablon", "comunidades", "personas", "calendario", "artesania", "especie", "recompensas"];
 export const viewOf = (h) => (VIEWS.includes(String(h || "").slice(1)) ? String(h).slice(1) : "tablon");
 export function avisoDelHash() {
   const m = /^#aviso-([A-Za-z0-9_.~:@+-]+)$/.exec(window.location.hash || "");
   return m ? m[1] : null;
 }
+export function perfilDelHash() {
+  const m = /^#perfil-([A-Za-z0-9_.~:@+-]+)$/.exec(window.location.hash || "");
+  return m ? m[1] : null;
+}
 export function marcarHash(h) {
   if (window.location.hash === "#" + h) return;
   try { window.history.replaceState(null, "", "#" + h); } catch (e) { /* ignore */ }
+}
+
+/* Profile links: only https addresses, or a user name turned into one. Anything else is dropped. */
+const REDES = { facebook: "https://www.facebook.com/", instagram: "https://www.instagram.com/", tiktok: "https://www.tiktok.com/@", youtube: "https://www.youtube.com/@", x: "https://x.com/" };
+export function enlaceRed(red, v) {
+  const s = String(v || "").trim();
+  if (/^https?:\/\/[^\s<>"']+$/i.test(s)) return s.replace(/^http:/i, "https:");
+  if (red === "web") return /^[a-z0-9-]+(\.[a-z0-9-]+)+(\/[^\s<>"']*)?$/i.test(s) ? "https://" + s : "";
+  const h = s.replace(/^@/, "");
+  return REDES[red] && /^[A-Za-z0-9._-]{1,60}$/.test(h) ? REDES[red] + h : "";
+}
+export const correoValido = (v) => /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(String(v || "").trim());
+export const fotoSegura = (u) => (/^(https:\/\/|data:image\/(jpeg|png|webp);)/.test(String(u || "")) ? String(u) : "");
+export function iniciales(nombre) {
+  const p = String(nombre || "").trim().split(/\s+/).filter(Boolean);
+  return ((p[0] || "?").charAt(0) + (p.length > 1 ? p[p.length - 1].charAt(0) : "")).toUpperCase();
 }

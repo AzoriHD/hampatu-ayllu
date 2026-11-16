@@ -3,6 +3,7 @@ import { SIMB } from "../data/constants.js";
 import { plural } from "../lib/utils.js";
 import { HeroText } from "./Headers.jsx";
 import { Svg } from "./Shared.jsx";
+import { AccountButton } from "./Account.jsx";
 
 export default function Hero() {
   const { t, en, data, oscuro, cambiarTema, cambiarIdioma } = useApp();
@@ -10,7 +11,8 @@ export default function Hero() {
     <header className="hero">
       <div className="hero-art">
         <div className="wrap hero-top">
-          <button className="lang tema" type="button" id="b-tema" onClick={cambiarTema}>
+          <AccountButton />
+          <button className="lang tema" type="button" id="b-tema" aria-label={t(oscuro ? "Modo claro" : "Modo oscuro")} onClick={cambiarTema}>
             <Svg width="2" d={SIMB[oscuro ? "sol" : "luna"][2]} /><span>{t(oscuro ? "Modo claro" : "Modo oscuro")}</span>
           </button>
           <button className="lang" type="button" id="b-lang" lang={en ? "es" : "en"} onClick={cambiarIdioma}>{en ? "Español" : "English"}</button>

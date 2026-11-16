@@ -1,4 +1,3 @@
-import { AdminLink } from "./Admin.jsx";
 import { useApp } from "../AppContext.jsx";
 
 export function Agreements() {
@@ -22,7 +21,6 @@ export function Footer() {
     <footer className="pie">
   <div className="wrap"><div className="pie-card">
   <p>{en ? "Hampatu Ayllu means «community of the toad» in Quechua." : "Hampatu Ayllu significa «comunidad del sapo» en quechua."}</p>
-  <AdminLink />
   </div></div>
 </footer>
   );

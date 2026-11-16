@@ -88,19 +88,20 @@ export function Datos({ x, clave, titulo }) {
 
 /* «Me apunto», «Me interesa», «Puedo ayudar», «Puedo hacerlo», «Lo quiero». */
 export function JoinButton({ clave, tipo, pasado }) {
-  const { t, uid, canPost, apuntesDe, quitarApunte, setApuntando } = useApp();
+  const { t, uid, canPost, pedirCuenta, apuntesDe, quitarApunte, setApuntando } = useApp();
   const txt = JOIN[tipo];
   if (!txt || pasado) return null;
   const lista = apuntesDe(clave), mio = lista.some((a) => a.by === uid);
   const pulsar = () => {
-    if (mio) quitarApunte(clave);
+    if (!canPost) pedirCuenta("Para apuntarte necesitas una cuenta. Es gratis y tarda un minuto.");
+    else if (mio) quitarApunte(clave);
     else {
       setApuntando((s) => ({ ...s, [clave]: 1 }));
       setTimeout(() => { const i = document.getElementById("an-" + clave); if (i) { i.focus(); i.select(); } }, 0);
     }
   };
   return (
-    <button type="button" className="apunte" id={"ap-" + clave} aria-pressed={mio} disabled={!canPost} onClick={pulsar}>
+    <button type="button" className="apunte" id={"ap-" + clave} aria-pressed={mio} onClick={pulsar}>
       <Svg width="2.4" d={mio ? '<path d="M5 12.5 10 17 19 7"/>' : '<path d="M12 5v14M5 12h14"/>'} />
       {t(mio ? "Apuntado" : txt[0])} <b>{lista.length}</b>
     </button>

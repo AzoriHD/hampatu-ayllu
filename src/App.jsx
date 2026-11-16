@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AppContext } from "./AppContext.jsx";
 import { makeT } from "./i18n.js";
 import { P } from "./data/constants.js";
-import { ensureUid, store, useData, useMeta } from "./lib/store.js";
-import { ago as agoBase, avisoDelHash, errMsg, marcarHash, viewOf, VIEWS, ymd } from "./lib/utils.js";
+import { ensureUid, perfilVisto, store, useData, useMeta } from "./lib/store.js";
+import { ago as agoBase, avisoDelHash, errMsg, marcarHash, perfilDelHash, viewOf, VIEWS, ymd } from "./lib/utils.js";
 import Hero from "./components/Hero.jsx";
 import { Msg } from "./components/Shared.jsx";
 import Board from "./components/Board.jsx";
@@ -14,10 +14,13 @@ import Species from "./components/Species.jsx";
 import Rewards from "./components/Rewards.jsx";
 import { Agreements, Footer } from "./components/Agreements.jsx";
 import AdminZone from "./components/Admin.jsx";
+import { AccountPanel } from "./components/Account.jsx";
+import { People, Profile } from "./components/People.jsx";
 
 const TABS = [
   ["tablon", "Tablón", "Board"],
   ["comunidades", "Comunidades", "Communities"],
+  ["personas", "Personas", "People"],
   ["calendario", "Calendario", "Calendar"],
   ["artesania", "Artesanía", "Crafts"],
   ["especie", "La especie", "The species"],
@@ -40,7 +43,8 @@ export default function App() {
   const data = useData();
   const meta = useMeta();
   const uid = meta.uid;
-  const [login, setLogin] = useState(() => window.location.hash === "#admin");
+  /* {modo: "entrar" | "crear", motivo?} while the account panel is open */
+  const [cuentaPanel, setCuentaPanel] = useState(() => (window.location.hash === "#admin" ? { modo: "entrar", k: 0 } : null));
   const [lang, setLang] = useState(idiomaInicial);
   const t = useMemo(() => makeT(lang), [lang]);
   const en = lang === "en";
@@ -66,7 +70,8 @@ export default function App() {
 
   /* ---- navigation ---- */
   const inicioAviso = useMemo(avisoDelHash, []);
-  const [view, setView] = useState(() => (inicioAviso ? "tablon" : viewOf(window.location.hash)));
+  const [perfil, setPerfil] = useState(() => { const id = perfilDelHash(); return id ? { id, k: 0 } : null; });
+  const [view, setView] = useState(() => (perfilDelHash() ? "perfil" : inicioAviso ? "tablon" : viewOf(window.location.hash)));
   const [zona, setZona] = useState("");
   const [q, setQ] = useState("");
   const [abiertos, setAbiertos] = useState(() => (inicioAviso ? { [inicioAviso]: 1 } : {}));
@@ -80,8 +85,9 @@ export default function App() {
 
   useEffect(() => {
     const onHash = () => {
-      const a = avisoDelHash();
-      if (a) { setView("tablon"); setZona(""); setAbiertos((o) => ({ ...o, [a]: 1 })); setDestino({ id: "a-" + a, block: "start" }); }
+      const a = avisoDelHash(), pf = perfilDelHash();
+      if (pf) { setPerfil({ id: pf, k: Date.now() }); setView("perfil"); }
+      else if (a) { setView("tablon"); setZona(""); setAbiertos((o) => ({ ...o, [a]: 1 })); setDestino({ id: "a-" + a, block: "start" }); }
       else setView(viewOf(window.location.hash));
     };
     const onClick = (ev) => {
@@ -118,9 +124,24 @@ export default function App() {
 
   const goAviso = (id) => { setZona(""); irVista("tablon"); setDestino({ id: "a-" + id }); };
   const goCom = (id) => { setZona(""); setQ(""); irVista("comunidades"); setDestino({ id: "c-" + id }); };
+  const irPerfil = (id, editar) => {
+    setPerfil({ id, editar: !!editar, k: Date.now() }); setView("perfil"); marcarHash("perfil-" + id);
+    setTimeout(() => tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+  };
+
+  /* ---- accounts and profiles ---- */
+  const perfiles = useMemo(() => { const m = {}; data.perfiles.forEach((p) => { m[p.id] = p; }); return m; }, [data.perfiles]);
+  const perfilDe = (id) => perfiles[id] || null;
+  const canPost = !!meta.cuenta;
+  const pedirCuenta = (motivo) => setCuentaPanel({ modo: "entrar", motivo: motivo || "Para hacerlo necesitas una cuenta. Es gratis y tarda un minuto.", k: Date.now() });
+  /* A brand-new account opens its own profile so the person can fill it in. */
+  useEffect(() => {
+    if (meta.nuevo && uid && perfiles[uid]) { perfilVisto(); setCuentaPanel(null); irPerfil(uid, true); }
+  });
 
   /* ---- shared interaction state ---- */
-  const [firma, setFirma] = useState(() => leer("hampatu-firma", ""));
+  const [firmaGuardada, setFirma] = useState(() => leer("hampatu-firma", ""));
+  const firma = firmaGuardada || (perfiles[uid] && perfiles[uid].nombre) || "";
   const keepFirma = (v) => { setFirma(v); guardar("hampatu-firma", v); };
   const [msg, setMsg] = useState("");
   const [confirmar, setConfirmar] = useState("");
@@ -147,6 +168,7 @@ export default function App() {
   const zonaDe = (c) => (c.zona === "otra" && c.zonaOtra ? String(c.zonaOtra) : t(P[c.zona] || ""));
   const apuntesDe = (clave) => data.apuntes.filter((a) => a.aviso === clave).sort((a, b) => (a.ts || 0) - (b.ts || 0));
   const apuntar = async (clave, nombre) => {
+    if (!canPost) { pedirCuenta(); throw { code: "cuenta" }; }
     const u = await ensureUid();
     return store.set("apuntes", clave + "__" + u, { aviso: clave, by: u, firma: nombre, ts: Date.now() });
   };
@@ -156,6 +178,7 @@ export default function App() {
     if (ya) store.removeMany([["apuntes", ya.id]]).catch(() => {});
   };
   const votar = (id) => {
+    if (!canPost) { pedirCuenta("Para votar necesitas una cuenta. Es gratis y tarda un minuto."); return; }
     const mio = data.votos.find((v) => v.aviso === id && v.by === uid);
     (mio ? store.removeMany([["votos", mio.id]]) : ensureUid().then((u) => store.set("votos", id + "__" + u, { aviso: id, by: u, ts: Date.now() })))
       .catch(() => setMsg("No se pudo guardar el voto. Inténtalo otra vez."));
@@ -171,9 +194,10 @@ export default function App() {
         .concat(data.apuntes.filter((v) => v.aviso === id).map((v) => ["apuntes", v.id]))
         .concat(data.votos.filter((v) => v.aviso === id).map((v) => ["votos", v.id]));
     } else if (kind === "resp") pares = [["respuestas", id]];
+    else if (kind === "perfil") pares = [["perfiles", id]];
     else if (kind === "fecha") pares = [["fechas", id]].concat(data.apuntes.filter((v) => v.aviso === "f:" + id).map((v) => ["apuntes", v.id]));
     else pares = [["comunidades", id]];
-    write(setMsg, () => store.removeMany(pares), () => setConfirmar(""));
+    write(setMsg, () => store.removeMany(pares), () => { setConfirmar(""); if (kind === "perfil") irVista("personas"); });
   };
 
   const ofrecer = () => {
@@ -187,7 +211,7 @@ export default function App() {
 
   const ctx = {
     data, uid, meta, lang, en, t, ago: (ts) => agoBase(ts, lang, t),
-    canPost: true, canEdit: meta.admin, login, setLogin, reiniciar,
+    canPost, canEdit: meta.admin, cuentaPanel, setCuentaPanel, pedirCuenta, perfilDe, irPerfil, reiniciar,
     view, irVista, zona, setZona, q, setQ, abiertos, setAbiertos, goAviso, goCom,
     firma, keepFirma, msg, setMsg, confirmar, setConfirmar, write,
     apuntando, setApuntando, recien, setRecien, apuntesDe, apuntar, quitarApunte,
@@ -205,6 +229,7 @@ export default function App() {
       <Hero />
       <main className="wrap">
         <AdminZone />
+        {(cuentaPanel || meta.recovery) && <AccountPanel key={meta.recovery ? "nueva" : cuentaPanel.k} />}
 
         {rail && (
           <nav className="rail" id="railnav" aria-label={en ? "Filter by area" : "Filtrar por zona"}>
@@ -220,13 +245,15 @@ export default function App() {
 
         <div className="tabs" ref={tabsRef}>
           {TABS.map(([v, es, enl]) => (
-            <a key={v} href={"#" + v} id={"tab-" + v} aria-current={view === v ? "page" : "false"}>{en ? enl : es}</a>
+            <a key={v} href={"#" + v} id={"tab-" + v} aria-current={view === v || (v === "personas" && view === "perfil") ? "page" : "false"}>{en ? enl : es}</a>
           ))}
         </div>
         <Msg id="m-global" role="status" text={msg} />
 
         {view === "tablon" && <Board />}
         {view === "comunidades" && <Communities />}
+        {view === "personas" && <People />}
+        {view === "perfil" && perfil && <Profile key={perfil.k + perfil.id} id={perfil.id} editar={perfil.editar} />}
         {view === "calendario" && <Calendar />}
         {view === "artesania" && <Crafts />}
         {view === "especie" && <Species />}

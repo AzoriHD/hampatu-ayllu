@@ -384,3 +384,35 @@ input[type=file]{padding:8px}
 .admin-bar .row{gap:16px}
 .admin-link{margin:10px 0 0;font-size:14px}
 #f-login{margin-top:16px}
+
+/* Accounts and profiles */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(30,19,10,.55);display:grid;place-items:start center;padding:max(16px,6vh) 16px 16px;overflow-y:auto}
+.modal-caja{width:100%;max-width:480px}
+.modal-caja .panel{margin:0}
+body.con-modal{overflow:hidden}
+.avatar{flex:0 0 auto;display:inline-grid;place-items:center;border-radius:50%;border:2px solid var(--edge);background:var(--accent);color:#1e130a;font-family:var(--display);font-weight:800;line-height:1;object-fit:cover;overflow:hidden}
+.yo{display:inline-flex;align-items:center;gap:8px;padding-left:6px}
+.yo span{max-width:14ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yo .avatar{border-width:1.5px}
+@media (max-width:480px){.tema span{display:none}.tema{padding:6px 12px}}
+.autor{display:inline-flex;align-items:center;gap:6px;padding:0;vertical-align:middle;text-align:left}
+.autor .avatar{border-width:1px}
+.persona{font:inherit;color:inherit;text-align:left;cursor:pointer;width:100%}
+.persona:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--shade)}
+.persona-txt{display:grid;gap:2px;min-width:0}
+.persona-n{font:800 19px/1.15 var(--display);overflow-wrap:anywhere}
+.persona .where,.persona .row{display:flex}
+.volver{margin:0 0 10px}
+.perfil{gap:12px}
+.perfil-top{display:flex;gap:18px;align-items:center}
+.perfil-top>div{min-width:0;display:grid;gap:4px;justify-items:start}
+.perfil-h{font:800 clamp(26px,4.4vw,36px)/1.05 var(--display);margin:0;overflow-wrap:anywhere}
+.perfil-rol{margin:0;font-weight:700}
+.perfil .txt{white-space:pre-line;margin:0}
+.redes{display:flex;flex-wrap:wrap;gap:8px}
+.perfil-foto{display:flex;gap:14px;align-items:center}
+.perfil-foto>div{display:grid;gap:4px;justify-items:start;min-width:0}
+.aviso-privado{margin:0}
+#f-perfil fieldset{margin:0}
+@media (max-width:480px){.perfil-top{flex-direction:column;align-items:flex-start}}
+.nowrap-ini{display:inline-flex;align-items:center}

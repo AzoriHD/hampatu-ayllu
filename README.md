@@ -43,24 +43,43 @@ vercel          # la primera vez te pide iniciar sesión y unas preguntas (acept
 vercel --prod   # publica la versión definitiva
 ```
 
-## Datos compartidos (Supabase) y modo coordinación
+## Datos compartidos (Supabase), cuentas y modo coordinación
 
-Sin configurar nada, la app funciona como demostración: cada navegador guarda lo suyo.
+Sin configurar nada, la app funciona como demostración: cada navegador guarda lo suyo
+(también las cuentas, que solo existen en ese navegador).
 Para que todo el mundo vea lo mismo:
 
 1. **Vercel → tu proyecto → Storage → Create Database → Supabase** (plan gratuito) y conéctalo
    al proyecto. Vercel añade solo las claves (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`…).
 2. **Open in Supabase → SQL Editor**: pega el contenido de `supabase.sql`, cambia `TU_CORREO@gmail.com`
-   por tu correo y pulsa **Run**.
-3. **Authentication → Sign In / Providers**: activa **Allow anonymous sign-ins**
-   (así cualquiera publica sin registrarse).
-4. **Authentication → Users → Add user → Create new user**: tu correo + una contraseña,
+   por tu correo y pulsa **Run**. Se puede volver a ejecutar cuando cambie el archivo.
+3. **Authentication → Sign In / Providers**:
+   - **Email** activado, con **Confirm email** activado.
+   - **Allow anonymous sign-ins** desactivado: para publicar hace falta una cuenta.
+4. **Authentication → URL Configuration → Site URL**: la dirección de la web
+   (por ejemplo `https://hampatu-ayllu.vercel.app`). Es adonde lleva el enlace de los correos
+   de activación y de cambio de contraseña.
+5. **Authentication → Users → Add user → Create new user**: tu correo + una contraseña,
    con **Auto Confirm User** marcado.
-5. En Vercel, **Deployments → ⋯ → Redeploy** (o sube cualquier cambio a GitHub).
+6. En Vercel, **Deployments → ⋯ → Redeploy** (o sube cualquier cambio a GitHub).
 
-Para entrar como coordinación: enlace **Acceso de coordinación** al pie de la página
-(o añade `#admin` a la dirección). Desde ahí puedes marcar fechas, verificar fotos, editar o
-borrar cualquier cosa y **Cargar ejemplos / Borrar ejemplos**.
+### Cuentas y perfiles
+
+- Leer es libre. Para publicar, responder, votar, apuntarse o añadir una comunidad hay que
+  **entrar** (botón arriba a la derecha) o **crear una cuenta** con nombre, correo y contraseña.
+- Cada cuenta tiene su **perfil** en la pestaña **Personas**: foto, a qué se dedica, dónde está,
+  su comunidad, una presentación, contacto (WhatsApp, teléfono, correo, web) y redes
+  (Facebook, Instagram, TikTok, YouTube, X). Todo es opcional menos el nombre y lo ve cualquiera.
+- Los avisos y respuestas enlazan al perfil de quien los publica.
+- **Correos**: Supabase envía los correos de activación con su servidor gratuito, que solo deja
+  mandar unos pocos por hora. Si se apunta mucha gente a la vez, configura un servidor propio en
+  **Authentication → Emails → SMTP Settings** (por ejemplo con Resend o Brevo, que tienen plan gratuito).
+
+### Modo coordinación
+
+Entra con tu cuenta de coordinación (la del paso 5) desde el botón **Entrar**. Verás la barra
+**Modo coordinación**: puedes marcar fechas, verificar fotos, editar o borrar cualquier cosa
+(también perfiles) y **Cargar ejemplos / Borrar ejemplos**.
 
 Para probar en tu ordenador con la base de datos, crea un archivo `.env.local` con:
 
@@ -74,7 +93,7 @@ VITE_SUPABASE_ANON_KEY=tu_clave_anon
 ```
 public/img/          imágenes (logo, bandas, sapos, diseños de artesanía)
 src/App.jsx          estado general, navegación por pestañas (#tablon, #calendario…)
-src/components/      Tablón, Comunidades, Calendario, Artesanía, Especie, Recompensas…
+src/components/      Tablón, Comunidades, Personas y perfiles, Cuenta, Calendario, Artesanía…
 src/data/            zonas, tipos, diseños y ejemplos
 src/i18n.js          textos en inglés
 src/lib/store.js     guardado de datos (Supabase o, sin configurar, este navegador)

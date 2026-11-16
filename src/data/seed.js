@@ -733,6 +733,35 @@ const SEED = {
    "firma": "Guías locales Ruta de las Lagunas",
    "ts": 1794450000000
   }
+ },
+ "perfiles": {
+  "ej-p-rosa": {
+   "by": "",
+   "ejemplo": true,
+   "nombre": "Rosa Quispe",
+   "rol": "Guía local y tejedora",
+   "lugar": "Provincia de Hualgayoc",
+   "com": "ej-guias",
+   "sobre": "Llevo doce años subiendo con visitantes a las lagunas. Desde que vimos el sapo en la quebrada, enseño a los grupos a mirarlo sin tocarlo y a lavar las botas entre quebradas.\nTambién tejo chullos con el diseño del hampatu.",
+   "whatsapp": "900 000 011",
+   "correo": "rosa@ejemplo.pe",
+   "instagram": "ejemplo.rosa",
+   "facebook": "ejemplo.rosa",
+   "ts": 1794000000000
+  },
+  "ej-p-julio": {
+   "by": "",
+   "ejemplo": true,
+   "nombre": "Julio Huamán",
+   "rol": "Estudiante de Biología",
+   "lugar": "Cajamarca",
+   "com": "ej-uni",
+   "sobre": "Hago mi tesis sobre el hongo quitridio en anfibios de la jalca. Puedo dar charlas en escuelas y ayudar a revisar fotos de avistamientos.",
+   "correo": "julio@ejemplo.pe",
+   "web": "https://ejemplo.pe",
+   "tiktok": "ejemplo.julio",
+   "ts": 1794100000000
+  }
  }
 };
 export default SEED;

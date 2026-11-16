@@ -7,7 +7,7 @@ import { CommunitiesHeader } from "./Headers.jsx";
 import { CopyBtn, DelBtns, EmptyBox, Msg, Simbolo } from "./Shared.jsx";
 
 export default function Communities() {
-  const { t, en, data, zona, setZona, q, setQ, canPost, canEdit, uid, zonaDe } = useApp();
+  const { t, en, data, zona, setZona, q, setQ, canPost, canEdit, uid, zonaDe, pedirCuenta } = useApp();
   const [form, setForm] = useState(null); // {k, id}
   const ql = q.trim().toLowerCase();
   const nAv = {};
@@ -24,9 +24,9 @@ export default function Communities() {
       <div className="bar">
         <div className="search"><label htmlFor="q" className="sr">{t("Buscar comunidad")}</label>
           <input id="q" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("Buscar nombre, lugar o necesidad")} /></div>
-        {canPost && <button className="btn" type="button" id="b-com" onClick={() => setForm(form ? null : { k: Date.now(), id: "" })}>{t("Añadir comunidad")}</button>}
+        <button className="btn" type="button" id="b-com" onClick={() => (canPost ? setForm(form ? null : { k: Date.now(), id: "" }) : pedirCuenta("Para añadir una comunidad necesitas una cuenta. Es gratis y tarda un minuto."))}>{t("Añadir comunidad")}</button>
       </div>
-      {form && <CommunityForm key={form.k} editId={form.id} onClose={() => setForm(null)} />}
+      {form && canPost && <CommunityForm key={form.k} editId={form.id} onClose={() => setForm(null)} />}
       <div className="grid" id="lista-coms">
         {list.length ? list.map((c) => {
           const z = zonaDe(c), n = nAv[c.id] || 0;

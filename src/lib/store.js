@@ -5,15 +5,19 @@
  *   en una base de datos compartida: lo que publica uno lo ven todos al momento.
  * - Sin Supabase, funciona como demostración y guarda en este navegador.
  *
- * Coordinación (admin): entra con correo y contraseña. Solo las cuentas que
- * estén en la tabla admin_emails de Supabase pueden marcar fechas, verificar
- * fotos, editar o borrar cualquier cosa y cargar o borrar los ejemplos.
+ * Cuentas: para publicar, responder, votar o apuntarse hace falta una cuenta
+ * (correo y contraseña). Cada cuenta tiene su perfil en la colección «perfiles»,
+ * con el mismo id que el usuario. Leer no necesita cuenta.
+ *
+ * Coordinación (admin): las cuentas que estén en la tabla admin_emails de
+ * Supabase pueden además marcar fechas, verificar fotos, editar o borrar
+ * cualquier cosa y cargar o borrar los ejemplos.
  */
 import { useSyncExternalStore } from "react";
 import { createClient } from "@supabase/supabase-js";
 import SEED from "../data/seed.js";
 
-export const COLS = ["comunidades", "avisos", "respuestas", "fechas", "votos", "apuntes"];
+export const COLS = ["comunidades", "avisos", "respuestas", "fechas", "votos", "apuntes", "perfiles"];
 const KEY = "hampatu-react-v1";
 /* global __SB_URL__, __SB_KEY__ */
 const SB_URL = typeof __SB_URL__ === "string" ? __SB_URL__ : "";
@@ -36,7 +40,7 @@ function fresh() {
 
 /* ---------- shared state + subscriptions ---------- */
 let state = vacio();
-let meta = { remote: REMOTE, status: REMOTE ? "loading" : "ready", uid: null, email: "", admin: !REMOTE };
+let meta = { remote: REMOTE, status: REMOTE ? "loading" : "ready", uid: null, email: "", cuenta: false, admin: !REMOTE, recovery: false, nuevo: false };
 let snapshot = null;
 const listeners = new Set();
 function emit() { snapshot = null; listeners.forEach((l) => l()); }
@@ -56,12 +60,13 @@ let counter = 0;
 export function newId() { return "l" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + (++counter); }
 
 /* ================= LOCAL (demo) ================= */
-function localUid() {
-  try {
-    let id = localStorage.getItem("hampatu-uid");
-    if (!id) { id = "u" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36); localStorage.setItem("hampatu-uid", id); }
-    return id;
-  } catch (e) { return "u-anon"; }
+/* Demo accounts live only in this browser, so the password is kept as typed. */
+const CUENTAS = "hampatu-cuentas", SESION = "hampatu-sesion";
+function leerJSON(k, d) { try { return JSON.parse(localStorage.getItem(k) || "null") || d; } catch (e) { return d; } }
+function guardarJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ignore */ } }
+function sesionLocal(email) {
+  const c = email && leerJSON(CUENTAS, {})[email];
+  meta = { ...meta, uid: c ? c.uid : null, email: c ? email : "", cuenta: !!c };
 }
 function persist() {
   try { localStorage.setItem(KEY, JSON.stringify(state)); return true; } catch (e) { return false; }
@@ -89,7 +94,7 @@ if (!REMOTE) {
   catch (e) { state = fresh(); }
   COLS.forEach((c) => { state[c] = state[c] || {}; });
   persist();
-  meta = { ...meta, uid: localUid() };
+  try { sesionLocal(localStorage.getItem(SESION) || ""); } catch (e) { /* ignore */ }
 }
 
 /* ================= SUPABASE (red real) ================= */
@@ -106,19 +111,44 @@ async function loadAll() {
 }
 function recargar() { return loadAll().catch(() => { if (meta.status === "loading") setMeta({ status: "error" }); }); }
 
+/* Old anonymous sessions from before accounts existed count as signed out. */
 async function leerSesion(session) {
-  const u = session && session.user;
+  const u = session && session.user, cuenta = !!(u && !u.is_anonymous);
   let admin = false;
-  if (u && !u.is_anonymous) {
+  if (cuenta) {
     const { data } = await sb.rpc("is_admin");
     admin = data === true;
   }
-  setMeta({ uid: u ? u.id : null, email: (u && u.email) || "", admin });
+  setMeta({ uid: cuenta ? u.id : null, email: cuenta ? u.email || "" : "", cuenta, admin });
+  if (cuenta) asegurarPerfil(u.id, (u.user_metadata && u.user_metadata.nombre) || "").catch(() => {});
 }
+
+/* Every account gets a profile the first time it signs in (also after confirming the email). */
+let perfilEnCurso = null;
+function asegurarPerfil(uid, nombre) {
+  if (!perfilEnCurso) {
+    perfilEnCurso = (async () => {
+      const d = { nombre: String(nombre || meta.email.split("@")[0]).slice(0, 60), ts: Date.now(), by: uid };
+      if (!REMOTE) {
+        if (!state.perfiles[uid]) { await local.set("perfiles", uid, d); setMeta({ nuevo: true }); }
+        return;
+      }
+      const { data, error } = await sb.from("docs").select("id").eq("col", "perfiles").eq("id", uid).maybeSingle();
+      if (error || data) return;
+      const r = await sb.from("docs").insert({ col: "perfiles", id: uid, data: d });
+      if (!r.error) { state.perfiles[uid] = d; setMeta({ nuevo: true }); }
+    })().finally(() => { perfilEnCurso = null; });
+  }
+  return perfilEnCurso;
+}
+export function perfilVisto() { setMeta({ nuevo: false }); }
 
 if (REMOTE) {
   sb.auth.getSession().then(({ data }) => leerSesion(data.session));
-  sb.auth.onAuthStateChange((ev, session) => { if (ev !== "INITIAL_SESSION") setTimeout(() => leerSesion(session), 0); });
+  sb.auth.onAuthStateChange((ev, session) => {
+    if (ev === "PASSWORD_RECOVERY") setMeta({ recovery: true });
+    if (ev !== "INITIAL_SESSION") setTimeout(() => leerSesion(session), 0);
+  });
   recargar();
   sb.channel("docs-cambios")
     .on("postgres_changes", { event: "*", schema: "public", table: "docs" }, (p) => {
@@ -135,17 +165,13 @@ if (REMOTE) {
   window.addEventListener("online", recargar);
 }
 
-/* Visitors get an anonymous account the first time they write something. */
-let anonEnCurso = null;
+/* Writing needs an account; reading does not. */
 export async function ensureUid() {
-  if (!REMOTE) return meta.uid;
+  if (!REMOTE) { if (!meta.cuenta) throw { code: "cuenta" }; return meta.uid; }
   const { data } = await sb.auth.getSession();
-  if (data.session) return data.session.user.id;
-  if (!anonEnCurso) anonEnCurso = sb.auth.signInAnonymously().finally(() => { anonEnCurso = null; });
-  const r = await anonEnCurso;
-  if (r.error) throw { code: "sesion", message: r.error.message };
-  await leerSesion(r.data.session);
-  return r.data.user.id;
+  const u = data.session && data.session.user;
+  if (!u || u.is_anonymous) throw { code: "cuenta" };
+  return u.id;
 }
 
 const remote = {
@@ -225,15 +251,70 @@ export async function uploadPhoto(blob) {
   });
 }
 
-/* Coordination sign-in (email + password created in Supabase). */
-export async function entrarCoordinacion(email, password) {
-  if (!REMOTE) throw { code: "sin_red" };
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
-  if (error) throw { code: "login" };
+/* ---------- accounts ---------- */
+const volverAqui = () => window.location.origin + window.location.pathname;
+function errAuth(error, porDefecto) {
+  const c = (error && error.code) || "";
+  if (c === "user_already_exists" || c === "email_exists") return { code: "ya_existe" };
+  if (c === "weak_password") return { code: "clave_debil" };
+  if (c === "email_not_confirmed") return { code: "sin_confirmar" };
+  if (c === "invalid_credentials") return { code: "login" };
+  if (c === "email_address_invalid" || c === "validation_failed") return { code: "correo_mal" };
+  if (/rate_limit/.test(c)) return { code: "muchos_correos" };
+  if (c === "signup_disabled") return { code: "sin_registro" };
+  return { code: porDefecto, message: error && error.message };
+}
+
+/* Returns "ok" when the account is open, or "revisa" when the email has to be confirmed first. */
+export async function registrarse(email, password, nombre) {
+  if (!REMOTE) {
+    const cs = leerJSON(CUENTAS, {});
+    if (cs[email]) throw { code: "ya_existe" };
+    cs[email] = { uid: "u" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36), pass: password };
+    guardarJSON(CUENTAS, cs);
+    try { localStorage.setItem(SESION, email); } catch (e) { /* ignore */ }
+    sesionLocal(email); emit();
+    await asegurarPerfil(meta.uid, nombre);
+    return "ok";
+  }
+  const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: volverAqui(), data: { nombre } } });
+  if (error) throw errAuth(error, "registro");
+  /* With email confirmation on, an address that is already registered comes back with no identities. */
+  if (data.user && Array.isArray(data.user.identities) && !data.user.identities.length) throw { code: "ya_existe" };
+  if (!data.session) return "revisa";
   await leerSesion(data.session);
-  if (!meta.admin) { await salirCoordinacion(); throw { code: "no_admin" }; }
+  return "ok";
 }
-export async function salirCoordinacion() {
+
+export async function entrar(email, password) {
+  if (!REMOTE) {
+    const c = leerJSON(CUENTAS, {})[email];
+    if (!c || c.pass !== password) throw { code: "login" };
+    try { localStorage.setItem(SESION, email); } catch (e) { /* ignore */ }
+    sesionLocal(email); emit();
+    return;
+  }
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) throw errAuth(error, "login");
+  await leerSesion(data.session);
+}
+
+export async function salir() {
   if (REMOTE) await sb.auth.signOut();
-  setMeta({ uid: null, email: "", admin: false });
+  else { try { localStorage.removeItem(SESION); } catch (e) { /* ignore */ } }
+  setMeta({ uid: null, email: "", cuenta: false, admin: !REMOTE, recovery: false, nuevo: false });
 }
+
+export async function recuperarClave(email) {
+  if (!REMOTE) throw { code: "sin_red" };
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: volverAqui() });
+  if (error) throw errAuth(error, "sesion");
+}
+
+export async function nuevaClave(password) {
+  if (!REMOTE) throw { code: "sin_red" };
+  const { error } = await sb.auth.updateUser({ password });
+  if (error) throw errAuth(error, "sesion");
+  setMeta({ recovery: false });
+}
+export function cancelarRecuperacion() { setMeta({ recovery: false }); }
