@@ -1,14 +1,9 @@
 import { useApp } from "../AppContext.jsx";
 
-/* Lámina II: las dos coloraciones conocidas (public/img/morfo-*.webp), de lado en grande y tres vistas pequeñas */
+/* Lámina II: las dos coloraciones conocidas, de perfil y al mismo tamaño (public/img/morfo-*.webp, 736 × 486) */
 const MORFOS = [
-  { id: "verde", es: "Verde con puntos", en: "Green with dots", lado: [395, 254], arriba: [320, 323], abajo: [320, 321], frente: [340, 219] },
-  { id: "oscuro", es: "Oscuro con bandas", en: "Dark with bands", lado: [371, 246], arriba: [298, 323], abajo: [309, 316], frente: [340, 209] },
-];
-const VISTAS = [
-  { id: "arriba", es: "Lomo", en: "Back" },
-  { id: "abajo", es: "Vientre", en: "Belly" },
-  { id: "frente", es: "De frente", en: "Front view" },
+  { id: "verde", es: "Verde y negro", en: "Green and black" },
+  { id: "amarillo", es: "Amarillo y marrón", en: "Yellow and brown" },
 ];
 
 /* La especie: texto fijo en dos idiomas. */
@@ -38,20 +33,15 @@ export default function Species() {
         </figure>
 
         <h3>{en ? "Its two colour forms" : "Sus dos coloraciones"}</h3>
-        <p>{en ? "Two colour forms are known. One is green, with a black back dotted with yellow and an orange belly. The other is very dark brown with yellow bands, a yellow snout and a pale, almost pink belly." : "Se conocen dos coloraciones. Una es verde, con el lomo negro salpicado de puntos amarillos y el vientre naranja. La otra es marrón muy oscuro con bandas amarillas, el hocico amarillo y el vientre claro, casi rosado."}</p>
+        <p>{en ? "Its colour varies. One form is green, with black flanks dotted with yellow and a yellow-orange belly. The other mixes yellow and dark brown: a yellow head, a brown body with yellow blotches and banded legs." : "Varía de color. Una forma es verde, con los flancos negros salpicados de puntos amarillos y el vientre amarillo anaranjado. La otra mezcla amarillo y marrón oscuro: la cabeza amarilla, el cuerpo marrón con manchas amarillas y las patas a bandas."}</p>
 
         <figure className="lamina morfos">
           <div className="morfos-grid">
             {MORFOS.map((m) => (
-              <div className="morfo" key={m.id}>
-                <h4>{en ? m.en : m.es}</h4>
-                <img className="morfo-lado" src={`/img/morfo-${m.id}-lado.webp`} width={m.lado[0]} height={m.lado[1]} alt="" loading="lazy" />
-                <div className="morfo-vistas">
-                  {VISTAS.map((v) => (
-                    <figure key={v.id}><img src={`/img/morfo-${m.id}-${v.id}.webp`} width={m[v.id][0]} height={m[v.id][1]} alt="" loading="lazy" /><figcaption>{en ? v.en : v.es}</figcaption></figure>
-                  ))}
-                </div>
-              </div>
+              <figure className="morfo" key={m.id}>
+                <img src={`/img/morfo-${m.id}.webp`} width="736" height="486" alt="" loading="lazy" />
+                <figcaption>{en ? m.en : m.es}</figcaption>
+              </figure>
             ))}
           </div>
           <figcaption className="lamina-pie">{en ? "Plate II · The two known colour forms, recreated as faithfully as possible. They are not photographs." : "Lámina II · Las dos coloraciones conocidas, recreadas lo más fielmente posible. No son fotos."}</figcaption>
