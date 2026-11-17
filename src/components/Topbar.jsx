@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { alternarMusica, estadoMusica, suscribir as oirMusica } from "../lib/musica.js";
 import { useApp } from "../AppContext.jsx";
 import { SIMB } from "../data/constants.js";
 import { Svg } from "./Shared.jsx";
@@ -15,6 +16,24 @@ export const SECCIONES = [
   ["recompensas", "Recompensas", "Rewards", '<circle cx="12" cy="9" r="5.6"/><path d="M8.7 13.4 7.2 21l4.8-2.6 4.8 2.6-1.5-7.6"/><path d="m12 6.4.8 1.7 1.8.2-1.3 1.2.3 1.8-1.6-.9-1.6.9.3-1.8-1.3-1.2 1.8-.2z"/>'],
 ];
 export const ICONO_APP = '<rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M12 7v7.2M9.1 11.4 12 14.3l2.9-2.9M10.6 18.4h2.8"/>';
+
+/* Nota musical; apagada lleva una raya encima */
+const ICONO_MUSICA = '<path d="M9 17.5V5.2l10-2v12.1"/><circle cx="6.6" cy="17.6" r="2.6"/><circle cx="16.6" cy="15.4" r="2.6"/>';
+const ICONO_SILENCIO = ICONO_MUSICA + '<path d="M3.5 3.5l17 17"/>';
+
+/* Botón de la música ambiental: enciende y apaga el sonido de la jalca */
+function BotonMusica() {
+  const { t } = useApp();
+  const estado = useSyncExternalStore(oirMusica, estadoMusica, estadoMusica);
+  const activa = estado !== "apagada";
+  const rotulo = t(activa ? "Apagar música ambiental" : "Música ambiental");
+  return (
+    <button className="icono-btn musica" type="button" id="b-musica" aria-pressed={activa} aria-label={rotulo} title={rotulo}
+      data-estado={estado} onClick={alternarMusica}>
+      <Svg width="2" d={activa ? ICONO_MUSICA : ICONO_SILENCIO} />
+    </button>
+  );
+}
 
 function enlace(view, v) {
   return view === v || (v === "personas" && view === "perfil") ? "page" : undefined;
@@ -55,6 +74,7 @@ export function Topbar() {
             </a>
           )}
           <AccountButton />
+          <BotonMusica />
           <button className="icono-btn" type="button" id="b-tema" aria-label={t(oscuro ? "Modo claro" : "Modo oscuro")} title={t(oscuro ? "Modo claro" : "Modo oscuro")} onClick={cambiarTema}>
             <Svg width="2" d={SIMB[oscuro ? "sol" : "luna"][2]} />
           </button>

@@ -116,6 +116,9 @@ Patrones de tejido andino (`public/img/tejido-*.webp`, `faja-*.webp`) y un medal
 instaladas con npm, así que la primera vez que lo bajes haz `npm install`.
 
 - En el móvil, la barra de abajo lleva todas las secciones en una fila que se desliza a izquierda y derecha.
+- Música ambiental: botón de la nota musical arriba. Suena `public/audio/ambiente.mp3` en bucle sin fin
+  (`src/lib/musica.js`). El archivo sale de la pista original sin la entrada ni el final, y sus últimos
+  12 segundos se funden con el principio, así que no se nota dónde vuelve a empezar.
 - El sapo de la portada (`sapo-paseo.webp`, 6 fotogramas lentos) camina por el borde de la manta, se sienta,
   se da la vuelta y vuelve (`pasear`, `girar`, `andar` y `sentar` en `src/styles.css`).
 
