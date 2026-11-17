@@ -33,7 +33,7 @@ export default function Species() {
         </figure>
 
         <h3>{en ? "Its two colour forms" : "Sus dos coloraciones"}</h3>
-        <p>{en ? "Its colour varies. One form is green, with black flanks dotted with yellow and a yellow-orange belly. The other mixes yellow and dark brown: a yellow head, a brown body with yellow blotches and banded legs." : "Varía de color. Una forma es verde, con los flancos negros salpicados de puntos amarillos y el vientre amarillo anaranjado. La otra mezcla amarillo y marrón oscuro: la cabeza amarilla, el cuerpo marrón con manchas amarillas y las patas a bandas."}</p>
+        <p>{en ? "Its colour varies. The green and black form is the one in the species descriptions: a green back, black flanks dotted with yellow and a yellow-orange belly. The yellow and brown form matches the toad photographed in Áncash in January 2026: dark brown with yellow blotches, a yellow head and banded legs (Vilca-Alzamora et al., 2026)." : "Varía de color. La forma verde y negra es la que recogen las descripciones de la especie: lomo verde, flancos negros salpicados de puntos amarillos y vientre amarillo anaranjado. La amarilla y marrón es como el sapo fotografiado en Áncash en enero de 2026: marrón oscuro con manchas amarillas, la cabeza amarilla y las patas a bandas (Vilca-Alzamora y otros, 2026)."}</p>
 
         <figure className="lamina morfos">
           <div className="morfos-grid">
