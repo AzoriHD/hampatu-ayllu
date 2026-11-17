@@ -118,11 +118,10 @@ instaladas con npm, así que la primera vez que lo bajes haz `npm install`.
 
 - En el móvil, la barra de abajo lleva todas las secciones en una fila que se desliza a izquierda y derecha.
 - Música: botón de la nota musical arriba. Suena `public/audio/musica-hampatu.mp3`: los cuatro temas de
-  Hampatu Ayllu en una pista de casi 15 minutos, igualados de volumen y enlazados con fundidos por orden de
-  tonalidad (Re menor → Re menor → Sol menor → Sol mayor) que vuelve a empezar sola. Va con un `<audio>`
-  normal, así que sigue sonando con la pantalla apagada o la app en segundo plano, y con Media Session
-  sale en la pantalla de bloqueo con el sapo, el número de tema y los botones de pausa, siguiente y anterior.
-  Si se añaden o cambian temas, actualizar `TEMAS` (segundo en que entra cada uno) en `src/lib/musica.js`.
+  Hampatu Ayllu mezclados en una sola pieza continua de casi 15 minutos, igualados de volumen y fundidos
+  entre sí, que vuelve a empezar sola. No hay temas sueltos ni se puede saltar o adelantar: solo encender
+  y apagar. Va con un `<audio>` normal, así que sigue sonando con la pantalla apagada o la app en segundo
+  plano, y en la pantalla de bloqueo sale el sapo con «Hampatu Ayllu» y el botón de pausa.
 - El sapo de la portada (`sapo-paseo.webp`, 6 fotogramas lentos) camina por el borde de la manta, se sienta,
   se da la vuelta y vuelve (`pasear`, `girar`, `andar` y `sentar` en `src/styles.css`).
 

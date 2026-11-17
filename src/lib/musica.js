@@ -1,20 +1,19 @@
 /*
- * Música de Hampatu Ayllu (public/audio/musica-hampatu.mp3): los cuatro temas en una sola pista
- * de casi 15 minutos, enlazados con fundidos (Re menor → Re menor → Sol menor → Sol mayor → vuelta a empezar).
+ * Música de Hampatu Ayllu (public/audio/musica-hampatu.mp3): los cuatro temas mezclados en una sola
+ * pieza continua de casi 15 minutos que vuelve a empezar sola. Suena como una sola música: no hay temas
+ * sueltos ni se puede saltar o adelantar, solo encender y apagar.
  *
  * Se toca con un <audio> normal (no con Web Audio) para que siga sonando con la pantalla apagada
  * o la app en segundo plano, y se anuncia con Media Session: en la pantalla de bloqueo y en el
- * centro de control salen el sapo, el nombre del tema y los botones de pausa, siguiente y anterior.
+ * centro de control salen el sapo, «Hampatu Ayllu» y el botón de pausa (sin siguiente, anterior ni barra).
  * Al encender y apagar, el volumen sube y baja poco a poco (en iPhone el volumen no se puede tocar
  * desde la web, así que allí empieza y para en seco).
  */
 const ARCHIVO = "/audio/musica-hampatu.mp3";
-const TEMAS = [0, 215.65, 425.32, 653.43]; // segundo en que entra cada tema dentro de la pista
-const NUMEROS = ["I", "II", "III", "IV"];
 const VOLUMEN = 0.6;
 const SUBIDA = 1.6; // segundos para encender o apagar suave
 
-let audio = null, estado = "apagada", quiere = false, rampaId = 0, temaActual = -1;
+let audio = null, estado = "apagada", quiere = false, rampaId = 0, anunciada = false;
 const oyentes = new Set();
 const avisar = () => oyentes.forEach((f) => f());
 const poner = (e) => { if (e !== estado) { estado = e; avisar(); } };
@@ -29,19 +28,11 @@ const volumenFijo = (() => {
 
 const ms = typeof navigator !== "undefined" && "mediaSession" in navigator ? navigator.mediaSession : null;
 
-function temaEn(t) {
-  let i = 0;
-  while (i + 1 < TEMAS.length && t >= TEMAS[i + 1] - 0.5) i++;
-  return i;
-}
-
 function anunciarTema() {
-  if (!ms || !audio || typeof MediaMetadata === "undefined") return;
-  const i = temaEn(audio.currentTime);
-  if (i === temaActual) return;
-  temaActual = i;
+  if (!ms || anunciada || typeof MediaMetadata === "undefined") return;
+  anunciada = true;
   ms.metadata = new MediaMetadata({
-    title: "Hampatu Ayllu · " + NUMEROS[i],
+    title: "Hampatu Ayllu",
     artist: "Comunidad del Sapo",
     album: "Música de Hampatu Ayllu",
     artwork: [
@@ -72,7 +63,6 @@ function crear() {
   audio.volume = volumenFijo ? 1 : 0;
   audio.addEventListener("waiting", () => { if (quiere) poner("cargando"); });
   audio.addEventListener("playing", () => { if (quiere) poner("sonando"); });
-  audio.addEventListener("timeupdate", anunciarTema);
   // play/pausa desde fuera (auriculares, pantalla de bloqueo, otra app que toma el sonido)
   audio.addEventListener("play", () => { if (!quiere) { quiere = true; rampa(VOLUMEN); poner("cargando"); } });
   audio.addEventListener("pause", () => { if (quiere) { quiere = false; rampaId++; poner("apagada"); } });
@@ -83,9 +73,8 @@ function crear() {
     accion("play", () => encender());
     accion("pause", () => apagar(true));
     accion("stop", () => apagar(true));
-    accion("nexttrack", () => saltar(1));
-    accion("previoustrack", () => saltar(-1));
-    accion("seekto", (d) => { if (d && d.seekTime != null) audio.currentTime = d.seekTime; });
+    // ni saltar ni adelantar: es una sola música
+    for (const n of ["nexttrack", "previoustrack", "seekto", "seekforward", "seekbackward"]) accion(n, null);
   }
 }
 
@@ -108,18 +97,6 @@ export function apagar(enSeco = false) {
   if (enSeco) { rampaId++; audio.pause(); return; }
   // ya en silencio, se pausa para no gastar batería ni datos; al encender sigue desde ahí
   rampa(0, () => { if (!quiere) audio.pause(); });
-}
-
-/* Siguiente o anterior tema (botones de la pantalla de bloqueo) */
-function saltar(dir) {
-  if (!audio) return;
-  const t = audio.currentTime, i = temaEn(t);
-  let j = i + dir;
-  if (dir < 0 && t - TEMAS[i] > 4) j = i; // «anterior» a mitad de tema vuelve a su principio
-  j = (j + TEMAS.length) % TEMAS.length;
-  audio.currentTime = TEMAS[j];
-  anunciarTema();
-  if (!quiere) encender();
 }
 
 export const alternarMusica = () => (estado === "apagada" ? encender() : apagar());
