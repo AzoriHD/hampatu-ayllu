@@ -1,9 +1,15 @@
 import { useApp } from "../AppContext.jsx";
 
-/* Lámina II: las dos coloraciones conocidas, de perfil y al mismo tamaño (public/img/morfo-*.webp, 736 × 486) */
+/* Lámina II: las dos coloraciones conocidas. Arriba, de perfil y al mismo tamaño (public/img/morfo-verde.webp y
+   morfo-amarillo.webp, 736 × 486); debajo, tres vistas pequeñas (morfo-<id>-<vista>.webp) */
 const MORFOS = [
-  { id: "verde", es: "Verde y negro", en: "Green and black" },
-  { id: "amarillo", es: "Amarillo y marrón", en: "Yellow and brown" },
+  { id: "verde", es: "Verde y negro", en: "Green and black", arriba: [320, 323], abajo: [320, 321], frente: [340, 219] },
+  { id: "amarillo", es: "Amarillo y marrón", en: "Yellow and brown", arriba: [298, 323], abajo: [309, 316], frente: [340, 209] },
+];
+const VISTAS = [
+  { id: "arriba", es: "Lomo", en: "Back" },
+  { id: "abajo", es: "Vientre", en: "Belly" },
+  { id: "frente", es: "De frente", en: "Front view" },
 ];
 
 /* La especie: texto fijo en dos idiomas. */
@@ -38,10 +44,15 @@ export default function Species() {
         <figure className="lamina morfos">
           <div className="morfos-grid">
             {MORFOS.map((m) => (
-              <figure className="morfo" key={m.id}>
-                <img src={`/img/morfo-${m.id}.webp`} width="736" height="486" alt="" loading="lazy" />
-                <figcaption>{en ? m.en : m.es}</figcaption>
-              </figure>
+              <div className="morfo" key={m.id}>
+                <h4>{en ? m.en : m.es}</h4>
+                <img className="morfo-lado" src={`/img/morfo-${m.id}.webp`} width="736" height="486" alt="" loading="lazy" />
+                <div className="morfo-vistas">
+                  {VISTAS.map((v) => (
+                    <figure key={v.id}><img src={`/img/morfo-${m.id}-${v.id}.webp`} width={m[v.id][0]} height={m[v.id][1]} alt="" loading="lazy" /><figcaption>{en ? v.en : v.es}</figcaption></figure>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
           <figcaption className="lamina-pie">{en ? "Plate II · The two known colour forms, recreated as faithfully as possible. They are not photographs." : "Lámina II · Las dos coloraciones conocidas, recreadas lo más fielmente posible. No son fotos."}</figcaption>
