@@ -157,7 +157,7 @@ function PostForm({ preset, enfocar, onDone, onCancel }) {
           </select></div>
         <div><label htmlFor="a-zona">{en ? "Area" : "Zona"}</label>
           <select id="a-zona" name="zona" value={f.zona} onChange={(e) => set("zona", e.target.value)}>
-            <option value="">{t("Toda la red")}</option>
+            <option value="">{t("Toda la comunidad")}</option>
             {Object.keys(P).map((x) => <option key={x} value={x}>{t(P[x])}</option>)}
           </select></div>
         {f.zona === "otra" && (
@@ -177,7 +177,7 @@ function PostForm({ preset, enfocar, onDone, onCancel }) {
         )}
         <div className="full"><label htmlFor="a-contacto">{en ? "Contact for people to join" : "Contacto para apuntarse"}</label>
           <input id="a-contacto" name="contacto" maxLength={120} value={f.contacto} onChange={(e) => set("contacto", e.target.value)} placeholder={en ? "WhatsApp number, email or person" : "WhatsApp 9xx xxx xxx, correo o persona"} />
-          <p className="hint">{en ? "The whole network will see it. If you leave it empty, your community's contact is used." : "Lo verá toda la red. Si lo dejas vacío, se usa el de tu comunidad."}</p></div>
+          <p className="hint">{en ? "The whole community will see it. If you leave it empty, your community's contact is used." : "Lo verá toda la comunidad. Si lo dejas vacío, se usa el de tu comunidad."}</p></div>
         <div className="full"><label htmlFor="a-firma">{en ? "Your name" : "Tu firma"}</label>
           <input id="a-firma" name="firma" maxLength={60} value={f.firma} onChange={(e) => set("firma", e.target.value)} placeholder={en ? "Rosa, local guide" : "Rosa, guía local"} /></div>
       </div>
@@ -237,7 +237,7 @@ function Post({ a, votos, mio }) {
       )}
       <p className="meta">
         {firmaEsCom ? enlaceCom : <><Autor by={a.by} firma={a.firma} />{c && <> · {enlaceCom}</>}</>}
-        {" · " + (P[a.zona] ? zonaDe(a) : t("Toda la red"))}
+        {" · " + (P[a.zona] ? zonaDe(a) : t("Toda la comunidad"))}
       </p>
       <div className="row">
         <button type="button" className="linkbtn" id={"t-" + id} aria-expanded={abierto}

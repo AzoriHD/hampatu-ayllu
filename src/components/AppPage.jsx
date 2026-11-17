@@ -79,7 +79,7 @@ export default function AppPage() {
     setAviso(ok ? "" : en ? "Installation cancelled. You can try again whenever you like." : "Instalación cancelada. Puedes volver a intentarlo cuando quieras.");
   };
   const compartir = async () => {
-    const r = await compartirApp(en ? "Install the Hampatu Ayllu app, the network that looks after the Peruvian harlequin toad." : "Instala la app de Hampatu Ayllu, la red que cuida al sapo arlequín peruano.");
+    const r = await compartirApp(en ? "Install the Hampatu Ayllu app, the community that looks after the Peruvian harlequin toad." : "Instala la app de Hampatu Ayllu, la comunidad que cuida al sapo arlequín peruano.");
     if (r === "copiado") setAviso(en ? "Link copied. Paste it in WhatsApp or wherever you like." : "Enlace copiado. Pégalo en WhatsApp o donde quieras.");
     else if (r === "error") setAviso(en ? "Could not share. Copy the address from the browser bar." : "No se pudo compartir. Copia la dirección de la barra del navegador.");
   };
@@ -121,7 +121,7 @@ export default function AppPage() {
       <header className="vista-head caja caja-cabeza">
         <div>
           <h2 className="vista-h" id="h-app">{en ? "The Hampatu Ayllu app" : "La app de Hampatu Ayllu"}</h2>
-          <p className="intro">{en ? "The same network, with its own icon on your phone or computer. It installs from here, it is free and it takes up very little space." : "La misma red, con su propio icono en tu celular o tu computadora. Se instala desde aquí, es gratis y ocupa muy poco."}</p>
+          <p className="intro">{en ? "The same community, with its own icon on your phone or computer. It installs from here, it is free and it takes up very little space." : "La misma comunidad, con su propio icono en tu celular o tu computadora. Se instala desde aquí, es gratis y ocupa muy poco."}</p>
         </div>
       </header>
 
@@ -131,7 +131,7 @@ export default function AppPage() {
           <div className="cel"><div className="cel-pantalla"><img src="/img/app-celular.webp" width="824" height="1784" alt="" loading="lazy" /></div></div>
         </div>
         <div className="app-accion">
-          <img className="app-icono" src="/apple-touch-icon.png" width="180" height="180" alt="" />
+          <img className="app-icono" src="/icon-192.png" width="192" height="192" alt="" />
           <p className="app-nombre"><strong>Hampatu Ayllu</strong><span>{en ? "Free for Android, iPhone, Windows, Mac and Linux" : "Gratis para Android, iPhone, Windows, Mac y Linux"}</span></p>
           {estado}
           <p className="msg soft" role="status" hidden={!aviso}>{aviso}</p>

@@ -23,7 +23,7 @@ export default function Species() {
             <figure><img src="/img/sapo-camina.webp" width="380" height="277" alt="" loading="lazy" /><figcaption>{en ? "Walking" : "Caminando"}</figcaption></figure>
             <figure><img src="/img/sapo-dorso.webp" width="368" height="333" alt="" loading="lazy" /><figcaption>{en ? "Seen from above" : "Visto desde arriba"}</figcaption></figure>
           </div>
-          <figcaption className="lamina-pie">{en ? "Plate I · The hampatu as the network draws it. An artistic illustration, not an identification guide." : "Lámina I · El hampatu como lo dibuja la red. Ilustración artística, no sirve como guía para identificarlo."}</figcaption>
+          <figcaption className="lamina-pie">{en ? "Plate I · The hampatu as the community draws it. An artistic illustration, not an identification guide." : "Lámina I · El hampatu como lo dibuja la comunidad. Ilustración artística, no sirve como guía para identificarlo."}</figcaption>
         </figure>
 
         <h3>{en ? "Where it lives" : "Dónde vive"}</h3>

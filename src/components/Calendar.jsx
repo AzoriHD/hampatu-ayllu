@@ -110,7 +110,7 @@ export default function Calendar() {
               );
             }) : <p className="meta">{t("No hay nada marcado este día.")}</p>}
           </div>
-          {!puede && <p className="meta" id="cal-solo">{t("Solo quien coordina la red puede marcar fechas.")}</p>}
+          {!puede && <p className="meta" id="cal-solo">{t("Solo quien coordina la comunidad puede marcar fechas.")}</p>}
           {puede && <button className="btn" type="button" id="b-fecha" onClick={() => setForm(form ? null : { k: Date.now(), editar: null })}>{t("Marcar fecha")}</button>}
           {form && puede && <FechaForm key={form.k} editar={form.editar} onClose={() => setForm(null)} />}
         </div>

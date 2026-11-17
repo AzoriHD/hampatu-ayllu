@@ -3,7 +3,7 @@ import { useApp } from "../AppContext.jsx";
 import { borrarEjemplos, hayEjemplos, REMOTE, salir, store } from "../lib/store.js";
 import { Msg } from "./Shared.jsx";
 
-/* Top strip: demo notice, network status and the coordination bar. */
+/* Top strip: demo notice, community status and the coordination bar. */
 export default function AdminZone() {
   const { t, meta, write, reiniciar } = useApp();
   const [m, setM] = useState("");
@@ -12,15 +12,15 @@ export default function AdminZone() {
   if (!REMOTE) {
     return (
       <p className="notice demo">
-        {t("Versión de demostración: lo que publiques se guarda solo en este navegador. Para usarla como red real necesita su propia base de datos.")}{" "}
+        {t("Versión de demostración: lo que publiques se guarda solo en este navegador. Para usarla como comunidad real necesita su propia base de datos.")}{" "}
         <button type="button" className="linkbtn" onClick={reiniciar}>{t("Restablecer los ejemplos")}</button>
       </p>
     );
   }
   return (
     <>
-      {meta.status === "loading" && <p className="notice" id="red-estado">{t("Cargando la red…")}</p>}
-      {meta.status === "error" && <p className="notice" id="red-estado">{t("No se pudo conectar con la red. Revisa la conexión y recarga la página.")}</p>}
+      {meta.status === "loading" && <p className="notice" id="red-estado">{t("Cargando la comunidad…")}</p>}
+      {meta.status === "error" && <p className="notice" id="red-estado">{t("No se pudo conectar con la comunidad. Revisa la conexión y recarga la página.")}</p>}
       {meta.admin && (
         <div className="notice admin-bar" id="admin-bar">
           <p><strong>{t("Modo coordinación")}</strong> · {meta.email}</p>

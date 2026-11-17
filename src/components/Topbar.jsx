@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useApp } from "../AppContext.jsx";
 import { SIMB } from "../data/constants.js";
 import { Svg } from "./Shared.jsx";
 import { AccountButton } from "./Account.jsx";
 
-/* Secciones: [vista, español, inglés, icono]. Las cuatro primeras van en la barra de abajo del móvil. */
+/* Secciones: [vista, español, inglés, icono]. En el móvil van todas en la barra de abajo, que se desliza. */
 export const SECCIONES = [
   ["tablon", "Tablón", "Board", '<path d="M4 4.5h16v11.5H9.5L4 20.5z"/><path d="M8 8.6h8M8 12h5"/>'],
   ["comunidades", "Comunidades", "Communities", '<path d="M2.5 19.5 9 8.5l4 6.2 3-4.2 5.5 9z"/><path d="M7.2 11.6 9 13.2l1.8-1.6"/>'],
@@ -15,16 +15,14 @@ export const SECCIONES = [
   ["recompensas", "Recompensas", "Rewards", '<circle cx="12" cy="9" r="5.6"/><path d="M8.7 13.4 7.2 21l4.8-2.6 4.8 2.6-1.5-7.6"/><path d="m12 6.4.8 1.7 1.8.2-1.3 1.2.3 1.8-1.6-.9-1.6.9.3-1.8-1.3-1.2 1.8-.2z"/>'],
 ];
 export const ICONO_APP = '<rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M12 7v7.2M9.1 11.4 12 14.3l2.9-2.9M10.6 18.4h2.8"/>';
-const ICONO_MAS = '<circle cx="5.5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18.5" cy="12" r="1.7"/>';
-const MAS = ["artesania", "especie", "recompensas", "app"];
 
 function enlace(view, v) {
   return view === v || (v === "personas" && view === "perfil") ? "page" : undefined;
 }
 
-/* Cabecera fija: marca, secciones (ordenador), descargar la app, cuenta, tema e idioma. */
+/* Cabecera fija: marca, secciones (ordenador), descargar la app (solo en la web), cuenta, tema e idioma. */
 export function Topbar() {
-  const { en, view, irVista, oscuro, cambiarTema, cambiarIdioma, t } = useApp();
+  const { en, view, irVista, oscuro, cambiarTema, cambiarIdioma, t, esApp } = useApp();
   const navRef = useRef(null);
 
   /* Mantiene a la vista la sección activa cuando la fila de secciones no cabe */
@@ -51,14 +49,16 @@ export function Topbar() {
           ))}
         </nav>
         <div className="acciones">
-          <a className="btn-descarga" href="#app" id="b-app" aria-current={view === "app" ? "page" : undefined}>
-            <Svg width="2" d={ICONO_APP} /><span>{en ? "Get the app" : "Descargar app"}</span>
-          </a>
+          {!esApp && (
+            <a className="btn-descarga" href="#app" id="b-app" aria-current={view === "app" ? "page" : undefined}>
+              <Svg width="2" d={ICONO_APP} /><span>{en ? "Get the app" : "Descargar app"}</span>
+            </a>
+          )}
           <AccountButton />
-          <button className="icono-btn solo-ancho" type="button" id="b-tema" aria-label={t(oscuro ? "Modo claro" : "Modo oscuro")} title={t(oscuro ? "Modo claro" : "Modo oscuro")} onClick={cambiarTema}>
+          <button className="icono-btn" type="button" id="b-tema" aria-label={t(oscuro ? "Modo claro" : "Modo oscuro")} title={t(oscuro ? "Modo claro" : "Modo oscuro")} onClick={cambiarTema}>
             <Svg width="2" d={SIMB[oscuro ? "sol" : "luna"][2]} />
           </button>
-          <button className="icono-btn idioma solo-ancho" type="button" id="b-lang" lang={en ? "es" : "en"} aria-label={en ? "Ver en español" : "View in English"} onClick={cambiarIdioma}>{en ? "ES" : "EN"}</button>
+          <button className="icono-btn idioma" type="button" id="b-lang" lang={en ? "es" : "en"} aria-label={en ? "Ver en español" : "View in English"} onClick={cambiarIdioma}>{en ? "ES" : "EN"}</button>
         </div>
       </div>
     </header>
@@ -66,46 +66,44 @@ export function Topbar() {
   );
 }
 
-/* Barra de abajo en el móvil, como en una app: cuatro secciones y «Más». */
+/* Barra de abajo en el móvil, como en una app: todas las secciones en una fila que se desliza
+   a izquierda y derecha. Los bordes se difuminan cuando quedan secciones por ver. */
 export function BottomNav() {
-  const { en, view, oscuro, cambiarTema, cambiarIdioma, t } = useApp();
-  const [abierta, setAbierta] = useState(false);
-  const hoja = useRef(null);
-  useEffect(() => { setAbierta(false); }, [view]);
-  useEffect(() => {
-    if (!abierta) return undefined;
-    const fuera = (ev) => { if (!ev.target.closest?.(".hoja, #bn-mas")) setAbierta(false); };
-    const esc = (ev) => { if (ev.key === "Escape") setAbierta(false); };
-    document.addEventListener("pointerdown", fuera);
-    document.addEventListener("keydown", esc);
-    hoja.current?.querySelector("a")?.focus();
-    return () => { document.removeEventListener("pointerdown", fuera); document.removeEventListener("keydown", esc); };
-  }, [abierta]);
+  const { en, view } = useApp();
+  const fila = useRef(null);
+  const [bordes, setBordes] = useState({ izq: false, der: false });
 
-  const nombre = (v) => { const s = SECCIONES.find((x) => x[0] === v); return s ? (en ? s[2] : s[1]) : (en ? "Get the app" : "Descargar la app"); };
-  const icono = (v) => { const s = SECCIONES.find((x) => x[0] === v); return s ? s[3] : ICONO_APP; };
+  const medir = useCallback(() => {
+    const n = fila.current;
+    if (!n) return;
+    const max = n.scrollWidth - n.clientWidth;
+    setBordes((b) => {
+      const nuevo = { izq: n.scrollLeft > 4, der: n.scrollLeft < max - 4 };
+      return nuevo.izq === b.izq && nuevo.der === b.der ? b : nuevo;
+    });
+  }, []);
+
+  useEffect(() => {
+    medir();
+    window.addEventListener("resize", medir);
+    return () => window.removeEventListener("resize", medir);
+  }, [medir]);
+
+  /* La sección abierta se queda centrada en la fila */
+  useEffect(() => {
+    const n = fila.current, a = n && n.querySelector('[aria-current="page"]');
+    if (!n || !a || n.scrollWidth <= n.clientWidth) return;
+    const objetivo = a.offsetLeft - (n.clientWidth - a.offsetWidth) / 2;
+    n.scrollTo({ left: Math.max(0, objetivo), behavior: "smooth" });
+  }, [view]);
 
   return (
-    <>
-      <nav className="abajo" aria-label={en ? "Sections" : "Secciones"}>
-        {SECCIONES.slice(0, 4).map(([v, es, enl, d]) => (
+    <nav className="abajo" aria-label={en ? "Sections" : "Secciones"}>
+      <div className="abajo-fila" ref={fila} onScroll={medir} data-izq={bordes.izq ? "" : undefined} data-der={bordes.der ? "" : undefined}>
+        {SECCIONES.map(([v, es, enl, d]) => (
           <a key={v} href={"#" + v} id={"bn-" + v} aria-current={enlace(view, v)}><Svg width="1.9" d={d} /><span>{en ? enl : es}</span></a>
         ))}
-        <button type="button" id="bn-mas" aria-expanded={abierta} aria-controls="hoja-mas" aria-current={MAS.includes(view) ? "page" : undefined} onClick={() => setAbierta((a) => !a)}>
-          <Svg width="2.2" d={ICONO_MAS} /><span>{en ? "More" : "Más"}</span>
-        </button>
-      </nav>
-      <div className="hoja" id="hoja-mas" ref={hoja} hidden={!abierta}>
-        <ul>
-          {MAS.map((v) => (
-            <li key={v}><a href={"#" + v} aria-current={view === v ? "page" : undefined} className={v === "app" ? "hoja-app" : undefined}><Svg width="1.9" d={icono(v)} />{nombre(v)}</a></li>
-          ))}
-        </ul>
-        <div className="hoja-ajustes">
-          <button type="button" className="btn-ghost" onClick={cambiarTema}><Svg width="2" d={SIMB[oscuro ? "sol" : "luna"][2]} />{t(oscuro ? "Modo claro" : "Modo oscuro")}</button>
-          <button type="button" className="btn-ghost" lang={en ? "es" : "en"} onClick={cambiarIdioma}>{en ? "Español" : "English"}</button>
-        </div>
       </div>
-    </>
+    </nav>
   );
 }

@@ -42,14 +42,14 @@ export const TD={"":"Todos los avisos, del más reciente al más antiguo.",
   necesitamos:"Algo que le falta a tu comunidad para ayudar al sapo: material, formación, transporte o contactos.",
   ofrecemos:"Algo que puedes dar a otras comunidades: talleres, material, tiempo o movilidad.",
   evento:"Una faena, charla, salida o reunión. Pon fecha, hora y punto de encuentro.",
-  pregunta:"Una duda para el resto de la red. Quien sepa, responde debajo."};
+  pregunta:"Una duda para el resto de la comunidad. Quien sepa, responde debajo."};
 export const TCD={local:"Comunidad campesina, ronda, comité de regantes o junta vecinal.",
   guias:"Guías, guardaparques o gente que recorre la zona por trabajo.",
   escuela:"Escuelas, colegios y docentes.",
   ong:"Asociaciones y ONG, peruanas o extranjeras.",
   investigacion:"Universidades, estudiantes e investigadores.",
   otro:"Municipalidades, empresas locales o cualquier otro grupo."};
-/* Decimal-degree pairs, degrees-minutes, or UTM: exact locations stay out of the network. */
+/* Decimal-degree pairs, degrees-minutes, or UTM: exact locations stay out of the community. */
 export const COORD=/(-?\d{1,3}[.,]\d{3,}\s*[,;\/ ]\s*-?\d{1,3}[.,]\d{3,})|(\d{1,3}\s*°\s*\d{1,2}\s*['’′])|(\b\d{1,2}\s?[C-Xc-x]\s+\d{6}\s+\d{7}\b)/;
 export const COORD_MSG="Quita las coordenadas exactas e indica solo la región. Los traficantes de fauna buscan esos datos.";
 

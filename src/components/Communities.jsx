@@ -145,7 +145,7 @@ function CommunityForm({ editId, onClose }) {
           <p className="hint">{L("Lo que le falta a tu grupo para ayudar al sapo. Otros lo verán y podrán ofrecerlo.", "What your group is missing to help the toad. Others will see it and can offer it.")}</p></div>
         <div className="full"><label htmlFor="c-contacto">{L("Contacto", "Contact")}</label>
           <input id="c-contacto" name="contacto" maxLength={120} value={f.contacto} onChange={(e) => set("contacto", e.target.value)} placeholder={L("WhatsApp, correo o persona de referencia", "WhatsApp, email or contact person")} />
-          <p className="hint">{L("Lo verá toda la red.", "The whole network will see it.")}</p></div>
+          <p className="hint">{L("Lo verá toda la comunidad.", "The whole community will see it.")}</p></div>
       </div>
       <Msg id="m-com" text={m} />
       <div className="panel-actions">

@@ -4,6 +4,7 @@ import { makeT } from "./i18n.js";
 import { P } from "./data/constants.js";
 import { ensureUid, perfilVisto, store, useData, useMeta } from "./lib/store.js";
 import { ago as agoBase, avisoDelHash, errMsg, marcarHash, perfilDelHash, viewOf, VIEWS, ymd } from "./lib/utils.js";
+import { enApp, MODOS_APP } from "./lib/pwa.js";
 import Hero, { FajaRanas } from "./components/Hero.jsx";
 import { BottomNav, Topbar } from "./components/Topbar.jsx";
 import AppPage from "./components/AppPage.jsx";
@@ -60,6 +61,16 @@ export default function App() {
   const cambiarIdioma = () => { const n = en ? "es" : "en"; setLang(n); guardar("hampatu-lang", n); };
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
+  /* ---- dentro de la app instalada no se habla de la app: ya la tienes ---- */
+  const [esApp, setEsApp] = useState(enApp);
+  useEffect(() => {
+    const mqs = MODOS_APP.map((q) => window.matchMedia?.(q)).filter(Boolean);
+    const f = () => setEsApp(enApp());
+    mqs.forEach((m) => m.addEventListener?.("change", f));
+    return () => mqs.forEach((m) => m.removeEventListener?.("change", f));
+  }, []);
+  useEffect(() => { document.documentElement.classList.toggle("en-app", esApp); }, [esApp]);
+
   /* ---- navigation ---- */
   const inicioAviso = useMemo(avisoDelHash, []);
   const [perfil, setPerfil] = useState(() => { const id = perfilDelHash(); return id ? { id, k: 0 } : null; });
@@ -104,6 +115,9 @@ export default function App() {
     document.addEventListener("click", onClick);
     return () => { window.removeEventListener("hashchange", onHash); document.removeEventListener("click", onClick); };
   }, [irVista]);
+
+  /* En la app, la página «App» (descargar e instalar) no existe: lleva al tablón */
+  useEffect(() => { if (esApp && view === "app") irVista("tablon"); }, [esApp, view, irVista]);
 
   /* scroll to and highlight a post or a community once it is on screen */
   useEffect(() => {
@@ -211,7 +225,7 @@ export default function App() {
     firma, keepFirma, msg, setMsg, confirmar, setConfirmar, write,
     apuntando, setApuntando, recien, setRecien, apuntesDe, apuntar, quitarApunte,
     votar, enlaceAviso, contactoDe, zonaDe, borrar, ofrecer, formAviso, setFormAviso,
-    calMes, setCalMes, calSel, setCalSel, oscuro, cambiarTema, cambiarIdioma,
+    calMes, setCalMes, calSel, setCalSel, oscuro, cambiarTema, cambiarIdioma, esApp,
   };
 
   return (
@@ -235,7 +249,7 @@ export default function App() {
         {view === "artesania" && <Crafts />}
         {view === "especie" && <Species />}
         {view === "recompensas" && <Rewards />}
-        {view === "app" && <AppPage />}
+        {view === "app" && !esApp && <AppPage />}
 
         {view !== "app" && <Agreements />}
       </main>

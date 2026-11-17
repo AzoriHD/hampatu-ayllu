@@ -51,9 +51,9 @@ export function errMsg(e) {
   const c = e && e.code;
   if (c === "foto_grande") return "La foto es demasiado grande para guardarla en este navegador.";
   if (c === "foto") return "No se pudieron subir las fotos. Inténtalo otra vez o quítalas y publica sin ellas.";
-  if (c === "quota_exceeded") return "La red ha llegado a su límite de entradas. Hay que borrar avisos antiguos antes de añadir más.";
+  if (c === "quota_exceeded") return "La comunidad ha llegado a su límite de entradas. Hay que borrar avisos antiguos antes de añadir más.";
   if (c === "42501") return "No tienes permiso para hacer eso.";
-  if (c === "sesion") return "No se pudo conectar con la red. Inténtalo otra vez en un momento.";
+  if (c === "sesion") return "No se pudo conectar con la comunidad. Inténtalo otra vez en un momento.";
   if (c === "login") return "Correo o contraseña incorrectos.";
   if (c === "cuenta") return "Entra o crea tu cuenta para hacerlo.";
   if (c === "ya_existe") return "Ya hay una cuenta con ese correo. Entra con tu contraseña.";

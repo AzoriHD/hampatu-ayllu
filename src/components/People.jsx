@@ -41,7 +41,7 @@ export function People() {
     <section id="v-personas" aria-labelledby="tab-personas">
       <div className="caja caja-cabeza">
       <header className="vista-head">
-        <div><h2 className="vista-h">{en ? "The people in the network" : "La gente de la red"}</h2>
+        <div><h2 className="vista-h">{en ? "The people in the community" : "La gente de la comunidad"}</h2>
           <p className="intro">{en ? "Guides, farmers, teachers, rangers, students and researchers. Each person says who they are, where they are and how to reach them." : "Guías, comuneros, maestras, guardaparques, estudiantes e investigadores. Cada persona cuenta quién es, dónde está y cómo contactarla."}</p></div>
       </header>
       <div className="bar">
@@ -72,7 +72,7 @@ export function People() {
               </span>
             </button>
           );
-        }) : <EmptyBox text={data.perfiles.length ? "Nadie coincide con esa búsqueda." : "Todavía no hay nadie. Crea tu cuenta y sé la primera persona de la red."}
+        }) : <EmptyBox text={data.perfiles.length ? "Nadie coincide con esa búsqueda." : "Todavía no hay nadie. Crea tu cuenta y sé la primera persona de la comunidad."}
             onClear={data.perfiles.length ? () => setQ("") : null} />}
       </div>
     </section>
@@ -90,7 +90,7 @@ export function Profile({ id, editar }) {
     return (
       <section id="v-perfil">
         {volver}
-        <p className="notice">{t(meta.status === "loading" ? "Cargando la red…" : "Este perfil no existe o se ha borrado.")}</p>
+        <p className="notice">{t(meta.status === "loading" ? "Cargando la comunidad…" : "Este perfil no existe o se ha borrado.")}</p>
       </section>
     );
   }
@@ -119,7 +119,7 @@ export function Profile({ id, editar }) {
             <p className="meta">
               {p.lugar}{p.lugar && c && " · "}
               {c && <span className="nowrap-ini"><Simbolo k={simboloDe(c)} mini /><button type="button" className="linkbtn" onClick={() => goCom(c.id)}>{c.nombre}</button></span>}
-              {desde && <>{(p.lugar || c) && " · "}{t("En la red desde")} {desde}</>}
+              {desde && <>{(p.lugar || c) && " · "}{t("En la comunidad desde")} {desde}</>}
             </p>
           </div>
         </div>
@@ -229,7 +229,7 @@ function ProfileForm({ p, onClose }) {
               <label className="btn-ghost subir-foto" htmlFor="pf-foto">{foto.url ? L("Cambiar la foto", "Change photo") : L("Subir una foto", "Upload a photo")}</label>
               <input id="pf-foto" className="sr" type="file" accept="image/*" onChange={elegirFoto} />
               {(foto.url || avatar) && <button type="button" className="linkbtn danger" onClick={() => { setFoto({ url: "", blob: null }); setAvatar(""); }}>{L("Quitar imagen", "Remove picture")}</button>}
-              <p className="hint">{L("Si no quieres poner una foto tuya, elige un dibujo de la red.", "If you would rather not use a photo of yourself, choose a drawing from the network.")}</p>
+              <p className="hint">{L("Si no quieres poner una foto tuya, elige un dibujo de la comunidad.", "If you would rather not use a photo of yourself, choose a drawing from the community.")}</p>
             </div>
           </div>
           <div className="avatares" role="radiogroup" aria-label={L("Dibujos para tu perfil", "Drawings for your profile")}>

@@ -95,6 +95,10 @@ La web es también una app (PWA): se instala gratis desde la propia web, sin tie
 - Página **#app** (botón «Descargar app» arriba): botón de instalar cuando el navegador lo permite,
   pasos para Android, iPhone y iPad, Windows, Mac y Linux, código QR para abrirla en el celular y botón para compartirla.
 - Aviso flotante «Instala la app» a los pocos segundos de entrar (no sale si ya está instalada o si se cierra).
+- Dentro de la app instalada no aparece nada sobre la app (ni el botón de descargar, ni la página #app, ni el aviso del pie):
+  `esApp` en `src/App.jsx` lo detecta con `display-mode` (y `navigator.standalone` en iPhone).
+- Icono: el sapo con aro. `icon-192/512.png` (redondo, fondo transparente), `icon-maskable-*.png` y
+  `apple-touch-icon.png` (sobre crema, para Android e iPhone).
 - Sin conexión se abre y muestra lo último que se cargó (`public/sw.js`). Al publicar, `vite.config.js`
   le pone una versión nueva y la lista de archivos, así que no hay que tocar nada en cada cambio.
 - Iconos en `public/icon-*.png`, capturas para la ventana de instalación en `public/img/app-*.webp`
@@ -102,7 +106,7 @@ La web es también una app (PWA): se instala gratis desde la propia web, sin tie
 
 ## Imagen de perfil
 
-Al editar el perfil se puede **subir una foto** o **elegir un dibujo** de la red (sapos, gente de la jalca,
+Al editar el perfil se puede **subir una foto** o **elegir un dibujo** de la comunidad (sapos, gente de la jalca,
 animales y paisajes). Los dibujos están en `public/img/avatares/` y la lista en `src/data/avatares.js`.
 
 ## Diseño
@@ -110,6 +114,10 @@ animales y paisajes). Los dibujos están en `public/img/avatares/` y la lista en
 Patrones de tejido andino (`public/img/tejido-*.webp`, `faja-*.webp`) y un medallón tejido para cada sección
 (`med-*.webp`). Letras propias, sin Google Fonts: Bricolage Grotesque (títulos) y Atkinson Hyperlegible (texto),
 instaladas con npm, así que la primera vez que lo bajes haz `npm install`.
+
+- En el móvil, la barra de abajo lleva todas las secciones en una fila que se desliza a izquierda y derecha.
+- El sapo de la portada (`sapo-paseo.webp`, 6 fotogramas lentos) camina por el borde de la manta, se sienta,
+  se da la vuelta y vuelve (`pasear`, `girar`, `andar` y `sentar` en `src/styles.css`).
 
 ## Estructura
 

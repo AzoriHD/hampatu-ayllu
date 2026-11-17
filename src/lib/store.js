@@ -97,7 +97,7 @@ if (!REMOTE) {
   try { sesionLocal(localStorage.getItem(SESION) || ""); } catch (e) { /* ignore */ }
 }
 
-/* ================= SUPABASE (red real) ================= */
+/* ================= SUPABASE (base de datos real) ================= */
 async function loadAll() {
   const out = vacio(), step = 1000;
   for (let from = 0; ; from += step) {
@@ -205,7 +205,7 @@ const remote = {
     pairs.forEach(([c, i]) => { delete state[c][i]; });
     emit();
   },
-  /* Admin: load the examples into the shared network. */
+  /* Admin: load the examples into the shared community. */
   async reset() {
     await ensureUid();
     const data = fresh(), rows = [];

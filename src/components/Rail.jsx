@@ -11,7 +11,7 @@ export default function ZonaRail() {
     <nav className="rail" id="railnav" aria-label={en ? "Filter by area" : "Filtrar por zona"}>
       <p className="eyebrow">{en ? "Filter by area (applies to the board and the communities)" : "Filtrar por zona (vale para el tablón y las comunidades)"}</p>
       <div className="rail-scroll" id="rail">
-        <button type="button" className="chipbtn" id="rp-all" aria-pressed={!zona} onClick={() => setZona("")}>{t("Toda la red")} <span className="n">{items.length}</span></button>
+        <button type="button" className="chipbtn" id="rp-all" aria-pressed={!zona} onClick={() => setZona("")}>{t("Toda la comunidad")} <span className="n">{items.length}</span></button>
         {Object.keys(P).map((k) => (
           <button key={k} type="button" className="chipbtn" id={"rp-" + k} aria-pressed={zona === k} onClick={() => setZona(k)}>{t(P[k])} <span className="n">{cuenta[k] || 0}</span></button>
         ))}

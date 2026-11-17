@@ -1,13 +1,13 @@
 import { COORD_MSG } from "./data/constants.js";
 
 export const EN={
-  "Otra zona":"Other area","Toda la red":"Whole network","Todos":"All",
+  "Otra zona":"Other area","Toda la comunidad":"Whole community","Todos":"All",
   "Avistamiento":"Sighting","Necesitamos":"We need","Ofrecemos":"We offer","Evento":"Event","Pregunta":"Question",
   "Comunidad local":"Local community","Guías y guardaparques":"Guides and rangers","Escuela":"School","ONG":"NGO","Investigación":"Research","Otro":"Other",
   "Vivo y activo":"Alive and active","Débil o enfermo":"Weak or sick","Muerto":"Dead","Renacuajos":"Tadpoles",
   "No lo sé":"I don't know","Elige la zona":"Choose the area","Ninguna, a título personal":"None, posting as myself",
   "día":"day","días":"days","respuesta":"reply","respuestas":"replies","aviso":"post","avisos":"posts","comunidad":"community","comunidades":"communities",
-  "en el tablón":"on the board","Cargando la red…":"Loading the network…",
+  "en el tablón":"on the board","Cargando la comunidad…":"Loading the community…",
   "Sin datos que mostrar en esta vista.":"No data to show in this view.","Quitar filtros":"Clear filters",
   "Ningún aviso con este filtro.":"No posts match this filter.",
   "Todavía no hay avisos. Publica el primero: un avistamiento, algo que tu comunidad necesita o algo que puede ofrecer.":"No posts yet. Write the first one: a sighting, something your community needs or something it can offer.",
@@ -18,15 +18,15 @@ export const EN={
   "Foto":"Photo","del aviso":"of the post","lista para subir":"ready to upload","Ampliar o reducir la foto":"Enlarge or shrink photo",
   "Allí lo llaman":"Local name","Ofrece":"Offers","Necesita":"Needs","Contacto":"Contact",
   "Nueva comunidad":"New community","Editar comunidad":"Edit community",
-  "Esta vista no tiene conexión con los datos compartidos. Abre la red desde su enlace, con tu sesión iniciada.":"This view is not connected to the shared data. Open the network from its link while signed in.",
+  "Esta vista no tiene conexión con los datos compartidos. Abre la comunidad desde su enlace, con tu sesión iniciada.":"This view is not connected to the shared data. Open the community from its link while signed in.",
   "Se perdió la conexión con los datos. Recarga la página para volver a conectar.":"The connection to the data was lost. Reload the page to reconnect.",
   "Todavía no se puede llegar a los datos. Lo que ves puede estar desactualizado.":"The data cannot be reached yet. What you see may be out of date.",
-  "Estás en modo lectura. Para publicar, pide acceso de editor a quien te compartió la red.":"You are in read-only mode. To post, ask whoever shared the network with you for editor access.",
+  "Estás en modo lectura. Para publicar, pide acceso de editor a quien te compartió la comunidad.":"You are in read-only mode. To post, ask whoever shared the community with you for editor access.",
   "Lo marcado como Ejemplo es contenido de muestra. Bórralo cuando entren comunidades reales.":"Anything marked Example is sample content. Delete it once real communities join.",
   "No hay conexión con los datos compartidos.":"There is no connection to the shared data.","Guardando…":"Saving…",
   "No se pudieron subir las fotos. Inténtalo otra vez o quítalas y publica sin ellas.":"The photos could not be uploaded. Try again, or remove them and post without them.",
-  "No se pudo guardar. Puede que tu acceso sea solo de lectura: pide acceso de editor a quien te compartió la red.":"Could not save. Your access may be read-only: ask whoever shared the network with you for editor access.",
-  "La red ha llegado a su límite de entradas. Hay que borrar avisos antiguos antes de añadir más.":"The network has reached its limit of entries. Old posts must be deleted before adding more.",
+  "No se pudo guardar. Puede que tu acceso sea solo de lectura: pide acceso de editor a quien te compartió la comunidad.":"Could not save. Your access may be read-only: ask whoever shared the community with you for editor access.",
+  "La comunidad ha llegado a su límite de entradas. Hay que borrar avisos antiguos antes de añadir más.":"The community has reached its limit of entries. Old posts must be deleted before adding more.",
   "Demasiadas acciones seguidas. Espera un momento y vuelve a intentarlo.":"Too many actions in a row. Wait a moment and try again.",
   "Esta vista ya no tiene acceso a los datos.":"This view no longer has access to the data.",
   "No se pudo guardar. Revisa la conexión e inténtalo otra vez.":"Could not save. Check your connection and try again.",
@@ -42,7 +42,7 @@ export const EN={
   "Algo que le falta a tu comunidad para ayudar al sapo: material, formación, transporte o contactos.":"Something your community is missing to help the toad: equipment, training, transport or contacts.",
   "Algo que puedes dar a otras comunidades: talleres, material, tiempo o movilidad.":"Something you can give other communities: workshops, materials, time or transport.",
   "Una faena, charla, salida o reunión. Pon fecha, hora y punto de encuentro.":"A work day, talk, field trip or meeting. Give the date, time and meeting point.",
-  "Una duda para el resto de la red. Quien sepa, responde debajo.":"A question for the rest of the network. Whoever knows replies below.",
+  "Una duda para el resto de la comunidad. Quien sepa, responde debajo.":"A question for the rest of the community. Whoever knows replies below.",
   "Comunidad campesina, ronda, comité de regantes o junta vecinal.":"Rural community, ronda campesina, irrigation committee or neighbourhood board.",
   "Guías, guardaparques o gente que recorre la zona por trabajo.":"Guides, rangers or people who travel the area for work.",
   "Escuelas, colegios y docentes.":"Schools and teachers.",
@@ -66,24 +66,24 @@ export const EN={
 EN[COORD_MSG]="Remove the exact coordinates and give only the region. Wildlife traffickers look for that information.";
 
 Object.assign(EN,{
-  "Versión de demostración: lo que publiques se guarda solo en este navegador. Para usarla como red real necesita su propia base de datos.":"Demo version: anything you post is saved only in this browser. To run it as a real network it needs its own database.",
+  "Versión de demostración: lo que publiques se guarda solo en este navegador. Para usarla como comunidad real necesita su propia base de datos.":"Demo version: anything you post is saved only in this browser. To run it as a real community it needs its own database.",
   "Restablecer los ejemplos":"Reset the examples","Filtrar por tipo de aviso":"Filter by type of post","Ordenar avisos":"Sort posts","Publicar aviso":"New post",
   "Añadir comunidad":"Add community","Buscar comunidad":"Search communities","Buscar nombre, lugar o necesidad":"Search name, place or need","Filtrar diseños":"Filter designs",
-  "Marcar fecha":"Add a date","Solo quien coordina la red puede marcar fechas.":"Only the network's coordinators can add dates.","Próximas fechas":"Coming up","Fechas pasadas":"Past dates","Qué fechas ver":"Which dates to show","Próximas":"Upcoming","Pasadas":"Past","Todavía no hay fechas pasadas.":"No past dates yet.","Ver más":"Show more",
+  "Marcar fecha":"Add a date","Solo quien coordina la comunidad puede marcar fechas.":"Only the community's coordinators can add dates.","Próximas fechas":"Coming up","Fechas pasadas":"Past dates","Qué fechas ver":"Which dates to show","Próximas":"Upcoming","Pasadas":"Past","Todavía no hay fechas pasadas.":"No past dates yet.","Ver más":"Show more",
   "Mes anterior":"Previous month","Mes siguiente":"Next month","Guardar fecha":"Save date","Guardar comunidad":"Save community","La foto es demasiado grande para guardarla en este navegador.":"The photo is too big to save in this browser."
 });
 
 Object.assign(EN, {
-  "No se pudo conectar con la red. Revisa la conexión y recarga la página.": "Could not connect to the network. Check your connection and reload the page.",
+  "No se pudo conectar con la comunidad. Revisa la conexión y recarga la página.": "Could not connect to the community. Check your connection and reload the page.",
   "Modo coordinación": "Coordination mode",
   "Puedes marcar fechas, verificar fotos y editar o borrar cualquier aviso o comunidad.": "You can add dates, verify photos and edit or delete any post or community.",
   "Cargar ejemplos": "Load the examples", "Borrar ejemplos": "Delete the examples", "Sí, borrar los ejemplos": "Yes, delete the examples",
   "Ejemplos cargados.": "Examples loaded.", "Ejemplos borrados.": "Examples deleted.", "Salir": "Sign out",
-  "Acceso de coordinación": "Coordinator sign-in", "Solo para quien coordina la red. El resto puede publicar sin entrar.": "Only for the network's coordinators. Everyone else can post without signing in.",
+  "Acceso de coordinación": "Coordinator sign-in", "Solo para quien coordina la comunidad. El resto puede publicar sin entrar.": "Only for the community's coordinators. Everyone else can post without signing in.",
   "Correo": "Email", "Contraseña": "Password", "Entrar": "Sign in", "Cancelar": "Cancel",
   "Escribe tu correo y tu contraseña.": "Write your email and password.",
   "No tienes permiso para hacer eso.": "You are not allowed to do that.",
-  "No se pudo conectar con la red. Inténtalo otra vez en un momento.": "Could not connect to the network. Try again in a moment.",
+  "No se pudo conectar con la comunidad. Inténtalo otra vez en un momento.": "Could not connect to the community. Try again in a moment.",
   "Correo o contraseña incorrectos.": "Wrong email or password.", "Esa cuenta no es de coordinación.": "That account is not a coordinator account.",
 });
 
@@ -127,10 +127,10 @@ Object.assign(EN, {
  "Buscar nombre, lugar o a qué se dedica": "Search name, place or what they do",
  "Sin nombre": "No name",
  "Nadie coincide con esa búsqueda.": "Nobody matches that search.",
- "Todavía no hay nadie. Crea tu cuenta y sé la primera persona de la red.": "Nobody here yet. Create your account and be the first person in the network.",
+ "Todavía no hay nadie. Crea tu cuenta y sé la primera persona de la comunidad.": "Nobody here yet. Create your account and be the first person in the community.",
  "Toda la gente": "All the people",
  "Este perfil no existe o se ha borrado.": "This profile does not exist or has been deleted.",
- "En la red desde": "In the network since",
+ "En la comunidad desde": "In the community since",
  "Hola, te escribo desde Hampatu Ayllu.": "Hello, I am writing from Hampatu Ayllu.",
  "Escribir": "Message",
  "Teléfono": "Phone",

@@ -18,9 +18,10 @@ export const puedeInstalar = () => !!aviso;
 export const recien = () => recienInstalada;
 
 /* Abierta como app (desde su icono) y no en una pestaña del navegador */
+export const MODOS_APP = ["standalone", "window-controls-overlay", "fullscreen", "minimal-ui"].map((m) => "(display-mode: " + m + ")");
 export const enApp = () =>
   typeof window !== "undefined" &&
-  (window.matchMedia?.("(display-mode: standalone)").matches || window.matchMedia?.("(display-mode: window-controls-overlay)").matches || window.navigator.standalone === true);
+  (MODOS_APP.some((q) => window.matchMedia?.(q).matches) || window.navigator.standalone === true);
 
 /* Abre el aviso de instalación del navegador. Devuelve true si la persona aceptó. */
 export async function instalar() {

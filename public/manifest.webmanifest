@@ -2,7 +2,7 @@
   "id": "/",
   "name": "Hampatu Ayllu · Comunidad del Sapo",
   "short_name": "Hampatu Ayllu",
-  "description": "Red de comunidades que cuidan al sapo arlequín peruano (Atelopus peruensis): avisos, comunidades, calendario, personas y recompensas.",
+  "description": "Comunidad que cuida al sapo arlequín peruano (Atelopus peruensis): avisos, comunidades, calendario, personas y recompensas.",
   "lang": "es",
   "dir": "ltr",
   "start_url": "/",
@@ -20,7 +20,7 @@
   "screenshots": [
     { "src": "/img/app-computadora.webp", "sizes": "1280x800", "type": "image/webp", "form_factor": "wide", "label": "Hampatu Ayllu en la computadora" },
     { "src": "/img/app-celular.webp", "sizes": "824x1784", "type": "image/webp", "form_factor": "narrow", "label": "Portada de Hampatu Ayllu en el celular" },
-    { "src": "/img/app-celular-2.webp", "sizes": "824x1784", "type": "image/webp", "form_factor": "narrow", "label": "Comunidades de la red" }
+    { "src": "/img/app-celular-2.webp", "sizes": "824x1784", "type": "image/webp", "form_factor": "narrow", "label": "Comunidades de la comunidad" }
   ],
   "shortcuts": [
     { "name": "Tablón", "url": "/#tablon", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },

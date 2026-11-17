@@ -254,7 +254,7 @@ const SEED = {
    "com": "ej-escuela",
    "ejemplo": true,
    "firma": "Escuela primaria Los Quinuales",
-   "texto": "Los chicos de 5.º y 6.º dibujaron al sapo arlequín después de la charla. Se los regalamos a cualquier grupo de la red que quiera usarlos en afiches, camisetas o su página web, citando a la escuela.",
+   "texto": "Los chicos de 5.º y 6.º dibujaron al sapo arlequín después de la charla. Se los regalamos a cualquier grupo de la comunidad que quiera usarlos en afiches, camisetas o su página web, citando a la escuela.",
    "tipo": "ofrecemos",
    "titulo": "Dibujos de los alumnos para afiches y webs",
    "ts": 1794420000000,
@@ -276,7 +276,7 @@ const SEED = {
    "com": "ej-uni",
    "ejemplo": true,
    "firma": "Círculo de Herpetología, estudiantes de Biología",
-   "texto": "Suban la foto en el aviso de avistamiento o mándenla al contacto de nuestra ficha. Les decimos si es el arlequín y qué hacer. Gratis, para cualquier comunidad de la red.",
+   "texto": "Suban la foto en el aviso de avistamiento o mándenla al contacto de nuestra ficha. Les decimos si es el arlequín y qué hacer. Gratis, para cualquier comunidad de Hampatu Ayllu.",
    "tipo": "ofrecemos",
    "titulo": "Identificamos sus fotos en menos de 48 horas",
    "ts": 1794380000000,
@@ -389,7 +389,7 @@ const SEED = {
  },
  "fechas": {
   "ej-f6": {
-   "titulo": "Reunión de la red",
+   "titulo": "Reunión de la comunidad",
    "fecha": "2026-11-06",
    "hora": "16:00",
    "tipo": "reunion",
@@ -485,7 +485,7 @@ const SEED = {
    "contacto": "Ejemplo: coordinador de guías, WhatsApp 900 000 003"
   },
   "ej-f4": {
-   "titulo": "Reunión de la red",
+   "titulo": "Reunión de la comunidad",
    "fecha": "2026-12-12",
    "hora": "16:00",
    "tipo": "reunion",
