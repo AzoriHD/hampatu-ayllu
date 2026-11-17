@@ -60,7 +60,7 @@ export const EN={
   "Faena":"Work day","Taller o charla":"Workshop or talk","Entrega de recompensas":"Reward handover","Reunión":"Meeting","Recorrido de monitoreo":"Monitoring walk",
   "Nueva fecha":"New date","Editar fecha":"Edit date","No hay nada marcado este día.":"Nothing marked on this day.","Todavía no hay fechas próximas.":"No upcoming dates yet.",
   "Escribe qué se hace ese día.":"Write what happens that day.","Elige el día.":"Choose the day.","Hoy":"Today","fecha":"date","fechas":"dates",
-  "No se pudo guardar el voto. Inténtalo otra vez.":"The vote could not be saved. Try again.","Modo claro":"Light mode","Modo oscuro":"Dark mode","Música ambiental":"Ambient music","Apagar música ambiental":"Turn off ambient music","Foto verificada":"Verified photo","Marcar foto verificada":"Mark photo as verified","Quitar verificación":"Remove verification","Ver en el tablón":"See on the board",
+  "No se pudo guardar el voto. Inténtalo otra vez.":"The vote could not be saved. Try again.","Modo claro":"Light mode","Modo oscuro":"Dark mode","Música ambiental":"Ambient music","Apagar música ambiental":"Turn off ambient music","Volumen de la música":"Music volume","Foto verificada":"Verified photo","Marcar foto verificada":"Mark photo as verified","Quitar verificación":"Remove verification","Ver en el tablón":"See on the board",
   "Todavía no hay ofrecimientos en el tablón.":"There are no offers on the board yet."
 };
 EN[COORD_MSG]="Remove the exact coordinates and give only the region. Wildlife traffickers look for that information.";

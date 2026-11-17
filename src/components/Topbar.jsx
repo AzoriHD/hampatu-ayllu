@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { alternarMusica, estadoMusica, suscribir as oirMusica } from "../lib/musica.js";
+import { alternarMusica, estadoMusica, ponerVolumen, suscribir as oirMusica, volumenAjustable, volumenMusica } from "../lib/musica.js";
 import { useApp } from "../AppContext.jsx";
 import { SIMB } from "../data/constants.js";
 import { Svg } from "./Shared.jsx";
@@ -21,17 +21,42 @@ export const ICONO_APP = '<rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/
 const ICONO_MUSICA = '<path d="M9 17.5V5.2l10-2v12.1"/><circle cx="6.6" cy="17.6" r="2.6"/><circle cx="16.6" cy="15.4" r="2.6"/>';
 const ICONO_SILENCIO = ICONO_MUSICA + '<path d="M3.5 3.5l17 17"/>';
 
-/* Botón de la música: enciende y apaga los temas de Hampatu Ayllu (siguen con la pantalla apagada) */
+/* Botón de la música: enciende y apaga los temas de Hampatu Ayllu (siguen con la pantalla apagada).
+   Con la música puesta, el botón se alarga en una píldora con el deslizador de volumen. En el móvil no cabe:
+   el deslizador cuelga debajo y se esconde solo; con la música puesta, el primer toque lo vuelve a sacar
+   y el segundo apaga. */
+const ESPERA_VOL = 4000;
+const esMovil = () => typeof window !== "undefined" && window.matchMedia("(max-width:760px)").matches;
 function BotonMusica() {
   const { t } = useApp();
   const estado = useSyncExternalStore(oirMusica, estadoMusica, estadoMusica);
+  const vol = useSyncExternalStore(oirMusica, volumenMusica, volumenMusica);
   const activa = estado !== "apagada";
   const rotulo = t(activa ? "Apagar música ambiental" : "Música ambiental");
+  const conVol = activa && volumenAjustable;
+  const [ver, setVer] = useState(false);
+  const reloj = useRef(0);
+  const mostrar = () => { setVer(true); clearTimeout(reloj.current); reloj.current = setTimeout(() => setVer(false), ESPERA_VOL); };
+  useEffect(() => () => clearTimeout(reloj.current), []);
+  const pulsar = () => {
+    const movil = volumenAjustable && esMovil();
+    if (!activa) { alternarMusica(); if (movil) mostrar(); return; }
+    if (movil && !ver) { mostrar(); return; }
+    setVer(false);
+    alternarMusica();
+  };
   return (
-    <button className="icono-btn musica" type="button" id="b-musica" aria-pressed={activa} aria-label={rotulo} title={rotulo}
-      data-estado={estado} onClick={alternarMusica}>
-      <Svg width="2" d={activa ? ICONO_MUSICA : ICONO_SILENCIO} />
-    </button>
+    <div className={"musica-grupo" + (conVol ? " abierta" : "") + (ver ? " ver" : "")}>
+      <button className="icono-btn musica" type="button" id="b-musica" aria-pressed={activa} aria-label={rotulo} title={rotulo}
+        data-estado={estado} onClick={pulsar}>
+        <Svg width="2" d={activa ? ICONO_MUSICA : ICONO_SILENCIO} />
+      </button>
+      {volumenAjustable && (
+        <input className="musica-vol" type="range" min="0" max="1" step="0.01" value={vol}
+          aria-label={t("Volumen de la música")} title={t("Volumen de la música")} tabIndex={conVol ? 0 : -1} aria-hidden={!conVol}
+          style={{ "--v": Math.round(vol * 100) + "%" }} onPointerDown={mostrar} onChange={(e) => { ponerVolumen(e.target.value); mostrar(); }} />
+      )}
+    </div>
   );
 }
 

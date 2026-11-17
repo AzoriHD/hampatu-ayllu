@@ -122,6 +122,10 @@ instaladas con npm, así que la primera vez que lo bajes haz `npm install`.
   entre sí, que vuelve a empezar sola. No hay temas sueltos ni se puede saltar o adelantar: solo encender
   y apagar. Va con un `<audio>` normal, así que sigue sonando con la pantalla apagada o la app en segundo
   plano, y en la pantalla de bloqueo sale el sapo con «Hampatu Ayllu» y el botón de pausa.
+- Volumen: con la música puesta, el botón se alarga en una píldora con un deslizador (se guarda para la
+  próxima vez). En el móvil cuelga debajo del botón y se esconde solo a los 4 segundos; con la música puesta,
+  un toque lo vuelve a sacar y otro apaga. En iPhone y iPad no sale: la web no puede cambiar el volumen
+  allí, se usan los botones del móvil.
 - El sapo de la portada (`sapo-paseo.webp`, 6 fotogramas lentos) camina por el borde de la manta, se sienta,
   se da la vuelta y vuelve (`pasear`, `girar`, `andar` y `sentar` en `src/styles.css`).
 

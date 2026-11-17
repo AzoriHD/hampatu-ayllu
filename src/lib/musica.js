@@ -6,11 +6,12 @@
  * Se toca con un <audio> normal (no con Web Audio) para que siga sonando con la pantalla apagada
  * o la app en segundo plano, y se anuncia con Media Session: en la pantalla de bloqueo y en el
  * centro de control salen el sapo, «Hampatu Ayllu» y el botón de pausa (sin siguiente, anterior ni barra).
- * Al encender y apagar, el volumen sube y baja poco a poco (en iPhone el volumen no se puede tocar
- * desde la web, así que allí empieza y para en seco).
+ * Al encender y apagar, el volumen sube y baja poco a poco, y con la música puesta sale un deslizador
+ * de volumen al lado del botón. En iPhone y iPad la web no puede tocar el volumen: allí empieza y para
+ * en seco y no sale deslizador (se usan los botones del móvil).
  */
 const ARCHIVO = "/audio/musica-hampatu.mp3";
-const VOLUMEN = 0.6;
+const CLAVE_VOL = "hampatu-volumen";
 const SUBIDA = 1.6; // segundos para encender o apagar suave
 
 let audio = null, estado = "apagada", quiere = false, rampaId = 0, anunciada = false;
@@ -25,6 +26,19 @@ export const estadoMusica = () => estado;
 const volumenFijo = (() => {
   try { const a = new Audio(); a.volume = 0.5; return a.volume !== 0.5; } catch (e) { return true; }
 })();
+
+/* Volumen elegido con el deslizador (0 a 1), guardado para la próxima vez. Se aplica en curva
+   (al cuadrado) para que el deslizador se note parejo al oído en todo su recorrido. */
+let nivel = (() => { try { const v = parseFloat(localStorage.getItem(CLAVE_VOL)); return v >= 0 && v <= 1 ? v : 0.75; } catch (e) { return 0.75; } })();
+const real = () => nivel * nivel;
+export const volumenAjustable = !volumenFijo;
+export const volumenMusica = () => nivel;
+export function ponerVolumen(v) {
+  nivel = Math.max(0, Math.min(1, +v || 0));
+  try { localStorage.setItem(CLAVE_VOL, String(nivel)); } catch (e) { /* sin almacenamiento */ }
+  if (audio && quiere && !volumenFijo) { rampaId++; audio.volume = real(); } // al momento, sin fundido
+  avisar();
+}
 
 const ms = typeof navigator !== "undefined" && "mediaSession" in navigator ? navigator.mediaSession : null;
 
@@ -64,7 +78,7 @@ function crear() {
   audio.addEventListener("waiting", () => { if (quiere) poner("cargando"); });
   audio.addEventListener("playing", () => { if (quiere) poner("sonando"); });
   // play/pausa desde fuera (auriculares, pantalla de bloqueo, otra app que toma el sonido)
-  audio.addEventListener("play", () => { if (!quiere) { quiere = true; rampa(VOLUMEN); poner("cargando"); } });
+  audio.addEventListener("play", () => { if (!quiere) { quiere = true; rampa(real()); poner("cargando"); } });
   audio.addEventListener("pause", () => { if (quiere) { quiere = false; rampaId++; poner("apagada"); } });
   audio.addEventListener("error", () => { quiere = false; poner("apagada"); });
 
@@ -85,7 +99,7 @@ export function encender() {
   anunciarTema();
   const p = audio.play(); // dentro del toque, para que el navegador deje sonar
   if (p && p.catch) p.catch(() => { quiere = false; poner("apagada"); });
-  rampa(VOLUMEN);
+  rampa(real());
   if (ms) ms.playbackState = "playing";
 }
 

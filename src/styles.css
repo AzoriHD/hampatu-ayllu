@@ -84,6 +84,31 @@ img{max-width:100%}
   .musica[data-estado="cargando"] svg{animation:latir 1s ease-in-out infinite alternate}
   .musica[data-estado="sonando"] svg{animation:mecer 2.6s ease-in-out infinite alternate}
 }
+/* Píldora de la música: con la música puesta se alarga y muestra el deslizador de volumen */
+.musica-grupo{display:flex;align-items:center;flex:none;border-radius:999px;border:1.5px solid transparent;transition:background-color .3s,border-color .3s}
+.musica-grupo.abierta{background:var(--maiz);border-color:var(--edge)}
+.musica-grupo.abierta .musica{border-color:transparent;background:transparent}
+.musica-vol{-webkit-appearance:none;appearance:none;width:0;opacity:0;margin:0;padding:0;height:42px;min-height:0;border:0;border-radius:0;background:transparent;cursor:pointer;
+  transition:width .35s ease,opacity .25s ease,margin .35s ease;pointer-events:none}
+.musica-grupo.abierta .musica-vol{width:104px;opacity:1;margin:0 14px 0 2px;pointer-events:auto}
+.musica-vol::-webkit-slider-runnable-track{height:6px;border-radius:99px;background:linear-gradient(to right,var(--ink) var(--v),color-mix(in srgb,var(--ink) 22%,transparent) var(--v))}
+.musica-vol::-moz-range-track{height:6px;border-radius:99px;background:color-mix(in srgb,var(--ink) 22%,transparent)}
+.musica-vol::-moz-range-progress{height:6px;border-radius:99px;background:var(--ink)}
+.musica-vol::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;margin-top:-6px;border-radius:50%;background:var(--manta);border:2px solid var(--edge);box-shadow:1.5px 1.5px 0 var(--edge)}
+.musica-vol::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--manta);border:2px solid var(--edge);box-shadow:1.5px 1.5px 0 var(--edge)}
+.musica-vol:focus-visible{outline:none}
+.musica-vol:focus-visible::-webkit-slider-thumb{outline:3px solid var(--accent);outline-offset:1px}
+/* En el móvil no cabe en la barra: el deslizador cuelga debajo del botón y se esconde solo a los pocos segundos */
+@media (max-width:760px){
+  .musica-grupo{position:relative}
+  .musica-grupo.abierta{background:transparent;border-color:transparent}
+  .musica-grupo.abierta .musica{background:var(--maiz);border-color:var(--edge)}
+  .musica-vol,.musica-grupo.abierta .musica-vol{position:absolute;top:calc(100% + 12px);left:50%;width:156px;height:46px;margin:0;padding:0 16px;
+    background:var(--manta);border:2px solid var(--edge);border-radius:999px;box-shadow:3px 3px 0 var(--edge);
+    opacity:0;pointer-events:none;transform:translate(-50%,-6px);transition:opacity .2s ease,transform .2s ease}
+  .musica-grupo.abierta.ver .musica-vol{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+}
+@media (prefers-reduced-motion:reduce){.musica-vol,.musica-grupo{transition:none}}
 @keyframes latir{to{opacity:.35}}
 @keyframes mecer{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
 @media (max-width:1320px){
