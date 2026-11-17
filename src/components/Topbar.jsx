@@ -21,7 +21,7 @@ export const ICONO_APP = '<rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/
 const ICONO_MUSICA = '<path d="M9 17.5V5.2l10-2v12.1"/><circle cx="6.6" cy="17.6" r="2.6"/><circle cx="16.6" cy="15.4" r="2.6"/>';
 const ICONO_SILENCIO = ICONO_MUSICA + '<path d="M3.5 3.5l17 17"/>';
 
-/* Botón de la música ambiental: enciende y apaga el sonido de la jalca */
+/* Botón de la música: enciende y apaga los temas de Hampatu Ayllu (siguen con la pantalla apagada) */
 function BotonMusica() {
   const { t } = useApp();
   const estado = useSyncExternalStore(oirMusica, estadoMusica, estadoMusica);

@@ -3,7 +3,7 @@
   width:min(560px,calc(100% - 24px));display:flex;align-items:center;gap:12px;padding:12px 10px 12px 12px;
   background:var(--manta,#fff8e8);color:var(--ink,#2b190b);border:2px solid var(--edge,#2b190b);border-radius:18px;
   box-shadow:5px 5px 0 var(--edge,#2b190b);font:inherit;animation:instalar-entra .35s ease-out both}
-.instalar-app img{flex:none;border-radius:50%}
+.instalar-app img{flex:none;border-radius:22.5%}
 .instalar-txt{display:grid;gap:2px;flex:1;min-width:0;line-height:1.3}
 .instalar-txt strong{font-size:16px}
 .instalar-txt span{font-size:14px;color:var(--muted,#6a4523)}

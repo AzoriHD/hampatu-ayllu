@@ -97,8 +97,9 @@ La web es también una app (PWA): se instala gratis desde la propia web, sin tie
 - Aviso flotante «Instala la app» a los pocos segundos de entrar (no sale si ya está instalada o si se cierra).
 - Dentro de la app instalada no aparece nada sobre la app (ni el botón de descargar, ni la página #app, ni el aviso del pie):
   `esApp` en `src/App.jsx` lo detecta con `display-mode` (y `navigator.standalone` en iPhone).
-- Icono: el sapo con aro. `icon-192/512.png` (redondo, fondo transparente), `icon-maskable-*.png` y
-  `apple-touch-icon.png` (sobre crema, para Android e iPhone).
+- Icono: el sapo en su roca, a sangre y sin marco. `icon-192/512.png` (cuadrado con esquinas redondeadas,
+  para ordenadores y la web), `icon-maskable-*.png` y `apple-touch-icon.png` (cuadrados llenos: Android e
+  iPhone les ponen su propia forma, círculo o cuadrado redondeado, y el sapo queda grande y centrado).
 - Sin conexión se abre y muestra lo último que se cargó (`public/sw.js`). Al publicar, `vite.config.js`
   le pone una versión nueva y la lista de archivos, así que no hay que tocar nada en cada cambio.
 - Iconos en `public/icon-*.png`, capturas para la ventana de instalación en `public/img/app-*.webp`
@@ -116,9 +117,12 @@ Patrones de tejido andino (`public/img/tejido-*.webp`, `faja-*.webp`) y un medal
 instaladas con npm, así que la primera vez que lo bajes haz `npm install`.
 
 - En el móvil, la barra de abajo lleva todas las secciones en una fila que se desliza a izquierda y derecha.
-- Música ambiental: botón de la nota musical arriba. Suena `public/audio/ambiente.mp3` en bucle sin fin
-  (`src/lib/musica.js`). El archivo sale de la pista original sin la entrada ni el final, y sus últimos
-  12 segundos se funden con el principio, así que no se nota dónde vuelve a empezar.
+- Música: botón de la nota musical arriba. Suena `public/audio/musica-hampatu.mp3`: los cuatro temas de
+  Hampatu Ayllu en una pista de casi 15 minutos, igualados de volumen y enlazados con fundidos por orden de
+  tonalidad (Re menor → Re menor → Sol menor → Sol mayor) que vuelve a empezar sola. Va con un `<audio>`
+  normal, así que sigue sonando con la pantalla apagada o la app en segundo plano, y con Media Session
+  sale en la pantalla de bloqueo con el sapo, el número de tema y los botones de pausa, siguiente y anterior.
+  Si se añaden o cambian temas, actualizar `TEMAS` (segundo en que entra cada uno) en `src/lib/musica.js`.
 - El sapo de la portada (`sapo-paseo.webp`, 6 fotogramas lentos) camina por el borde de la manta, se sienta,
   se da la vuelta y vuelve (`pasear`, `girar`, `andar` y `sentar` en `src/styles.css`).
 
