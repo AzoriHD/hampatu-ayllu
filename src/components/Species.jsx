@@ -3,8 +3,8 @@ import { useApp } from "../AppContext.jsx";
 /* Lámina: las dos coloraciones conocidas. Arriba, de perfil y al mismo tamaño (public/img/morfo-verde.webp y
    morfo-amarillo.webp, 736 × 486); debajo, tres vistas pequeñas (morfo-<id>-<vista>.webp) */
 const MORFOS = [
-  { id: "verde", es: "Verde y negro", en: "Green and black", arriba: [269, 323], abajo: [320, 321], frente: [340, 219] },
-  { id: "amarillo", es: "Amarillo y marrón", en: "Yellow and brown", arriba: [245, 323], abajo: [309, 316], frente: [340, 209] },
+  { id: "verde", es: "Verde y negro", en: "Green and black", arriba: [269, 323], abajo: [290, 323], frente: [340, 219] },
+  { id: "amarillo", es: "Amarillo y marrón", en: "Yellow and brown", arriba: [245, 323], abajo: [285, 323], frente: [340, 209] },
 ];
 const VISTAS = [
   { id: "arriba", es: "Lomo", en: "Back" },
