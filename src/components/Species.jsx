@@ -45,7 +45,7 @@ export default function Species() {
               </div>
             ))}
           </div>
-          <figcaption className="lamina-pie">{en ? "Plate · The two known colour forms, recreated as faithfully as possible. They are not photographs." : "Lámina · Las dos coloraciones conocidas, recreadas lo más fielmente posible. No son fotos."}</figcaption>
+          <figcaption className="lamina-pie">{en ? "Plate · The two known colour forms, recreated with AI from real photographs. They are not photographs." : "Lámina · Las dos coloraciones conocidas, recreadas con IA a partir de fotografías reales. No son fotos."}</figcaption>
         </figure>
 
         <h3>{en ? "Where it lives" : "Dónde vive"}</h3>
