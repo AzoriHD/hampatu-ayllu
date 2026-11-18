@@ -330,11 +330,6 @@ input[type=file]{padding:8px}
 .esp-main h3{font:750 23px/1.15 var(--display);font-stretch:90%;margin:26px 0 6px}
 .esp-main p{margin:0;max-width:64ch}
 .lamina{margin:20px 0 6px;background:var(--manta);border:1.5px solid var(--edge);border-radius:var(--r);box-shadow:5px 5px 0 var(--shade);padding:16px 18px 12px}
-.lamina-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end}
-@media (max-width:560px){.lamina-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.lamina-grid figure{margin:0;display:grid;gap:4px;justify-items:center}
-.lamina-grid img{width:100%;height:auto;max-height:130px;object-fit:contain}
-.lamina-grid figcaption{font-size:14px;font-weight:700;color:var(--muted);text-align:center}
 .lamina-pie{margin-top:10px;padding-top:8px;border-top:1.5px dashed var(--line);font-size:14px;color:var(--muted);font-style:italic}
 .morfos{margin-top:14px}
 .morfos-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 36px}

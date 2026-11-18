@@ -128,7 +128,7 @@ instaladas con npm, así que la primera vez que lo bajes haz `npm install`.
   allí, se usan los botones del móvil.
 - El sapo de la portada (`sapo-paseo.webp`, 6 fotogramas lentos) camina por el borde de la manta, se sienta,
   se da la vuelta y vuelve (`pasear`, `girar`, `andar` y `sentar` en `src/styles.css`).
-- La especie, Lámina II: las dos coloraciones conocidas (verde y negro, amarillo y marrón). Arriba, de perfil y
+- La especie, la lámina: las dos coloraciones conocidas (verde y negro, amarillo y marrón). Arriba, de perfil y
   exactamente al mismo tamaño: `public/img/morfo-verde.webp` y `morfo-amarillo.webp` (736 × 486, fondo
   transparente, el sapo ocupa 720 px de ancho en las dos). Debajo, el lomo, el vientre y de frente
   (`morfo-<verde|amarillo>-<arriba|abajo|frente>.webp`). La lista está en `MORFOS` y `VISTAS` de

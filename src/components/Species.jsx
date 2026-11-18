@@ -1,6 +1,6 @@
 import { useApp } from "../AppContext.jsx";
 
-/* Lámina II: las dos coloraciones conocidas. Arriba, de perfil y al mismo tamaño (public/img/morfo-verde.webp y
+/* Lámina: las dos coloraciones conocidas. Arriba, de perfil y al mismo tamaño (public/img/morfo-verde.webp y
    morfo-amarillo.webp, 736 × 486); debajo, tres vistas pequeñas (morfo-<id>-<vista>.webp) */
 const MORFOS = [
   { id: "verde", es: "Verde y negro", en: "Green and black", arriba: [320, 323], abajo: [320, 321], frente: [340, 219] },
@@ -28,16 +28,6 @@ export default function Species() {
         <h2>{en ? "The Peruvian harlequin toad" : "El sapo arlequín peruano"}</h2>
         <p className="esp-lede">{en ? "A small toad from the highlands of northern Peru that was almost given up for lost and has turned up again." : "Un sapo pequeño de las alturas del norte del Perú que se dio casi por perdido y que ha vuelto a aparecer."}</p>
 
-        <figure className="lamina">
-          <div className="lamina-grid">
-            <figure><img src="/img/sapo-lado.webp" width="380" height="306" alt="" loading="lazy" /><figcaption>{en ? "Sitting, side view" : "Sentado, de lado"}</figcaption></figure>
-            <figure><img src="/img/sapo-frente.webp" width="380" height="294" alt="" loading="lazy" /><figcaption>{en ? "Front view" : "De frente"}</figcaption></figure>
-            <figure><img src="/img/sapo-camina.webp" width="380" height="277" alt="" loading="lazy" /><figcaption>{en ? "Walking" : "Caminando"}</figcaption></figure>
-            <figure><img src="/img/sapo-dorso.webp" width="368" height="333" alt="" loading="lazy" /><figcaption>{en ? "Seen from above" : "Visto desde arriba"}</figcaption></figure>
-          </div>
-          <figcaption className="lamina-pie">{en ? "Plate I · The hampatu as the community draws it. An artistic illustration, not an identification guide." : "Lámina I · El hampatu como lo dibuja la comunidad. Ilustración artística, no sirve como guía para identificarlo."}</figcaption>
-        </figure>
-
         <h3>{en ? "Its two colour forms" : "Sus dos coloraciones"}</h3>
         <p>{en ? "Its colour varies. The green and black form is the one in the species descriptions: a green back, black flanks dotted with yellow and a yellow-orange belly. The yellow and brown form matches the toad photographed in Áncash in January 2026: dark brown with yellow blotches, a yellow head and banded legs (Vilca-Alzamora et al., 2026)." : "Varía de color. La forma verde y negra es la que recogen las descripciones de la especie: lomo verde, flancos negros salpicados de puntos amarillos y vientre amarillo anaranjado. La amarilla y marrón es como el sapo fotografiado en Áncash en enero de 2026: marrón oscuro con manchas amarillas, la cabeza amarilla y las patas a bandas (Vilca-Alzamora y otros, 2026)."}</p>
 
@@ -55,7 +45,7 @@ export default function Species() {
               </div>
             ))}
           </div>
-          <figcaption className="lamina-pie">{en ? "Plate II · The two known colour forms, recreated as faithfully as possible. They are not photographs." : "Lámina II · Las dos coloraciones conocidas, recreadas lo más fielmente posible. No son fotos."}</figcaption>
+          <figcaption className="lamina-pie">{en ? "Plate · The two known colour forms, recreated as faithfully as possible. They are not photographs." : "Lámina · Las dos coloraciones conocidas, recreadas lo más fielmente posible. No son fotos."}</figcaption>
         </figure>
 
         <h3>{en ? "Where it lives" : "Dónde vive"}</h3>
