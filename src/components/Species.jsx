@@ -45,7 +45,7 @@ export default function Species() {
               </div>
             ))}
           </div>
-          <figcaption className="lamina-pie">{en ? "Plate · The two known colour forms, recreated with AI from real photographs. They are not photographs." : "Lámina · Las dos coloraciones conocidas, recreadas con IA a partir de fotografías reales. No son fotos."}</figcaption>
+          <figcaption className="lamina-pie">{en ? "Plate · Green and black: a photograph by Jörn Köhler, retouched with AI. Yellow and brown: an AI recreation based on that same photograph. The small views are AI recreations too." : "Lámina · Verde y negro: fotografía de Jörn Köhler retocada con IA. Amarillo y marrón: recreación con IA a partir de esa misma foto. Las vistas pequeñas también son recreaciones con IA."}</figcaption>
         </figure>
 
         <h3>{en ? "Where it lives" : "Dónde vive"}</h3>
