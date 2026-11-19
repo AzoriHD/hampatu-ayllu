@@ -47,7 +47,7 @@ export default function Sighting() {
           <button className="btn-ghost" type="button" onClick={() => setEnviado(false)}>{en ? "Send another one" : "Mandar otro"}</button>
         </div>
       ) : (
-        <SightingForm onDone={() => { setEnviado(true); window.scrollTo({ top: document.getElementById("v-visto")?.offsetTop || 0, behavior: "smooth" }); }} />
+        <SightingForm onDone={() => { setEnviado(true); document.getElementById("v-visto")?.scrollIntoView({ behavior: "smooth", block: "start" }); }} />
       )}
 
       {meta.cuenta && meta.admin && <Recibidos lista={lista} />}
@@ -58,6 +58,28 @@ export default function Sighting() {
         </div>
       )}
     </section>
+  );
+}
+
+/* La ventana que abre el botón: encima de la página, sin moverla. Se cierra con la X, Escape o tocando fuera. */
+export function VistoModal({ onClose }) {
+  const { en } = useApp();
+  const caja = useRef(null);
+  useEffect(() => {
+    const antes = document.activeElement;
+    document.body.classList.add("con-modal");
+    caja.current?.focus();
+    const tecla = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", tecla);
+    return () => { document.body.classList.remove("con-modal"); document.removeEventListener("keydown", tecla); antes?.focus?.(); };
+  }, [onClose]);
+  return (
+    <div className="modal modal-visto" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="modal-visto-caja" role="dialog" aria-modal="true" aria-labelledby="h-visto" tabIndex={-1} ref={caja}>
+        <button type="button" className="modal-cerrar" onClick={onClose} aria-label={en ? "Close" : "Cerrar"}>×</button>
+        <Sighting />
+      </div>
+    </div>
   );
 }
 

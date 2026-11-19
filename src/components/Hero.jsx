@@ -40,13 +40,13 @@ export default function Hero() {
 
 /* El botón de «He visto al hampatu»: se hunde al pulsarlo (con clic si la música está puesta) y luego abre el formulario */
 function BotonHampatu() {
-  const { en, irVista } = useApp();
+  const { en, abrirVisto } = useApp();
   const [abajo, setAbajo] = useState(false);
   const pulsar = (ev) => {
     ev.preventDefault();
     sonarClic();
     setAbajo(true);
-    setTimeout(() => { setAbajo(false); irVista("visto", true); }, 220);
+    setTimeout(() => { setAbajo(false); abrirVisto(); }, 220);
   };
   return (
     <a className={"boton-hampatu" + (abajo ? " abajo" : "")} href="#visto" onPointerDown={prepararClic} onClick={pulsar}

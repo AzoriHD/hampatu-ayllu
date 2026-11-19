@@ -15,7 +15,7 @@ import Calendar from "./components/Calendar.jsx";
 import Crafts from "./components/Crafts.jsx";
 import Species from "./components/Species.jsx";
 import Rewards from "./components/Rewards.jsx";
-import Sighting from "./components/Sighting.jsx";
+import { VistoModal } from "./components/Sighting.jsx";
 import Support from "./components/Support.jsx";
 import { Agreements, Footer } from "./components/Agreements.jsx";
 import AdminZone from "./components/Admin.jsx";
@@ -82,6 +82,8 @@ export default function App() {
   const [abiertos, setAbiertos] = useState(() => (inicioAviso ? { [inicioAviso]: 1 } : {}));
   const [destino, setDestino] = useState(() => (inicioAviso ? { id: "a-" + inicioAviso, block: "start" } : null));
   const tabsRef = useRef(null);
+  /* «He visto al hampatu» se abre en una ventana encima de la página, sin moverla */
+  const [visto, setVisto] = useState(() => window.location.hash === "#visto");
 
   /* Al cambiar de sección se baja (o se sube) hasta el principio del contenido */
   const irVista = useCallback((v, bajar) => {
@@ -100,6 +102,7 @@ export default function App() {
   useEffect(() => {
     const onHash = () => {
       const a = avisoDelHash(), pf = perfilDelHash();
+      if (window.location.hash === "#visto") { setVisto(true); return; }
       if (pf) { setPerfil({ id: pf, k: Date.now() }); setView("perfil"); }
       else if (a) { setView("tablon"); setZona(""); setAbiertos((o) => ({ ...o, [a]: 1 })); setDestino({ id: "a-" + a, block: "start" }); }
       else { setView(viewOf(window.location.hash)); tabsRef.current?.scrollIntoView({ block: "start" }); }
@@ -109,6 +112,7 @@ export default function App() {
       const enl = ev.target.closest?.('a[href^="#"]');
       if (!enl) return;
       const v = enl.getAttribute("href").slice(1);
+      if (v === "visto") { ev.preventDefault(); setVisto(true); return; }
       if (!VIEWS.includes(v)) return;
       ev.preventDefault();
       irVista(v, true);
@@ -228,7 +232,9 @@ export default function App() {
     apuntando, setApuntando, recien, setRecien, apuntesDe, apuntar, quitarApunte,
     votar, enlaceAviso, contactoDe, zonaDe, borrar, ofrecer, formAviso, setFormAviso,
     calMes, setCalMes, calSel, setCalSel, oscuro, cambiarTema, cambiarIdioma, esApp,
+    abrirVisto: () => setVisto(true),
   };
+  const cerrarVisto = () => { setVisto(false); if (window.location.hash === "#visto") marcarHash(view); };
 
   return (
     <AppContext.Provider value={ctx}>
@@ -251,7 +257,6 @@ export default function App() {
         {view === "artesania" && <Crafts />}
         {view === "especie" && <Species />}
         {view === "recompensas" && <Rewards />}
-        {view === "visto" && <Sighting />}
         {view === "apoya" && <Support />}
         {view === "app" && !esApp && <AppPage />}
 
@@ -259,6 +264,7 @@ export default function App() {
       </main>
       <Footer />
       <BottomNav />
+      {visto && <VistoModal onClose={cerrarVisto} />}
     </AppContext.Provider>
   );
 }

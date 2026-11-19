@@ -670,3 +670,13 @@ img.avatar{background:var(--maiz)}
 .boton-hampatu:active .b-arriba,.boton-hampatu.abajo .b-arriba{visibility:hidden}
 .boton-hampatu:active .b-abajo,.boton-hampatu.abajo .b-abajo{visibility:visible}
 .boton-hampatu:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+/* Ventana de «He visto al hampatu» */
+.modal.modal-visto{z-index:45;padding:max(12px,4vh) 12px 24px;animation:visto-fondo .2s ease-out}
+.modal-visto-caja{position:relative;width:100%;max-width:820px;outline:none;animation:visto-sube .28s cubic-bezier(.2,.9,.3,1.15)}
+.modal-visto-caja>section{display:grid;gap:16px}
+.modal-cerrar{position:absolute;top:10px;right:10px;z-index:2;width:44px;height:44px;border-radius:50%;border:2px solid var(--edge);background:var(--manta);color:var(--ink);font-size:28px;line-height:1;cursor:pointer;box-shadow:2px 2px 0 var(--edge)}
+.modal-cerrar:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--edge)}
+@keyframes visto-fondo{from{background:rgb(30 19 10 / 0)}}
+@keyframes visto-sube{from{opacity:0;transform:translateY(40px) scale(.97)}}
+@media (prefers-reduced-motion:reduce){.modal.modal-visto,.modal-visto-caja{animation:none}}
+@media (max-width:560px){.modal.modal-visto{padding:8px 8px 20px}}
