@@ -39,7 +39,7 @@ export default function Discover() {
 
   const votosDe = useMemo(() => { const m = {}; data.votos.forEach((v) => { m[v.aviso] = (m[v.aviso] || 0) + 1; }); return m; }, [data.votos]);
   const misVotos = useMemo(() => new Set(data.votos.filter((v) => v.by === uid).map((v) => v.aviso)), [data.votos, uid]);
-  const todas = useMemo(() => data.avisos.filter((a) => a.tipo === mazo && !(a.by && a.by === uid)).sort((x, y) => (y.ts || 0) - (x.ts || 0)), [data.avisos, mazo, uid]);
+  const todas = useMemo(() => data.avisos.filter((a) => a.tipo === mazo && !(a.by && a.by === uid && !a.ejemplo)).sort((x, y) => (y.ts || 0) - (x.ts || 0)), [data.avisos, mazo, uid]);
   const quedan = todas.filter((a) => !vistos[a.id] || (salida && salida.id === a.id));
   const cartas = quedan.slice(0, 3);
   const actual = cartas[0];
@@ -96,7 +96,7 @@ export default function Discover() {
         </div></header>
         <div className="mazo-tabs" role="tablist" aria-label={en ? "What to see" : "Qué ver"}>
           {Object.keys(MAZOS).map((k) => {
-            const n = data.avisos.filter((a) => a.tipo === k && !(a.by && a.by === uid) && !vistos[a.id]).length;
+            const n = data.avisos.filter((a) => a.tipo === k && !(a.by && a.by === uid && !a.ejemplo) && !vistos[a.id]).length;
             return <button key={k} type="button" role="tab" aria-selected={mazo === k} className="chipbtn" onClick={() => { setMazo(k); setHist([]); }}>{MAZOS[k][en ? 1 : 0]} <span className="n">{n}</span></button>;
           })}
         </div>

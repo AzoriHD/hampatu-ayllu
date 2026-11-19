@@ -81,6 +81,32 @@ export function Topbar() {
 
   const inicio = (ev) => { ev.preventDefault(); irVista("tablon"); window.scrollTo({ top: 0, behavior: "smooth" }); };
 
+  /* Cuando las secciones no caben: flechas a los lados, rueda del ratón y arrastrar para recorrerlas */
+  const [bordes, setBordes] = useState({ izq: false, der: false });
+  const medir = useCallback(() => {
+    const n = navRef.current; if (!n) return;
+    const max = n.scrollWidth - n.clientWidth;
+    setBordes((b) => { const x = { izq: n.scrollLeft > 4, der: n.scrollLeft < max - 4 }; return x.izq === b.izq && x.der === b.der ? b : x; });
+  }, []);
+  useEffect(() => {
+    medir();
+    const ro = window.ResizeObserver ? new ResizeObserver(medir) : null;
+    if (ro && navRef.current) ro.observe(navRef.current);
+    window.addEventListener("resize", medir);
+    return () => { ro?.disconnect(); window.removeEventListener("resize", medir); };
+  }, [medir, en]);
+  const mover = (dir) => { const n = navRef.current; if (n) n.scrollBy({ left: dir * Math.max(160, n.clientWidth * 0.6), behavior: "smooth" }); };
+  const rueda = (e) => { const n = navRef.current; if (n && Math.abs(e.deltaY) > Math.abs(e.deltaX) && n.scrollWidth > n.clientWidth) { n.scrollLeft += e.deltaY; } };
+  const drag = useRef(null);
+  const arrastrar = (e) => { if (e.pointerType === "mouse" && e.button === 0) drag.current = { x: e.clientX, s: navRef.current.scrollLeft, movio: false }; };
+  const arrastrando = (e) => {
+    const d = drag.current; if (!d) return;
+    const dx = e.clientX - d.x;
+    if (Math.abs(dx) > 5) { d.movio = true; navRef.current.scrollLeft = d.s - dx; }
+  };
+  const soltar = () => { const d = drag.current; drag.current = null; if (d && d.movio) { drag.movio = true; setTimeout(() => { drag.movio = false; }, 0); } };
+  const sinClicTrasArrastre = (e) => { if (drag.movio) { e.preventDefault(); e.stopPropagation(); } };
+
   return (
     <>
     <div className="faja-top" aria-hidden="true"></div>
@@ -90,11 +116,16 @@ export function Topbar() {
           <img src="/img/logo.webp" width="44" height="42" alt="" />
           <span>Hampatu Ayllu</span>
         </a>
-        <nav className="nav" ref={navRef} aria-label={en ? "Sections" : "Secciones"}>
-          {SECCIONES.map(([v, es, enl]) => (
-            <a key={v} href={"#" + v} id={"tab-" + v} aria-current={enlace(view, v)}>{en ? enl : es}</a>
-          ))}
-        </nav>
+        <div className="nav-w" data-izq={bordes.izq ? "" : undefined} data-der={bordes.der ? "" : undefined}>
+          <button type="button" className="nav-flecha izq" tabIndex={-1} aria-hidden="true" onClick={() => mover(-1)}><Svg width="2.4" d='<path d="M15 18l-6-6 6-6"/>' /></button>
+          <nav className="nav" ref={navRef} aria-label={en ? "Sections" : "Secciones"} onScroll={medir} onWheel={rueda}
+            onPointerDown={arrastrar} onPointerMove={arrastrando} onPointerUp={soltar} onPointerCancel={soltar} onClickCapture={sinClicTrasArrastre}>
+            {SECCIONES.map(([v, es, enl]) => (
+              <a key={v} href={"#" + v} id={"tab-" + v} aria-current={enlace(view, v)} draggable="false">{en ? enl : es}</a>
+            ))}
+          </nav>
+          <button type="button" className="nav-flecha der" tabIndex={-1} aria-hidden="true" onClick={() => mover(1)}><Svg width="2.4" d='<path d="M9 18l6-6-6-6"/>' /></button>
+        </div>
         <div className="acciones">
           {!esApp && (
             <a className="btn-descarga" href="#app" id="b-app" aria-current={view === "app" ? "page" : undefined}>

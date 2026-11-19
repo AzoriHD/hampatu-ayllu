@@ -204,6 +204,7 @@ function Foto({ src, i }) {
 function Post({ a, votos, mio }) {
   const { t, data, uid, canPost, canEdit, ago, zonaDe, contactoDe, goCom, abiertos, setAbiertos, votar, enlaceAviso, write, setMsg, pedirCuenta, escribirA, en } = useApp();
   const [compartir, setCompartir] = useState(false);
+  const [notaMp, setNotaMp] = useState(false);
   const tp = tipoDe(a), id = a.id;
   const rs = data.respuestas.filter((r) => r.aviso === id).sort((x, y) => (x.ts || 0) - (y.ts || 0));
   const abierto = !!abiertos[id];
@@ -249,12 +250,18 @@ function Post({ a, votos, mio }) {
           <Svg width="2.2" d='<path d="M12 19V5M5 12l7-7 7 7"/>' />{t(mio ? "Votado" : "Votar")} <b>{votos}</b>
         </button>
         <button type="button" className="linkbtn" id={"sh-" + id} aria-expanded={compartir} onClick={() => setCompartir(!compartir)}>{t("Compartir")}</button>
-        {a.by && a.by !== uid && !a.ejemplo && <button type="button" className="linkbtn" id={"mp-" + id} onClick={() => escribirA(a.by, { ref: { aviso: id, titulo: String(a.titulo || "").slice(0, 120) } })}>{en ? "Private message" : "Mensaje privado"}</button>}
+        {(a.ejemplo || (a.by && a.by !== uid)) && (
+          <button type="button" className="voto mp" id={"mp-" + id} title={en ? "Write privately to whoever posted it" : "Escribir en privado a quien lo publicó"}
+            onClick={() => (a.ejemplo || !a.by ? setNotaMp(true) : escribirA(a.by, { ref: { aviso: id, titulo: String(a.titulo || "").slice(0, 120) } }))}>
+            <Svg width="2" d='<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>' />{en ? "Message" : "Mensaje"}
+          </button>
+        )}
         {canEdit && canPost && tp === "avistamiento" && fotos.length > 0 && a.estado !== "muerto" && (
           <button type="button" className="linkbtn" id={"v-" + id} onClick={() => verificar(!a.verificada)}>{t(a.verificada ? "Quitar verificación" : "Marcar foto verificada")}</button>
         )}
         {puedeBorrar && <DelBtns k={"aviso:" + id} />}
       </div>
+      {notaMp && <p className="meta nota-mp" role="status">{en ? "This is a sample post: there is nobody to write to. On real posts this opens a private chat with whoever posted it." : "Es un aviso de ejemplo: no hay nadie a quien escribir. En los avisos de verdad abre un chat privado con quien lo publicó."}</p>}
       {compartir && (
         <div className="compartir">
           <a className="btn-mini" href={"https://wa.me/?text=" + encodeURIComponent(txt)} target="_blank" rel="noopener noreferrer">WhatsApp</a>
