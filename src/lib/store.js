@@ -23,7 +23,7 @@ const KEY = "hampatu-react-v1";
 const SB_URL = typeof __SB_URL__ === "string" ? __SB_URL__ : "";
 const SB_KEY = typeof __SB_KEY__ === "string" ? __SB_KEY__ : "";
 export const REMOTE = !!(SB_URL && SB_KEY);
-const sb = REMOTE ? createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, storageKey: "hampatu-auth" } }) : null;
+export const sb = REMOTE ? createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, storageKey: "hampatu-auth" } }) : null;
 
 const vacio = () => Object.fromEntries(COLS.map((c) => [c, {}]));
 const copia = (x) => JSON.parse(JSON.stringify(x));

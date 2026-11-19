@@ -15,6 +15,8 @@ import Calendar from "./components/Calendar.jsx";
 import Crafts from "./components/Crafts.jsx";
 import Species from "./components/Species.jsx";
 import Rewards from "./components/Rewards.jsx";
+import Sighting from "./components/Sighting.jsx";
+import Support from "./components/Support.jsx";
 import { Agreements, Footer } from "./components/Agreements.jsx";
 import AdminZone from "./components/Admin.jsx";
 import { AccountPanel } from "./components/Account.jsx";
@@ -249,6 +251,8 @@ export default function App() {
         {view === "artesania" && <Crafts />}
         {view === "especie" && <Species />}
         {view === "recompensas" && <Rewards />}
+        {view === "visto" && <Sighting />}
+        {view === "apoya" && <Support />}
         {view === "app" && !esApp && <AppPage />}
 
         {view !== "app" && <Agreements />}

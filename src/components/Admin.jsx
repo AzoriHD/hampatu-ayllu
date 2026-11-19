@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useApp } from "../AppContext.jsx";
 import { borrarEjemplos, hayEjemplos, REMOTE, salir, store } from "../lib/store.js";
+import { cargarAvistamientos, useAvistamientos } from "../lib/avistamientos.js";
 import { Msg } from "./Shared.jsx";
 
 /* Top strip: demo notice, community status and the coordination bar. */
@@ -8,6 +9,9 @@ export default function AdminZone() {
   const { t, meta, write, reiniciar } = useApp();
   const [m, setM] = useState("");
   const [seguro, setSeguro] = useState(false);
+  const avist = useAvistamientos();
+  useEffect(() => { if (meta.admin && meta.cuenta) cargarAvistamientos(meta.uid, true).catch(() => {}); }, [meta.admin, meta.cuenta, meta.uid]);
+  const nuevos = avist.filter((a) => a.estado === "nuevo").length;
 
   if (!REMOTE) {
     return (
@@ -25,6 +29,7 @@ export default function AdminZone() {
         <div className="notice admin-bar" id="admin-bar">
           <p><strong>{t("Modo coordinación")}</strong> · {meta.email}</p>
           <p className="meta">{t("Puedes marcar fechas, verificar fotos y editar o borrar cualquier aviso o comunidad.")}</p>
+          {nuevos > 0 && <p><a href="#visto"><strong>{nuevos === 1 ? t("1 avistamiento nuevo por revisar") : nuevos + " " + t("avistamientos nuevos por revisar")}</strong></a></p>}
           <div className="row">
             <button type="button" className="linkbtn" id="b-cargar-ej" onClick={() => write(setM, () => store.reset(), () => setM("Ejemplos cargados."))}>{t("Cargar ejemplos")}</button>
             {hayEjemplos() && (seguro

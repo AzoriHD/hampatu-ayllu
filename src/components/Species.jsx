@@ -76,8 +76,8 @@ export default function Species() {
           <ol>
             <li>{en ? "Do not touch it or move it." : "No lo toques ni lo muevas."}</li>
             <li>{en ? "Take a photo of it where it is. If it is verified, it can earn a reward." : "Hazle una foto donde está. Si se verifica, puede tener recompensa."}</li>
-            <li>{en ? "Note the day and the place, without coordinates." : "Apunta el día y el lugar, sin coordenadas."}</li>
-            <li>{en ? "Post it on the board as a Sighting and add the photo." : "Avisa en el tablón como Avistamiento y sube la foto."}</li>
+            <li>{en ? <>Send it with <a href="#visto">I've seen a toad</a>, with the exact spot. Only the coordination team sees it.</> : <>Mándala con <a href="#visto">He visto un sapo</a>, con el sitio exacto. Solo lo ve la coordinación.</>}</li>
+            <li>{en ? "Never put the exact spot on the board or on social media." : "Nunca pongas el sitio exacto en el tablón ni en redes."}</li>
             <li>{en ? "Clean your boots before going to another stream." : "Limpia las botas antes de ir a otra quebrada."}</li>
           </ol>
         </div>

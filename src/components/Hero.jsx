@@ -26,7 +26,8 @@ export default function Hero() {
             <span><b>{na}</b> {t(na === 1 ? "aviso" : "avisos")}</span>
           </p>
           <div className="portada-cta">
-            <a className="btn-acc" href="#recompensas">{en ? "Rewards for those who protect" : "Recompensas para quien protege"}</a>
+            <a className="btn-acc" href="#visto">{en ? "I've seen a toad" : "He visto un sapo"}</a>
+            <a className="btn-linea" href="#recompensas">{en ? "Rewards for those who protect" : "Recompensas para quien protege"}</a>
             {!esApp && <a className="btn-linea" href="#app"><Svg width="2" d={ICONO_APP} />{en ? "Get the app" : "Descarga la app"}</a>}
           </div>
         </div>

@@ -1,6 +1,13 @@
 import { COORD_MSG } from "./data/constants.js";
 
 export const EN={
+  "Para mandar un avistamiento necesitas una cuenta: así la coordinación puede contestarte y, si la foto se verifica, darte la recompensa.":"To send a sighting you need an account, so the coordination team can reply and, if the photo is verified, give you the reward.",
+  "Este móvil no deja leer la ubicación. Escribe el lugar o las coordenadas.":"This phone does not share its location. Write the place or the coordinates.",
+  "No se pudo leer la ubicación. Revisa que el GPS esté activado y que la web tenga permiso, o escribe el lugar.":"Could not read the location. Check that GPS is on and the site has permission, or write the place.",
+  "Solo caben 3 fotos por avistamiento.":"Only 3 photos fit in a sighting.",
+  "Añade al menos una foto del sapo.":"Add at least one photo of the toad.",
+  "Usa tu ubicación o escribe dónde lo viste.":"Use your location or write where you saw it.",
+  "1 avistamiento nuevo por revisar":"1 new sighting to check","avistamientos nuevos por revisar":"new sightings to check",
   "Otra zona":"Other area","Toda la comunidad":"Whole community","Todos":"All",
   "Avistamiento":"Sighting","Necesitamos":"We need","Ofrecemos":"We offer","Evento":"Event","Pregunta":"Question",
   "Comunidad local":"Local community","Guías y guardaparques":"Guides and rangers","Escuela":"School","ONG":"NGO","Investigación":"Research","Otro":"Other",

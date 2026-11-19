@@ -109,3 +109,40 @@ create policy "fotos: subir" on storage.objects for insert to authenticated
 
 -- 7. TU CORREO DE COORDINACIÓN (cámbialo por el tuyo)
 insert into public.admin_emails (email) values ('TU_CORREO@gmail.com') on conflict do nothing;
+
+-- 8. AVISTAMIENTOS PRIVADOS («He visto un sapo»). Si la base de datos ya existe, pega solo este bloque.
+-- El sitio exacto del sapo solo lo leen quien lo envía y la coordinación; nunca sale en el tablón.
+create table if not exists public.avistamientos (
+  id uuid primary key default gen_random_uuid(),
+  by uuid not null default auth.uid(),
+  created_at timestamptz not null default now(),
+  estado text not null default 'nuevo' check (estado in ('nuevo','revisado','confirmado','descartado')),
+  data jsonb not null default '{}'::jsonb check (pg_column_size(data) < 20000)
+);
+alter table public.avistamientos enable row level security;
+drop policy if exists "avist: leer" on public.avistamientos;
+drop policy if exists "avist: crear" on public.avistamientos;
+drop policy if exists "avist: cambiar" on public.avistamientos;
+drop policy if exists "avist: borrar" on public.avistamientos;
+create policy "avist: leer" on public.avistamientos for select to authenticated
+  using (by = auth.uid() or public.is_admin());
+create policy "avist: crear" on public.avistamientos for insert to authenticated
+  with check (by = auth.uid() and public.con_cuenta() and (estado = 'nuevo' or public.is_admin()));
+create policy "avist: cambiar" on public.avistamientos for update to authenticated
+  using (public.is_admin()) with check (public.is_admin());
+create policy "avist: borrar" on public.avistamientos for delete to authenticated
+  using (by = auth.uid() or public.is_admin());
+
+-- Fotos de los avistamientos: carpeta PRIVADA (se ven con enlaces que caducan en una hora)
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('avistamientos', 'avistamientos', false, 3145728, array['image/jpeg','image/png','image/webp'])
+on conflict (id) do update set public = false;
+drop policy if exists "avist fotos: subir" on storage.objects;
+drop policy if exists "avist fotos: ver" on storage.objects;
+drop policy if exists "avist fotos: borrar" on storage.objects;
+create policy "avist fotos: subir" on storage.objects for insert to authenticated
+  with check (bucket_id = 'avistamientos' and public.con_cuenta() and (storage.foldername(name))[1] = auth.uid()::text);
+create policy "avist fotos: ver" on storage.objects for select to authenticated
+  using (bucket_id = 'avistamientos' and ((storage.foldername(name))[1] = auth.uid()::text or public.is_admin()));
+create policy "avist fotos: borrar" on storage.objects for delete to authenticated
+  using (bucket_id = 'avistamientos' and ((storage.foldername(name))[1] = auth.uid()::text or public.is_admin()));

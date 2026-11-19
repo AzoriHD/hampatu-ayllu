@@ -623,3 +623,41 @@ img.avatar{background:var(--maiz)}
 }
 
 @media print{.topbar,.abajo,.faja-ranas,.faja-top,.paseo{display:none}}
+
+/* «He visto un sapo» y «Apoya» */
+#v-visto{--med:url(/img/med-rana.webp)}
+#v-apoya{--med:url(/img/med-cerro-laguna.webp)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.visto-cuenta,.visto-ok{display:grid;gap:12px;justify-items:start}
+.visto-ok .sub{margin:0}
+.geo{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.geo-ok{margin:0;font-weight:700;color:var(--sight)}
+.geo-ok .linkbtn{font-weight:700}
+.avist-filtro{justify-content:flex-start;margin-bottom:14px}
+.avist-lista{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.avist{border:1.5px solid var(--line);border-left:5px solid var(--c,var(--line));border-radius:var(--r);padding:12px 14px;display:grid;gap:6px;background:var(--manta)}
+.avist p{margin:0}
+.avist.e-nuevo{--c:var(--accent)}.avist.e-revisado{--c:var(--event)}.avist.e-confirmado{--c:var(--sight)}.avist.e-descartado{--c:var(--line);opacity:.8}
+.avist-cab{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;justify-content:space-between}
+.avist-estado{border:1.5px solid var(--c,var(--line));border-radius:999px;padding:1px 10px;font-size:14px;font-weight:700}
+.avist-geo{font-variant-numeric:tabular-nums;font-size:15px}
+.avist-nota{white-space:pre-wrap}
+.avist-fotos{display:flex;flex-wrap:wrap;gap:8px}
+.avist-foto{display:block;width:120px;height:90px;border-radius:8px;border:1.5px solid var(--edge);overflow:hidden;background:var(--line)}
+.avist-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.avist-acciones select{min-height:40px;width:auto;min-width:170px}
+.dona-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))}
+.dona-grid dl{margin:0;display:grid;gap:8px}
+.dona-dato dt{font-size:14px;color:var(--muted)}
+.dona-dato dd{margin:0;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-weight:700;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.dona-correo{margin-top:12px}
+.dona-meta{display:grid;gap:8px;margin-bottom:14px}
+.dona-meta p{margin:0;font-size:18px}
+.barra{height:12px;border-radius:999px;border:1.5px solid var(--edge);background:var(--manta);overflow:hidden}
+.barra span{display:block;height:100%;background:var(--accent)}
+.barra.fina{height:7px;border-width:1px;margin-top:6px;max-width:260px}
+.presu{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.presu th,.presu td{text-align:right;padding:9px 8px;border-bottom:1.5px dashed var(--line);vertical-align:top}
+.presu th:first-child,.presu td:first-child{text-align:left}
+.presu thead th{font-size:14px;color:var(--muted)}
+.presu tfoot th{border-bottom:0;font-size:17px}

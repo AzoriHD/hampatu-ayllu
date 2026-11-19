@@ -88,6 +88,22 @@ VITE_SUPABASE_URL=https://xxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=tu_clave_anon
 ```
 
+## «He visto un sapo» (avistamientos privados)
+
+Botón en la portada y sección `#visto` (`src/components/Sighting.jsx`, `src/lib/avistamientos.js`). Con cuenta,
+cualquiera manda fotos (hasta 3, sin los datos GPS del móvil), el sitio exacto (GPS del móvil o coordenadas
+escritas), día, hora, estado, cuántos, nota y un contacto. Todo va a la tabla `avistamientos` y a la carpeta
+privada `avistamientos` de Supabase: solo lo ven quien lo envió y la coordinación, nunca el tablón. La
+coordinación los ve en la misma sección, filtra por estado (nuevo, en revisión, confirmado, descartado), abre el
+mapa, escribe por WhatsApp y borra. La barra de coordinación avisa de los nuevos.
+Para activarlo en una base de datos que ya existe, pega en Supabase → SQL Editor solo el bloque 8 de `supabase.sql`.
+
+## Apoya el proyecto
+
+Sección `#apoya` (`src/components/Support.jsx`). Los datos están en `src/data/apoyo.js`: Yape o Plin, cuenta
+bancaria y CCI, PayPal, correo, las líneas del presupuesto (lo que hace falta y lo gastado) y lo recibido. Lo
+que esté vacío no sale en la web.
+
 ## App instalable (celular y computadora)
 
 La web es también una app (PWA): se instala gratis desde la propia web, sin tiendas, y se actualiza sola.
