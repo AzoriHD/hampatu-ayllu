@@ -146,3 +146,37 @@ create policy "avist fotos: ver" on storage.objects for select to authenticated
   using (bucket_id = 'avistamientos' and ((storage.foldername(name))[1] = auth.uid()::text or public.is_admin()));
 create policy "avist fotos: borrar" on storage.objects for delete to authenticated
   using (bucket_id = 'avistamientos' and ((storage.foldername(name))[1] = auth.uid()::text or public.is_admin()));
+
+-- 9. MENSAJES PRIVADOS. Si la base de datos ya existe, pega solo este bloque.
+-- Cada mensaje solo lo leen quien lo manda y quien lo recibe. Después solo se puede cambiar «leído»,
+-- y solo quien lo recibe. Llegan al momento (Realtime).
+create table if not exists public.mensajes (
+  id uuid primary key default gen_random_uuid(),
+  de uuid not null default auth.uid(),
+  para uuid not null,
+  texto text not null check (char_length(texto) between 1 and 2000),
+  nombre text check (nombre is null or char_length(nombre) <= 60),
+  ref jsonb check (ref is null or pg_column_size(ref) < 2000),
+  leido boolean not null default false,
+  created_at timestamptz not null default now(),
+  check (de <> para)
+);
+create index if not exists mensajes_para_idx on public.mensajes (para, created_at);
+create index if not exists mensajes_de_idx on public.mensajes (de, created_at);
+alter table public.mensajes enable row level security;
+drop policy if exists "mensajes: leer" on public.mensajes;
+drop policy if exists "mensajes: mandar" on public.mensajes;
+drop policy if exists "mensajes: leido" on public.mensajes;
+create policy "mensajes: leer" on public.mensajes for select to authenticated
+  using (de = auth.uid() or para = auth.uid());
+create policy "mensajes: mandar" on public.mensajes for insert to authenticated
+  with check (de = auth.uid() and public.con_cuenta() and leido = false);
+create policy "mensajes: leido" on public.mensajes for update to authenticated
+  using (para = auth.uid()) with check (para = auth.uid());
+-- Solo la columna «leido» se puede cambiar
+revoke update on public.mensajes from anon, authenticated;
+grant update (leido) on public.mensajes to authenticated;
+-- Que lleguen al momento
+do $$ begin
+  alter publication supabase_realtime add table public.mensajes;
+exception when duplicate_object then null; end $$;

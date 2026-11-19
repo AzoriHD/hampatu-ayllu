@@ -17,6 +17,9 @@ import Species from "./components/Species.jsx";
 import Rewards from "./components/Rewards.jsx";
 import { VistoModal } from "./components/Sighting.jsx";
 import Support from "./components/Support.jsx";
+import Discover from "./components/Discover.jsx";
+import Messages from "./components/Messages.jsx";
+import { iniciarMensajes } from "./lib/mensajes.js";
 import { Agreements, Footer } from "./components/Agreements.jsx";
 import AdminZone from "./components/Admin.jsx";
 import { AccountPanel } from "./components/Account.jsx";
@@ -84,6 +87,8 @@ export default function App() {
   const tabsRef = useRef(null);
   /* «He visto al hampatu» se abre en una ventana encima de la página, sin moverla */
   const [visto, setVisto] = useState(() => window.location.hash === "#visto");
+  /* Conversación abierta en Mensajes: {con: uid, nombre?, ref?: {aviso, titulo}, borrador?} */
+  const [chat, setChat] = useState(null);
 
   /* Al cambiar de sección se baja (o se sube) hasta el principio del contenido */
   const irVista = useCallback((v, bajar) => {
@@ -215,6 +220,15 @@ export default function App() {
     write(setMsg, () => store.removeMany(pares), () => { setConfirmar(""); if (kind === "perfil") irVista("personas"); });
   };
 
+  /* Mensajes privados: se cargan al entrar con cuenta y llegan al momento */
+  useEffect(() => (meta.cuenta && uid ? iniciarMensajes(uid) : iniciarMensajes("")), [meta.cuenta, uid]);
+  const escribirA = (id, opts) => {
+    if (!canPost) { pedirCuenta("Para mandar mensajes privados necesitas una cuenta. Es gratis y tarda un minuto."); return; }
+    if (!id || id === uid) return;
+    setChat({ con: id, k: Date.now(), ...(opts || {}) });
+    irVista("mensajes", true);
+  };
+
   const ofrecer = () => {
     setFormAviso({ k: Date.now(), preset: { tipo: "ofrecemos", titulo: t("Recompensa: ") }, enfocar: true });
     irVista("tablon");
@@ -232,7 +246,7 @@ export default function App() {
     apuntando, setApuntando, recien, setRecien, apuntesDe, apuntar, quitarApunte,
     votar, enlaceAviso, contactoDe, zonaDe, borrar, ofrecer, formAviso, setFormAviso,
     calMes, setCalMes, calSel, setCalSel, oscuro, cambiarTema, cambiarIdioma, esApp,
-    abrirVisto: () => setVisto(true),
+    abrirVisto: () => setVisto(true), chat, setChat, escribirA,
   };
   const cerrarVisto = () => { setVisto(false); if (window.location.hash === "#visto") marcarHash(view); };
 
@@ -250,6 +264,8 @@ export default function App() {
         <Msg id="m-global" role="status" text={msg} />
 
         {view === "tablon" && <Board />}
+        {view === "descubre" && <Discover />}
+        {view === "mensajes" && <Messages />}
         {view === "comunidades" && <Communities />}
         {view === "personas" && <People />}
         {view === "perfil" && perfil && <Profile key={perfil.k + perfil.id} id={perfil.id} editar={perfil.editar} />}

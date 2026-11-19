@@ -1,6 +1,9 @@
 import { COORD_MSG } from "./data/constants.js";
 
 export const EN={
+  "Para mandar mensajes privados necesitas una cuenta. Es gratis y tarda un minuto.":"To send private messages you need an account. It is free and takes a minute.",
+  "Para dar me gusta necesitas una cuenta. Es gratis y tarda un minuto.":"To like posts you need an account. It is free and takes a minute.",
+  "Para ofrecer ayuda necesitas una cuenta. Es gratis y tarda un minuto.":"To offer help you need an account. It is free and takes a minute.",
   "Para mandar un avistamiento necesitas una cuenta: así la coordinación puede contestarte y, si la foto se verifica, darte la recompensa.":"To send a sighting you need an account, so the coordination team can reply and, if the photo is verified, give you the reward.",
   "Este móvil no deja leer la ubicación. Escribe el lugar o las coordenadas.":"This phone does not share its location. Write the place or the coordinates.",
   "No se pudo leer la ubicación. Revisa que el GPS esté activado y que la web tenga permiso, o escribe el lugar.":"Could not read the location. Check that GPS is on and the site has permission, or write the place.",

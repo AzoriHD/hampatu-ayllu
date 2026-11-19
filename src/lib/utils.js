@@ -87,7 +87,7 @@ export function copiar(texto) {
   try { return navigator.clipboard.writeText(texto); } catch (e) { return Promise.reject(e); }
 }
 
-export const VIEWS = ["tablon", "comunidades", "personas", "calendario", "artesania", "especie", "recompensas", "apoya", "app"];
+export const VIEWS = ["tablon", "descubre", "mensajes", "comunidades", "personas", "calendario", "artesania", "especie", "recompensas", "apoya", "app"];
 export const viewOf = (h) => (VIEWS.includes(String(h || "").slice(1)) ? String(h).slice(1) : "tablon");
 export function avisoDelHash() {
   const m = /^#aviso-([A-Za-z0-9_.~:@+-]+)$/.exec(window.location.hash || "");

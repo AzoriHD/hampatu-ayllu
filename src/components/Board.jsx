@@ -202,7 +202,7 @@ function Foto({ src, i }) {
 }
 
 function Post({ a, votos, mio }) {
-  const { t, data, uid, canPost, canEdit, ago, zonaDe, contactoDe, goCom, abiertos, setAbiertos, votar, enlaceAviso, write, setMsg, pedirCuenta } = useApp();
+  const { t, data, uid, canPost, canEdit, ago, zonaDe, contactoDe, goCom, abiertos, setAbiertos, votar, enlaceAviso, write, setMsg, pedirCuenta, escribirA, en } = useApp();
   const [compartir, setCompartir] = useState(false);
   const tp = tipoDe(a), id = a.id;
   const rs = data.respuestas.filter((r) => r.aviso === id).sort((x, y) => (x.ts || 0) - (y.ts || 0));
@@ -249,6 +249,7 @@ function Post({ a, votos, mio }) {
           <Svg width="2.2" d='<path d="M12 19V5M5 12l7-7 7 7"/>' />{t(mio ? "Votado" : "Votar")} <b>{votos}</b>
         </button>
         <button type="button" className="linkbtn" id={"sh-" + id} aria-expanded={compartir} onClick={() => setCompartir(!compartir)}>{t("Compartir")}</button>
+        {a.by && a.by !== uid && !a.ejemplo && <button type="button" className="linkbtn" id={"mp-" + id} onClick={() => escribirA(a.by, { ref: { aviso: id, titulo: String(a.titulo || "").slice(0, 120) } })}>{en ? "Private message" : "Mensaje privado"}</button>}
         {canEdit && canPost && tp === "avistamiento" && fotos.length > 0 && a.estado !== "muerto" && (
           <button type="button" className="linkbtn" id={"v-" + id} onClick={() => verificar(!a.verificada)}>{t(a.verificada ? "Quitar verificación" : "Marcar foto verificada")}</button>
         )}

@@ -98,6 +98,22 @@ coordinación los ve en la misma sección, filtra por estado (nuevo, en revisió
 mapa, escribe por WhatsApp y borra. La barra de coordinación avisa de los nuevos.
 Para activarlo en una base de datos que ya existe, pega en Supabase → SQL Editor solo el bloque 8 de `supabase.sql`.
 
+## Mensajes privados
+
+Botón del bocadillo arriba (con el número de mensajes sin leer) y sección `#mensajes` (`src/components/Messages.jsx`,
+`src/lib/mensajes.js`). Se escribe a alguien desde su perfil («Mandar un mensaje privado»), desde un aviso
+(«Mensaje privado») o desde Descubre. Cada mensaje solo lo leen las dos personas; llegan al momento (Realtime),
+se marcan como leídos al abrir la conversación y el último propio dice «Enviado» o «Leído». Tabla `mensajes`:
+bloque 9 de `supabase.sql`.
+
+## Descubre
+
+Sección `#descubre` (`src/components/Discover.jsx`): los avisos de «Necesitamos» (Piden) y «Ofrecemos» (Ofrecen),
+de uno en uno, como cartas. Se desliza a la derecha (me gusta, que es el voto del aviso) o a la izquierda (paso), o
+con los botones y las flechas del teclado. Botones: deshacer, paso, mensaje privado, donar o ayudar (en Piden:
+dinero, material, tiempo o transporte; llega como mensaje privado y queda apuntado en «Pueden ayudar») o me interesa
+(en Ofrecen) y me gusta. Lo ya visto se recuerda en el navegador; abajo sale la lista de «Te gustaron».
+
 ## Apoya el proyecto
 
 Sección `#apoya` (`src/components/Support.jsx`). Los datos están en `src/data/apoyo.js`: Yape o Plin, cuenta

@@ -80,7 +80,7 @@ export function People() {
 }
 
 export function Profile({ id, editar }) {
-  const { t, en, lang, data, meta, uid, canEdit, irVista, goAviso, goCom, ago } = useApp();
+  const { t, en, lang, data, meta, uid, canEdit, irVista, goAviso, goCom, ago, escribirA } = useApp();
   const [editando, setEditando] = useState(!!editar);
   const p = data.perfiles.find((x) => x.id === id);
   const mio = meta.cuenta && id === uid;
@@ -142,6 +142,7 @@ export function Profile({ id, editar }) {
         <div className="row">
           {mio && !editando && <button type="button" className="btn" id="b-editar-perfil" onClick={() => setEditando(true)}>{t("Editar perfil")}</button>}
           {mio && <button type="button" className="linkbtn" id="b-salir-cuenta" onClick={() => salir()}>{t("Salir de la cuenta")}</button>}
+          {!mio && !p.ejemplo && <button type="button" className="btn" id="b-mensaje-perfil" onClick={() => escribirA(id, { nombre: p.nombre })}>{en ? "Send a private message" : "Mandar un mensaje privado"}</button>}
           {!mio && canEdit && meta.cuenta && <DelBtns k={"perfil:" + id} />}
         </div>
       </article>

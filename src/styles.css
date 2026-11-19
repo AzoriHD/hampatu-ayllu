@@ -680,3 +680,121 @@ img.avatar{background:var(--maiz)}
 @keyframes visto-sube{from{opacity:0;transform:translateY(40px) scale(.97)}}
 @media (prefers-reduced-motion:reduce){.modal.modal-visto,.modal-visto-caja{animation:none}}
 @media (max-width:560px){.modal.modal-visto{padding:8px 8px 20px}}
+
+/* ---------- Mensajes privados ---------- */
+#v-mensajes{--med:url(/img/med-quenua.webp)}
+#v-descubre{--med:url(/img/med-lupino.webp)}
+.b-mensajes{position:relative;color:var(--ink);text-decoration:none}
+.b-mensajes[aria-current="page"]{background:var(--accent);border-color:var(--edge)}
+.badge-n{position:absolute;top:-4px;right:-5px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--need);color:#fff;font:800 12px/20px var(--body);text-align:center;border:2px solid var(--manta)}
+.chat-marco{display:grid;grid-template-columns:minmax(240px,320px) 1fr;padding:0;overflow:hidden;height:min(76vh,720px);min-height:460px}
+.chat-lista{border-right:1.5px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.chat-lista-h{margin:0;padding:16px 18px 12px;font:800 26px/1.1 var(--display);font-stretch:85%;border-bottom:1.5px dashed var(--line)}
+.chat-lista ul{list-style:none;margin:0;padding:6px;overflow-y:auto;flex:1}
+.chat-conv{width:100%;display:flex;gap:11px;align-items:center;text-align:left;border:0;background:none;color:var(--ink);padding:10px;border-radius:12px;cursor:pointer;font:inherit}
+.chat-conv:hover{background:color-mix(in srgb,var(--maiz) 55%,transparent)}
+.chat-conv[aria-current]{background:var(--maiz)}
+.chat-conv-txt{flex:1;min-width:0;display:grid;gap:1px}
+.chat-conv-top{display:flex;gap:8px;justify-content:space-between;align-items:baseline}
+.chat-conv-top strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-conv-hora{font-size:13px;color:var(--muted);flex:none}
+.chat-conv-ult{font-size:14.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-conv-ult.nuevo{color:var(--ink);font-weight:700}
+.chat-badge{flex:none;min-width:22px;height:22px;border-radius:999px;background:var(--need);color:#fff;font:800 12.5px/22px var(--body);text-align:center;padding:0 6px}
+.chat-vacio-lista{padding:22px 18px;display:grid;gap:8px;justify-items:start}
+.chat-vacio-lista p{margin:0}
+.chat-hilo{display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--lana)}
+.chat-hilo-vacio{align-items:center;justify-content:center;color:var(--muted);gap:8px}
+.chat-hilo-vacio svg{width:56px;height:56px;opacity:.6}
+.chat-cab{display:flex;gap:8px;align-items:center;padding:10px 14px;border-bottom:1.5px solid var(--line);background:var(--manta)}
+.chat-atras{display:none}
+.chat-quien{display:flex;gap:10px;align-items:center;border:0;background:none;color:var(--ink);font:inherit;text-align:left;padding:4px 6px;border-radius:10px;cursor:pointer;min-width:0}
+span.chat-quien{cursor:default}
+.chat-quien>span{display:grid;line-height:1.25;min-width:0}
+.chat-quien .meta{font-size:14px}
+button.chat-quien:hover{background:var(--maiz)}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:4px;overscroll-behavior:contain}
+.chat-aviso{margin:auto;text-align:center;color:var(--muted);max-width:32ch}
+.chat-dia{display:flex;justify-content:center;margin:12px 0 6px}
+.chat-dia span{font-size:13px;font-weight:700;color:var(--muted);background:var(--manta);border:1px solid var(--line);border-radius:999px;padding:2px 12px}
+.chat-fila-w{display:flex;flex-direction:column}
+.chat-burbuja{align-self:flex-start;max-width:min(78%,520px);background:var(--manta);border:1.5px solid var(--line);border-radius:16px 16px 16px 5px;padding:8px 12px 6px;margin:2px 0}
+.chat-burbuja.mia{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-color:color-mix(in srgb,var(--edge) 35%,var(--accent));border-radius:16px 16px 5px 16px}
+.chat-burbuja p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-hora{display:block;text-align:right;font-size:12px;opacity:.72;margin-top:2px}
+.chat-ref{display:block;width:100%;text-align:left;font:inherit;font-size:13.5px;border:0;border-left:3px solid currentColor;background:color-mix(in srgb,currentColor 9%,transparent);color:inherit;border-radius:6px;padding:4px 8px;margin-bottom:6px;cursor:pointer}
+span.chat-ref{cursor:default}
+.chat-escribir{border-top:1.5px solid var(--line);background:var(--manta);padding:10px 12px}
+.chat-escribir-fila{display:flex;gap:8px;align-items:flex-end}
+.chat-escribir textarea{flex:1;resize:none;min-height:46px;max-height:160px;border-radius:22px;padding:11px 16px;line-height:1.4}
+.chat-enviar{flex:none;width:46px;height:46px;border-radius:50%;border:2px solid var(--edge);background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;cursor:pointer;box-shadow:2px 2px 0 var(--edge)}
+.chat-enviar svg{width:22px;height:22px}
+.chat-enviar:disabled{opacity:.45;cursor:default;box-shadow:none}
+.chat-ref-borrador{margin:0 0 8px;font-size:14px;color:var(--muted)}
+.chat-ref-borrador .linkbtn{font-size:18px;padding:0 6px}
+@media (max-width:720px){
+  .chat-marco{grid-template-columns:1fr;height:calc(100dvh - 190px);min-height:420px}
+  .mensajes.con-chat .chat-lista{display:none}
+  .mensajes:not(.con-chat) .chat-hilo{display:none}
+  .chat-lista{border-right:0}
+  .chat-atras{display:grid}
+  .chat-burbuja{max-width:86%}
+}
+
+/* ---------- Descubre: cartas ---------- */
+.mazo-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.mazo-sub{text-align:center;margin:8px 0 0}
+.mazo-zona{display:grid;justify-items:center;gap:14px;padding-top:22px;padding-bottom:22px;overflow:hidden}
+.mazo{position:relative;width:min(100%,400px);height:min(560px,calc(100dvh - 260px));min-height:440px}
+.carta{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--manta);border:2px solid var(--edge);border-radius:22px;overflow:hidden;box-shadow:5px 6px 0 var(--edge);touch-action:pan-y;user-select:none;-webkit-user-select:none;will-change:transform}
+.carta.arriba{cursor:grab}
+.carta.arriba:active{cursor:grabbing}
+.carta.t-necesitamos{--c:var(--need)}.carta.t-ofrecemos{--c:var(--offer)}
+.carta-img{position:relative;flex:0 0 46%;background:var(--maiz);display:grid;place-items:center;overflow:hidden;border-bottom:2px solid var(--edge)}
+.carta-img img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.carta-img.sin-foto{background:color-mix(in srgb,var(--c) 18%,var(--maiz)) url(/img/tejido-fondo-640.webp) center/cover;background-blend-mode:soft-light}
+.carta-img .simbolo{transform:scale(1.9)}
+.carta-img .pill{position:absolute;top:12px;left:12px;background:var(--manta);border:1.5px solid var(--c)}
+.carta-img .tag{position:absolute;top:12px;right:12px;background:var(--manta);border:1.5px solid var(--line)}
+.carta-cuerpo{flex:1;display:flex;flex-direction:column;gap:6px;padding:14px 18px 16px;min-height:0}
+.carta-quien{display:flex;gap:9px;align-items:center;min-width:0}
+.carta-quien>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.carta h3{margin:2px 0 0;font:800 24px/1.12 var(--display);font-stretch:88%;color:var(--ink)}
+.carta-txt{margin:0;color:var(--ink);display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;flex:1;min-height:0}
+.carta-pie{margin:0}
+.sello{position:absolute;top:26px;z-index:2;font:900 30px/1 var(--display);letter-spacing:.04em;padding:6px 12px;border:4px solid;border-radius:10px;pointer-events:none;background:color-mix(in srgb,var(--manta) 80%,transparent)}
+.sello-gusta{left:20px;color:#2f7a3a;transform:rotate(-14deg)}
+.sello-paso{right:20px;color:#b23b1e;transform:rotate(14deg)}
+.mazo-fin{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:10px;text-align:center;padding:24px;border:2px dashed var(--line);border-radius:22px;background:var(--manta)}
+.mazo-fin svg{width:54px;height:54px;color:var(--need)}
+.mazo-fin h3{margin:0;font:800 24px/1.1 var(--display)}
+.mazo-fin p{margin:0;color:var(--muted)}
+.mazo-botones{display:flex;gap:14px;align-items:center;justify-content:center}
+.redondo{width:60px;height:60px;border-radius:50%;border:2px solid var(--edge);background:var(--manta);display:grid;place-items:center;cursor:pointer;box-shadow:3px 3px 0 var(--edge);transition:transform .12s,box-shadow .12s;color:var(--ink)}
+.redondo svg{width:28px;height:28px}
+.redondo:hover:not(:disabled){transform:translate(-1px,-2px) scale(1.04);box-shadow:4px 5px 0 var(--edge)}
+.redondo:active:not(:disabled){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--edge)}
+.redondo:disabled{opacity:.4;cursor:default}
+.r-deshacer,.r-mensaje{width:50px;height:50px}.r-deshacer svg,.r-mensaje svg{width:23px;height:23px}
+.r-paso{color:#b23b1e}
+.r-gusta{color:#c2185b;width:68px;height:68px}.r-gusta svg{width:32px;height:32px}
+.r-gusta[aria-pressed="true"] svg{fill:currentColor}
+.r-mensaje{color:var(--offer)}
+.r-donar{color:var(--need)}
+.redondo.mini{width:40px;height:40px;box-shadow:2px 2px 0 var(--edge)}.redondo.mini svg{width:19px;height:19px}
+.mazo-nota{margin:0;text-align:center}
+@media (pointer:coarse){.solo-raton{display:none}}
+.mazo-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:44;margin:0;background:var(--ink);color:var(--manta);padding:10px 18px;border-radius:999px;font-weight:700;box-shadow:0 6px 18px rgb(0 0 0 / .25);pointer-events:none;transition:opacity .2s}
+.mazo-toast:empty{opacity:0;padding:0}
+.gustados{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.gustado{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:14px;padding:6px 8px 6px 6px;background:var(--manta)}
+.gustado-main{flex:1;min-width:0;display:flex;gap:10px;align-items:center;border:0;background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer;padding:4px}
+.gustado-main>span{display:grid;min-width:0}
+.gustado-main strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gustado-acc{display:flex;gap:8px;flex:none}
+.dialogo{display:grid;gap:12px}
+.dialogo .chips{display:flex;flex-wrap:wrap;gap:8px}
+.formas{border:0;padding:0;margin:0}
+.formas legend{font-weight:700;margin-bottom:6px}
+@media (prefers-reduced-motion:reduce){.carta{transition:none!important}}
+@media (max-width:560px){.mazo-botones{gap:10px}.redondo{width:54px;height:54px}.r-gusta{width:62px;height:62px}.r-deshacer,.r-mensaje{width:46px;height:46px}}

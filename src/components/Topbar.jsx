@@ -4,10 +4,12 @@ import { useApp } from "../AppContext.jsx";
 import { SIMB } from "../data/constants.js";
 import { Svg } from "./Shared.jsx";
 import { AccountButton } from "./Account.jsx";
+import { sinLeerTotal, useMensajes } from "../lib/mensajes.js";
 
 /* Secciones: [vista, español, inglés, icono]. En el móvil van todas en la barra de abajo, que se desliza. */
 export const SECCIONES = [
   ["tablon", "Tablón", "Board", '<path d="M4 4.5h16v11.5H9.5L4 20.5z"/><path d="M8 8.6h8M8 12h5"/>'],
+  ["descubre", "Descubre", "Discover", '<rect x="6" y="3" width="12" height="17" rx="2.5"/><path d="M3 7.5 6 7M21 7.5 18 7M12 14.6s-2.6-1.5-2.6-3.3a1.4 1.4 0 0 1 2.6-.8 1.4 1.4 0 0 1 2.6.8c0 1.8-2.6 3.3-2.6 3.3z"/>'],
   ["comunidades", "Comunidades", "Communities", '<path d="M2.5 19.5 9 8.5l4 6.2 3-4.2 5.5 9z"/><path d="M7.2 11.6 9 13.2l1.8-1.6"/>'],
   ["calendario", "Calendario", "Calendar", '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h2.5M13.5 14H16M8 17h2.5"/>'],
   ["personas", "Personas", "People", '<circle cx="9" cy="8.4" r="3.2"/><path d="M3.4 19.5c.6-3.5 2.9-5.4 5.6-5.4s5 1.9 5.6 5.4"/><circle cx="17.1" cy="9.4" r="2.4"/><path d="M15.7 14.2c2.4.2 4.1 1.9 4.7 5"/>'],
@@ -99,6 +101,7 @@ export function Topbar() {
               <Svg width="2" d={ICONO_APP} /><span>{en ? "Get the app" : "Descargar app"}</span>
             </a>
           )}
+          <BotonMensajes />
           <AccountButton />
           <BotonMusica />
           <button className="icono-btn" type="button" id="b-tema" aria-label={t(oscuro ? "Modo claro" : "Modo oscuro")} title={t(oscuro ? "Modo claro" : "Modo oscuro")} onClick={cambiarTema}>
@@ -109,6 +112,21 @@ export function Topbar() {
       </div>
     </header>
     </>
+  );
+}
+
+/* Mensajes privados, con el número de los que no se han leído */
+function BotonMensajes() {
+  const { en, meta, uid, view } = useApp();
+  const lista = useMensajes();
+  if (!meta.cuenta) return null;
+  const n = sinLeerTotal(lista, uid);
+  const txt = (en ? "Messages" : "Mensajes") + (n ? " (" + n + (en ? " unread)" : " sin leer)") : "");
+  return (
+    <a className="icono-btn b-mensajes" href="#mensajes" id="b-mensajes" aria-label={txt} title={txt} aria-current={view === "mensajes" ? "page" : undefined}>
+      <Svg width="2" d='<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>' />
+      {n > 0 && <span className="badge-n" aria-hidden="true">{n > 99 ? "99+" : n}</span>}
+    </a>
   );
 }
 
