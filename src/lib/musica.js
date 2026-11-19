@@ -114,3 +114,30 @@ export function apagar(enSeco = false) {
 }
 
 export const alternarMusica = () => (estado === "apagada" ? encender() : apagar());
+
+/* Clic del botón «He visto al hampatu» (public/audio/boton.mp3). Solo suena con la música puesta, al volumen
+   de la música. Va por Web Audio y no por otro <audio>, para que en el iPhone no pare la música. */
+let ctx = null, clic = null, cargandoClic = null;
+export function prepararClic() {
+  if (estado === "apagada") return;
+  try {
+    if (!ctx) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return; ctx = new C(); }
+    if (ctx.state === "suspended") ctx.resume().catch(() => {});
+    if (!clic && !cargandoClic) {
+      cargandoClic = fetch("/audio/boton.mp3").then((r) => r.arrayBuffer())
+        .then((b) => new Promise((ok, mal) => ctx.decodeAudioData(b, ok, mal)))
+        .then((buf) => { clic = buf; }).catch(() => {}).finally(() => { cargandoClic = null; });
+    }
+  } catch (e) { /* sin sonido */ }
+}
+export function sonarClic() {
+  if (estado === "apagada") return;
+  prepararClic();
+  const tocar = () => {
+    if (!ctx || !clic) return;
+    const s = ctx.createBufferSource(), g = ctx.createGain();
+    g.gain.value = volumenFijo ? 0.8 : Math.max(0.15, real());
+    s.buffer = clic; s.connect(g).connect(ctx.destination); s.start();
+  };
+  if (clic) tocar(); else if (cargandoClic) cargandoClic.then(tocar);
+}

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useApp } from "../AppContext.jsx";
+import { prepararClic, sonarClic } from "../lib/musica.js";
 import { HeroText } from "./Headers.jsx";
 import { Svg } from "./Shared.jsx";
 import { ICONO_APP } from "./Topbar.jsx";
@@ -37,17 +38,18 @@ export default function Hero() {
   );
 }
 
-/* El botón de «He visto al hampatu»: se hunde al pulsarlo y luego abre el formulario */
+/* El botón de «He visto al hampatu»: se hunde al pulsarlo (con clic si la música está puesta) y luego abre el formulario */
 function BotonHampatu() {
   const { en, irVista } = useApp();
   const [abajo, setAbajo] = useState(false);
   const pulsar = (ev) => {
     ev.preventDefault();
+    sonarClic();
     setAbajo(true);
     setTimeout(() => { setAbajo(false); irVista("visto", true); }, 220);
   };
   return (
-    <a className={"boton-hampatu" + (abajo ? " abajo" : "")} href="#visto" onClick={pulsar}
+    <a className={"boton-hampatu" + (abajo ? " abajo" : "")} href="#visto" onPointerDown={prepararClic} onClick={pulsar}
       aria-label={en ? "I've seen the hampatu: send a sighting" : "He visto al hampatu: mandar un avistamiento"}>
       <img className="b-arriba" src="/img/boton-arriba.webp" width="300" height="315" alt="" />
       <img className="b-abajo" src="/img/boton-abajo.webp" width="300" height="315" alt="" />
