@@ -815,3 +815,19 @@ span.chat-ref{cursor:default}
 .voto.mp{color:var(--offer);border-color:var(--offer)}
 .voto.mp svg{width:17px;height:17px}
 .nota-mp{margin:6px 0 0}
+/* Móvil: las secciones van en la barra de abajo (las flechas no pintan nada arriba) y la cabecera cabe en una fila */
+@media (max-width:760px){.nav-w,.nav-flecha{display:none!important}}
+@media (max-width:480px){
+  .topbar-in{gap:6px;padding:0 10px}
+  .acciones{gap:5px}
+  .icono-btn,.btn-descarga{width:38px;height:38px;min-height:38px}
+  .yo{padding:0;width:38px;min-height:38px;justify-content:center}
+  .yo>span:not(.avatar){position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .yo{border-width:1.5px}
+  .lang:not(.yo){padding:6px 10px;min-height:38px}
+  .marca img{width:36px}
+}
+/* Botón «He visto al hampatu»: se hunde en cuanto se toca, sin esperas del móvil */
+.boton-hampatu{touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.boton-hampatu img{pointer-events:none;transition:transform .09s ease-out}
+.boton-hampatu.abajo .b-abajo{transform:translateY(3px)}

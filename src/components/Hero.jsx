@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useApp } from "../AppContext.jsx";
 import { prepararClic, sonarClic } from "../lib/musica.js";
 import { HeroText } from "./Headers.jsx";
@@ -42,17 +42,28 @@ export default function Hero() {
 function BotonHampatu() {
   const { en, abrirVisto } = useApp();
   const [abajo, setAbajo] = useState(false);
+  const yendo = useRef(false);
+  /* Se hunde nada más tocarlo (no al soltar), suena el clic y, cuando se ha visto hundido, se abre la ventana */
+  const tocar = (ev) => { if (ev.button > 0) return; prepararClic(); setAbajo(true); };
+  const soltar = () => { if (!yendo.current) setAbajo(false); };
   const pulsar = (ev) => {
     ev.preventDefault();
+    if (yendo.current) return;
+    yendo.current = true;
     sonarClic();
     setAbajo(true);
-    setTimeout(() => { setAbajo(false); abrirVisto(); }, 220);
+    setTimeout(() => {
+      abrirVisto();
+      requestAnimationFrame(() => { setAbajo(false); yendo.current = false; });
+    }, 260);
   };
+  const src = (p) => "/img/boton-" + (en ? "en-" : "") + p + ".webp";
   return (
-    <a className={"boton-hampatu" + (abajo ? " abajo" : "")} href="#visto" onPointerDown={prepararClic} onClick={pulsar}
+    <a className={"boton-hampatu" + (abajo ? " abajo" : "")} href="#visto" draggable="false"
+      onPointerDown={tocar} onPointerUp={soltar} onPointerCancel={soltar} onPointerLeave={soltar} onClick={pulsar} onContextMenu={(e) => e.preventDefault()}
       aria-label={en ? "I saw the hampatu: send a sighting" : "He visto al hampatu: mandar un avistamiento"}>
-      <img className="b-arriba" src={en ? "/img/boton-en-arriba.webp" : "/img/boton-arriba.webp"} width="300" height="315" alt="" />
-      <img className="b-abajo" src={en ? "/img/boton-en-abajo.webp" : "/img/boton-abajo.webp"} width="300" height="315" alt="" />
+      <img className="b-arriba" src={src("arriba")} width="300" height="315" alt="" draggable="false" decoding="sync" />
+      <img className="b-abajo" src={src("abajo")} width="300" height="315" alt="" draggable="false" decoding="sync" />
     </a>
   );
 }
