@@ -88,7 +88,7 @@ VITE_SUPABASE_URL=https://xxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=tu_clave_anon
 ```
 
-## «He visto un sapo» (avistamientos privados)
+## «He visto al hampatu» (avistamientos privados)
 
 Botón en la portada y sección `#visto` (`src/components/Sighting.jsx`, `src/lib/avistamientos.js`). Con cuenta,
 cualquiera manda fotos (hasta 3, sin los datos GPS del móvil), el sitio exacto (GPS del móvil o coordenadas

@@ -1,5 +1,5 @@
 /*
- * Avistamientos privados («He visto un sapo»).
+ * Avistamientos privados («He visto al hampatu»).
  *
  * El sitio exacto del sapo no puede salir en el tablón, que lo lee cualquiera.
  * Por eso estos avisos van a una tabla aparte (public.avistamientos) que solo

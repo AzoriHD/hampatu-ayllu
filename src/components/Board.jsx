@@ -141,7 +141,7 @@ function PostForm({ preset, enfocar, onDone, onCancel }) {
         <div className="full"><label htmlFor="a-texto">{en ? "Details" : "Detalle"}</label>
           <textarea id="a-texto" name="texto" rows={4} maxLength={1200} value={f.texto} onChange={(e) => set("texto", e.target.value)} />
           <p className="hint">{en ? "Give only the region, never exact coordinates." : "Indica solo la región, nunca coordenadas exactas."}
-            {f.tipo === "avistamiento" && (en ? <> To send the exact spot privately, use <a href="#visto">I've seen a toad</a>.</> : <> Para mandar el sitio exacto en privado, usa <a href="#visto">He visto un sapo</a>.</>)}</p></div>
+            {f.tipo === "avistamiento" && (en ? <> To send the exact spot privately, use <a href="#visto">I've seen the hampatu</a>.</> : <> Para mandar el sitio exacto en privado, usa <a href="#visto">He visto al hampatu</a>.</>)}</p></div>
         <div className="full" id="w-fotos"><label htmlFor="a-fotos">{en ? "Photos (up to 3)" : "Fotos (hasta 3)"}</label>
           <input id="a-fotos" type="file" accept="image/*" multiple onChange={elegirFotos} />
           <p className="hint">{en ? "Saved without the phone's location data." : "Se guardan sin los datos de ubicación del móvil."}</p>

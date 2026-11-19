@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useApp } from "../AppContext.jsx";
 import { HeroText } from "./Headers.jsx";
 import { Svg } from "./Shared.jsx";
@@ -26,13 +27,31 @@ export default function Hero() {
             <span><b>{na}</b> {t(na === 1 ? "aviso" : "avisos")}</span>
           </p>
           <div className="portada-cta">
-            <a className="btn-acc" href="#visto">{en ? "I've seen a toad" : "He visto un sapo"}</a>
+            <BotonHampatu />
             <a className="btn-linea" href="#recompensas">{en ? "Rewards for those who protect" : "Recompensas para quien protege"}</a>
             {!esApp && <a className="btn-linea" href="#app"><Svg width="2" d={ICONO_APP} />{en ? "Get the app" : "Descarga la app"}</a>}
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+/* El botón de «He visto al hampatu»: se hunde al pulsarlo y luego abre el formulario */
+function BotonHampatu() {
+  const { en, irVista } = useApp();
+  const [abajo, setAbajo] = useState(false);
+  const pulsar = (ev) => {
+    ev.preventDefault();
+    setAbajo(true);
+    setTimeout(() => { setAbajo(false); irVista("visto", true); }, 220);
+  };
+  return (
+    <a className={"boton-hampatu" + (abajo ? " abajo" : "")} href="#visto" onClick={pulsar}
+      aria-label={en ? "I've seen the hampatu: send a sighting" : "He visto al hampatu: mandar un avistamiento"}>
+      <img className="b-arriba" src="/img/boton-arriba.webp" width="300" height="315" alt="" />
+      <img className="b-abajo" src="/img/boton-abajo.webp" width="300" height="315" alt="" />
+    </a>
   );
 }
 

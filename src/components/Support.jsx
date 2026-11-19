@@ -99,7 +99,7 @@ export default function Support() {
           <li>{en ? "Offer a reward or field equipment to the communities." : "Ofrece una recompensa o equipo de campo a las comunidades."} <button type="button" className="linkbtn" onClick={ofrecer}>{en ? "Offer" : "Ofrecer"}</button></li>
           <li>{en ? "Buy crafts with the toad: part of each sale goes to the community that looks after the stream." : "Compra artesanía del sapo: parte de cada venta va a la comunidad que cuida la quebrada."} <a className="linkbtn" href="#artesania">{en ? "See designs" : "Ver diseños"}</a></li>
           {!esApp && <li>{en ? "Share the app with guides, schools and communities in the Andes." : "Comparte la app con guías, escuelas y comunidades de los Andes."} <a className="linkbtn" href="#app">{en ? "The app" : "La app"}</a></li>}
-          <li>{en ? "If you see a toad, send the photo: it is the most useful thing there is." : "Si ves un sapo, manda la foto: es lo más útil que hay."} <a className="linkbtn" href="#visto">{en ? "I've seen a toad" : "He visto un sapo"}</a></li>
+          <li>{en ? "If you see a toad, send the photo: it is the most useful thing there is." : "Si ves un sapo, manda la foto: es lo más útil que hay."} <a className="linkbtn" href="#visto">{en ? "I've seen the hampatu" : "He visto al hampatu"}</a></li>
         </ul>
       </div>
     </section>
