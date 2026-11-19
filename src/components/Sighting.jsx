@@ -29,7 +29,7 @@ export default function Sighting() {
     <section id="v-visto" className="visto" aria-labelledby="h-visto">
       <div className="caja caja-cabeza">
         <header className="vista-head">
-          <div><h2 className="vista-h" id="h-visto">{en ? "I've seen the hampatu" : "He visto al hampatu"}</h2>
+          <div><h2 className="vista-h" id="h-visto">{en ? "I saw the hampatu" : "He visto al hampatu"}</h2>
           <p className="intro">{en ? "Send the photo and the exact spot here. Only the coordination team sees the spot, never the board: wildlife traffickers look for that information. If the photo is verified, it can earn a reward." : "Manda aquí la foto y el sitio exacto. El sitio solo lo ve la coordinación, nunca el tablón: los traficantes de fauna buscan esos datos. Si la foto se verifica, puede tener recompensa."}</p></div>
         </header>
         <p className="regla">{en ? <><strong>Do not touch it or move it.</strong> Take the photo from where you are and clean your boots before going to another stream.</> : <><strong>No lo toques ni lo muevas.</strong> Hazle la foto desde donde estás y limpia las botas antes de ir a otra quebrada.</>}</p>

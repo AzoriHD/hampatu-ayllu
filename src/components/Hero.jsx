@@ -50,9 +50,9 @@ function BotonHampatu() {
   };
   return (
     <a className={"boton-hampatu" + (abajo ? " abajo" : "")} href="#visto" onPointerDown={prepararClic} onClick={pulsar}
-      aria-label={en ? "I've seen the hampatu: send a sighting" : "He visto al hampatu: mandar un avistamiento"}>
-      <img className="b-arriba" src="/img/boton-arriba.webp" width="300" height="315" alt="" />
-      <img className="b-abajo" src="/img/boton-abajo.webp" width="300" height="315" alt="" />
+      aria-label={en ? "I saw the hampatu: send a sighting" : "He visto al hampatu: mandar un avistamiento"}>
+      <img className="b-arriba" src={en ? "/img/boton-en-arriba.webp" : "/img/boton-arriba.webp"} width="300" height="315" alt="" />
+      <img className="b-abajo" src={en ? "/img/boton-en-abajo.webp" : "/img/boton-abajo.webp"} width="300" height="315" alt="" />
     </a>
   );
 }

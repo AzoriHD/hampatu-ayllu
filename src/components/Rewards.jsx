@@ -45,7 +45,7 @@ export default function Rewards() {
     <h3 className="sub">{en ? "Conditions for the photo payment" : "Condiciones del pago por foto"}</h3>
     <ol className="como">
       <li>{en ? "The toad is photographed where it is, without being touched or moved. Photos of a toad in someone's hand, in a container or away from the stream are not paid." : "El sapo sale en su sitio, sin tocarlo ni moverlo. Las fotos con el sapo en la mano, en un envase o fuera de la quebrada no se pagan."}</li>
-      <li>{en ? <>The photo is sent with <a href="#visto">I've seen the hampatu</a>, with the date and the exact spot. Only the coordination team sees the spot, never the board.</> : <>La foto se manda con <a href="#visto">He visto al hampatu</a>, con la fecha y el sitio exacto. El sitio solo lo ve la coordinación, nunca el tablón.</>}</li>
+      <li>{en ? <>The photo is sent with <a href="#visto">I saw the hampatu</a>, with the date and the exact spot. Only the coordination team sees the spot, never the board.</> : <>La foto se manda con <a href="#visto">He visto al hampatu</a>, con la fecha y el sitio exacto. El sitio solo lo ve la coordinación, nunca el tablón.</>}</li>
       <li>{en ? "Specialists in the community check it before paying. Verified posts carry the «Verified photo» tag." : "Especialistas de la comunidad la revisan antes de pagar. Los avisos revisados llevan la marca «Foto verificada»."}</li>
       <li>{en ? "The first photo from each stream each month is paid. More photos from the same place still help, but are not paid again." : "Se paga la primera foto de cada quebrada cada mes. Más fotos del mismo sitio ayudan, pero no se cobran otra vez."}</li>
       <li>{en ? "Dead toads are reported the same way but not paid, so nobody has a reason to harm them. A photo copied from the internet or from someone else cancels the payment." : "Los sapos muertos se avisan igual, pero no se pagan, para que nadie tenga motivo de hacerles daño. Una foto copiada de internet o de otra persona anula el pago."}</li>
@@ -55,7 +55,7 @@ export default function Rewards() {
     <div className="caja">
     <h3 className="sub">{en ? "How a reward is earned" : "Cómo se gana una recompensa"}</h3>
     <ol className="como">
-      <li>{en ? <>Photograph the toad where it is, without touching it, and send it with <a href="#visto">I've seen the hampatu</a>.</> : <>Fotografiar al sapo en su sitio, sin tocarlo, y mandarla con <a href="#visto">He visto al hampatu</a>.</>}</li>
+      <li>{en ? <>Photograph the toad where it is, without touching it, and send it with <a href="#visto">I saw the hampatu</a>.</> : <>Fotografiar al sapo en su sitio, sin tocarlo, y mandarla con <a href="#visto">He visto al hampatu</a>.</>}</li>
       <li>{en ? "Look after a stretch of stream and follow the community agreements." : "Cuidar un tramo de quebrada y seguir los acuerdos de la comunidad."}</li>
       <li>{en ? "Walk patrols or monitoring routes and report them on the board, even when no toad turns up." : "Hacer rondas o recorridos de monitoreo y contarlos en el tablón, aunque no aparezca ningún sapo."}</li>
       <li>{en ? "Take part in work days, workshops and talks." : "Participar en faenas, talleres y charlas."}</li>
