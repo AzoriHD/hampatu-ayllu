@@ -29,7 +29,7 @@ function leerVistos() { try { return JSON.parse(localStorage.getItem(CLAVE) || "
 function guardarVistos(v) { try { localStorage.setItem(CLAVE, JSON.stringify(v)); } catch (e) { /* sin almacenamiento */ } }
 
 export default function Discover() {
-  const { en, t, data, uid, canPost, pedirCuenta, votar, apuntesDe } = useApp();
+  const { en, t, data, uid, canPost, pedirCuenta, votar, apuntesDe, irPerfil } = useApp();
   const [mazo, setMazo] = useState("necesitamos");
   const [vistos, setVistos] = useState(leerVistos); /* {id: "paso" | "gusta"} */
   const [hist, setHist] = useState([]);              /* para deshacer */
@@ -86,7 +86,8 @@ export default function Discover() {
   });
 
   const piden = mazo === "necesitamos";
-  const gustados = todas.filter((a) => vistos[a.id] === "gusta");
+  /* Los que me gustaron salen de mis votos (se guardan en la cuenta), no de este navegador */
+  const gustados = todas.filter((a) => misVotos.has(a.id));
   return (
     <section id="v-descubre" className="descubre" aria-labelledby="h-descubre">
       <div className="caja caja-cabeza">
@@ -140,8 +141,9 @@ export default function Discover() {
         <div className="caja">
           <h3 className="sub">{en ? "You liked" : "Te gustaron"} <span className="n">{gustados.length}</span></h3>
           <ul className="gustados">
-            {gustados.map((a) => <Mini key={a.id} a={a} onMensaje={() => abrir("mensaje", a)} onAyuda={() => abrir(piden ? "donar" : "interesa", a)} piden={piden} />)}
+            {gustados.map((a) => <Mini key={a.id} a={a} votos={votosDe[a.id] || 0} onMensaje={() => abrir("mensaje", a)} onAyuda={() => abrir(piden ? "donar" : "interesa", a)} piden={piden} />)}
           </ul>
+          {uid && <p className="meta mazo-nota"><button type="button" className="linkbtn" onClick={() => irPerfil(uid)}>{en ? "They are also saved in your profile" : "También los tienes guardados en tu perfil"}</button></p>}
         </div>
       )}
 
@@ -206,6 +208,9 @@ function Carta({ a, nivel, arriba, saliendo, votos, ayudan, onDecidir }) {
         {foto ? <img src={foto} alt="" draggable="false" loading="lazy" /> : quien.tipo === "com" ? <Simbolo k={simboloDe(quien.c)} /> : <Avatar p={quien.p} size={96} />}
         <span className="pill">{t(a.tipo === "necesitamos" ? "Necesitamos" : "Ofrecemos")}</span>
         {a.ejemplo && <span className="tag tag-ej">{t("Ejemplo")}</span>}
+        <span className={"carta-votos" + (votos ? "" : " cero")} aria-label={votos + (en ? (votos === 1 ? " vote" : " votes") : (votos === 1 ? " voto" : " votos"))}>
+          <Svg width="2.4" d={IC.gusta} /> {votos} <span>{en ? (votos === 1 ? "vote" : "votes") : (votos === 1 ? "voto" : "votos")}</span>
+        </span>
       </div>
       <span className="sello sello-gusta" style={{ opacity: gusta }}>{en ? "LIKE" : "ME GUSTA"}</span>
       <span className="sello sello-paso" style={{ opacity: paso }}>{en ? "PASS" : "PASO"}</span>
@@ -218,7 +223,6 @@ function Carta({ a, nivel, arriba, saliendo, votos, ayudan, onDecidir }) {
         {a.texto && <p className="carta-txt">{a.texto}</p>}
         <p className="meta carta-pie">
           {P[a.zona] ? zonaDe(a) : t("Toda la comunidad")}
-          {votos > 0 && <> · ♥ {votos}</>}
           {ayudan > 0 && <> · {ayudan} {a.tipo === "necesitamos" ? (en ? "can help" : (ayudan === 1 ? "puede ayudar" : "pueden ayudar")) : (en ? "interested" : (ayudan === 1 ? "interesado" : "interesados"))}</>}
         </p>
       </div>
@@ -226,14 +230,14 @@ function Carta({ a, nivel, arriba, saliendo, votos, ayudan, onDecidir }) {
   );
 }
 
-function Mini({ a, onMensaje, onAyuda, piden }) {
+function Mini({ a, votos, onMensaje, onAyuda, piden }) {
   const { en, goAviso } = useApp();
   const quien = useQuien()(a);
   return (
     <li className="gustado">
       <button type="button" className="gustado-main" onClick={() => goAviso(a.id)}>
         {quien.tipo === "com" ? <Simbolo k={simboloDe(quien.c)} mini /> : <Avatar p={quien.p} size={32} />}
-        <span><strong>{a.titulo}</strong><span className="meta">{quien.nombre}</span></span>
+        <span><strong>{a.titulo}</strong><span className="meta">{quien.nombre} · ♥ {votos}</span></span>
       </button>
       {!a.ejemplo && <span className="gustado-acc">
         <button type="button" className="redondo mini r-mensaje" onClick={onMensaje} aria-label={en ? "Private message" : "Mensaje privado"} title={en ? "Private message" : "Mensaje privado"}><Svg width="2.1" d={IC.mensaje} /></button>

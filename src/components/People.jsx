@@ -159,7 +159,41 @@ export function Profile({ id, editar }) {
         )) : <li className="meta" style={{ padding: "10px 14px" }}>{t("Todavía no ha publicado nada.")}</li>}
       </ul>
       </div>
+      {mio && <Gustados />}
     </section>
+  );
+}
+
+/* Solo en tu propio perfil: los anuncios a los que diste «me gusta», para escribirles después */
+function Gustados() {
+  const { t, en, data, uid, goAviso, escribirA, votar, perfilDe } = useApp();
+  const votosDe = {};
+  data.votos.forEach((v) => { votosDe[v.aviso] = (votosDe[v.aviso] || 0) + 1; });
+  const mios = data.votos.filter((v) => v.by === uid).sort((x, y) => (y.ts || 0) - (x.ts || 0));
+  const lista = mios.map((v) => data.avisos.find((a) => a.id === v.aviso)).filter(Boolean);
+  const autor = (a) => { const p = a.by && perfilDe(a.by); return (p && p.nombre) || a.firma || ""; };
+  return (
+    <div className="caja" id="perfil-gustados">
+      <h3 className="sub cal-prox-h">{en ? "Posts you liked" : "Anuncios que te gustaron"} {lista.length > 0 && <span className="n">{lista.length}</span>}</h3>
+      {lista.length ? (
+        <ul className="gustados lista-gustados">
+          {lista.map((a) => {
+            const puede = !a.ejemplo && a.by && a.by !== uid;
+            return (
+              <li className="gustado" key={a.id}>
+                <button type="button" className="gustado-main" onClick={() => goAviso(a.id)}>
+                  <span><strong>{a.titulo}</strong><span className="meta">{t(TA[a.tipo] || TA.pregunta)}{autor(a) && " · " + autor(a)} · ♥ {votosDe[a.id] || 0}</span></span>
+                </button>
+                <span className="gustado-acc">
+                  {puede && <button type="button" className="btn-mini" onClick={() => escribirA(a.by, { nombre: autor(a), ref: { aviso: a.id, titulo: a.titulo } })}>{en ? "Write" : "Escribir"}</button>}
+                  <button type="button" className="linkbtn" onClick={() => votar(a.id)} title={en ? "Remove like" : "Quitar me gusta"}>{en ? "Remove" : "Quitar"}</button>
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      ) : <p className="meta">{en ? "When you like a post in Discover it is saved here so you can write to them later." : "Cuando des «me gusta» a un anuncio en Descubre, se guarda aquí para que puedas escribirle después."}</p>}
+    </div>
   );
 }
 
