@@ -68,10 +68,10 @@ export function VistoModal({ onClose }) {
   useEffect(() => {
     const antes = document.activeElement;
     document.body.classList.add("con-modal");
-    caja.current?.focus();
+    caja.current?.focus({ preventScroll: true });
     const tecla = (e) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", tecla);
-    return () => { document.body.classList.remove("con-modal"); document.removeEventListener("keydown", tecla); antes?.focus?.(); };
+    return () => { document.body.classList.remove("con-modal"); document.removeEventListener("keydown", tecla); antes?.focus?.({ preventScroll: true }); };
   }, [onClose]);
   return (
     <div className="modal modal-visto" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>

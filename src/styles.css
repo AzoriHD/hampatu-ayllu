@@ -669,8 +669,8 @@ img.avatar{background:var(--maiz)}
 .boton-hampatu img{grid-area:1/1;width:clamp(150px,22vw,190px);height:auto;filter:drop-shadow(3px 5px 0 rgb(43 25 11 / .22));transition:transform .12s}
 .boton-hampatu .b-abajo{visibility:hidden}
 .boton-hampatu:hover .b-arriba{transform:translateY(-2px)}
-.boton-hampatu:active .b-arriba,.boton-hampatu.abajo .b-arriba{visibility:hidden}
-.boton-hampatu:active .b-abajo,.boton-hampatu.abajo .b-abajo{visibility:visible}
+.boton-hampatu:active .b-arriba,.boton-hampatu.hundido .b-arriba{visibility:hidden}
+.boton-hampatu:active .b-abajo,.boton-hampatu.hundido .b-abajo{visibility:visible}
 .boton-hampatu:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
 /* Ventana de «He visto al hampatu» */
 .modal.modal-visto{z-index:45;padding:max(12px,4vh) 12px 24px;animation:visto-fondo .2s ease-out}
@@ -830,4 +830,6 @@ span.chat-ref{cursor:default}
 /* Botón «He visto al hampatu»: se hunde en cuanto se toca, sin esperas del móvil */
 .boton-hampatu{touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .boton-hampatu img{pointer-events:none;transition:transform .09s ease-out}
-.boton-hampatu.abajo .b-abajo{transform:translateY(3px)}
+.boton-hampatu.hundido .b-abajo{transform:translateY(3px)}
+button.boton-hampatu{background:none;border:0;padding:0;margin:0 0 -6px;cursor:pointer;font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
+.portada-cta{-webkit-user-select:none;user-select:none}

@@ -42,29 +42,29 @@ export default function Hero() {
 function BotonHampatu() {
   const { en, abrirVisto } = useApp();
   const [abajo, setAbajo] = useState(false);
-  const yendo = useRef(false);
-  /* Se hunde nada más tocarlo (no al soltar), suena el clic y, cuando se ha visto hundido, se abre la ventana */
-  const tocar = (ev) => { if (ev.button > 0) return; prepararClic(); setAbajo(true); };
-  const soltar = () => { if (!yendo.current) setAbajo(false); };
-  const pulsar = (ev) => {
-    ev.preventDefault();
+  const yendo = useRef(false), dedo = useRef(null);
+  /* Es un <button> y no un enlace: así el móvil no saca la vista previa del enlace ni selecciona texto al
+     mantenerlo pulsado. Se hunde al tocarlo, se abre al soltarlo (aunque se haya mantenido) y, si el dedo
+     se desliza para bajar la página, se cancela. */
+  const disparar = () => {
     if (yendo.current) return;
     yendo.current = true;
     sonarClic();
     setAbajo(true);
-    setTimeout(() => {
-      abrirVisto();
-      requestAnimationFrame(() => { setAbajo(false); yendo.current = false; });
-    }, 260);
+    setTimeout(() => { abrirVisto(); requestAnimationFrame(() => { setAbajo(false); yendo.current = false; }); }, 240);
   };
+  const tocar = (e) => { if (e.button > 0 || yendo.current) return; dedo.current = e.pointerId; prepararClic(); setAbajo(true); };
+  const soltar = (e) => { if (dedo.current !== e.pointerId) return; dedo.current = null; disparar(); };
+  const cancelar = () => { dedo.current = null; if (!yendo.current) setAbajo(false); };
   const src = (p) => "/img/boton-" + (en ? "en-" : "") + p + ".webp";
   return (
-    <a className={"boton-hampatu" + (abajo ? " abajo" : "")} href="#visto" draggable="false"
-      onPointerDown={tocar} onPointerUp={soltar} onPointerCancel={soltar} onPointerLeave={soltar} onClick={pulsar} onContextMenu={(e) => e.preventDefault()}
+    <button type="button" className={"boton-hampatu" + (abajo ? " hundido" : "")}
+      onPointerDown={tocar} onPointerUp={soltar} onPointerCancel={cancelar} onPointerLeave={cancelar}
+      onClick={(e) => { if (e.detail === 0) disparar(); }} onContextMenu={(e) => e.preventDefault()}
       aria-label={en ? "I saw the hampatu: send a sighting" : "He visto al hampatu: mandar un avistamiento"}>
-      <img className="b-arriba" src={src("arriba")} width="300" height="315" alt="" draggable="false" decoding="sync" />
-      <img className="b-abajo" src={src("abajo")} width="300" height="315" alt="" draggable="false" decoding="sync" />
-    </a>
+      <img className="b-arriba" src={src("arriba")} width="300" height="315" alt="" draggable="false" />
+      <img className="b-abajo" src={src("abajo")} width="300" height="315" alt="" draggable="false" />
+    </button>
   );
 }
 
