@@ -2,7 +2,7 @@
    Lo ven la administración y la coordinación; la base de datos comprueba cada acción (supabase.sql). */
 import { useState } from "react";
 import { useApp } from "../AppContext.jsx";
-import { PROYECTO_EJEMPLO, TIPOS_ACT } from "../data/proyectos.js";
+import { PROYECTOS_EJEMPLO, TIPOS_ACT } from "../data/proyectos.js";
 import { REMOTE } from "../lib/store.js";
 import { borrar, cambiar, crear, filas, useCarga, useCifras } from "../lib/tablas.js";
 import { puede } from "../lib/permisos.js";
@@ -103,15 +103,15 @@ function TabProyectos() {
   const { datos, error, cargando } = useCarga(() => filas("proyectos", { orden: "actualizado" }));
   const ps = datos || [];
   const hayEjemplo = ps.some((p) => p.ejemplo);
+  const faltan = PROYECTOS_EJEMPLO.filter((e) => !ps.some((p) => p.ejemplo && p.nombre === e.nombre));
   return (
     <div className="caja">
       <div className="caja-tit">
         <h3 className="sub">{L("Todos los proyectos", "All projects")}</h3>
-        {hayEjemplo
-          ? <Confirmar texto={L("Borrar el proyecto de ejemplo", "Delete the example project")} onSi={() => env.enviar(async () => { for (const p of ps.filter((x) => x.ejemplo)) await borrar("proyectos", p.id); })} />
-          : <button type="button" className="btn-mini" onClick={() => env.enviar(() => crear("proyectos", PROYECTO_EJEMPLO))}>{L("Cargar el proyecto de ejemplo", "Load the example project")}</button>}
+        {faltan.length > 0 && <button type="button" className="btn-mini" onClick={() => env.enviar(async () => { for (const e of faltan) await crear("proyectos", e); })}>{hayEjemplo ? L("Cargar los ejemplos que faltan", "Load the missing examples") : L("Cargar los proyectos de ejemplo", "Load the example projects")}</button>}
+        {hayEjemplo && <Confirmar texto={L("Borrar los proyectos de ejemplo", "Delete the example projects")} onSi={() => env.enviar(async () => { for (const p of ps.filter((x) => x.ejemplo)) await borrar("proyectos", p.id); })} />}
       </div>
-      <p className="hint">{L("El proyecto de ejemplo enseña la estructura de una ficha. Sale marcado como ejemplo y no cuenta en ninguna cifra.", "The example project shows how a page is structured. It is marked as an example and is never counted in figures.")}</p>
+      <p className="hint">{L("Los proyectos de ejemplo enseñan cómo es una ficha en cada estado. Salen marcados como ejemplo y no cuentan en ninguna cifra.", "The example projects show what a page looks like in each status. They are marked as examples and are never counted in figures.")}</p>
       <ErrorCarga error={error} />
       {cargando && !datos ? <Cargando /> : ps.length ? (
         <ul className="lista-gestion">
