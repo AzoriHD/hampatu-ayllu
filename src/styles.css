@@ -41,9 +41,9 @@
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--top-h) + 12px)}
 body{margin:0;min-height:100vh;min-height:100dvh;color:var(--ink);font:400 17px/1.55 var(--body);
-  background-color:#c9a361;background-image:linear-gradient(var(--velo),var(--velo)),url(/img/tejido-fondo.webp);
+  background-color:#c9a361;background-image:linear-gradient(var(--velo),var(--velo)),url(/img/tejido-fondo-v2.webp);
   background-size:auto,var(--tejido-ancho) auto;background-position:0 0,center top;background-repeat:repeat}
-@media (max-width:760px){body{background-image:linear-gradient(var(--velo),var(--velo)),url(/img/tejido-fondo-640.webp)}}
+@media (max-width:760px){body{background-image:linear-gradient(var(--velo),var(--velo)),url(/img/tejido-fondo-640-v2.webp)}}
 #root{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 #root>main{flex:1 0 auto;width:100%}
 a{color:var(--link);text-underline-offset:3px}
@@ -179,7 +179,7 @@ h1{font:800 clamp(60px,10.4vw,128px)/.84 var(--display);font-stretch:76%;letter-
 @media (max-width:760px){.paseo{display:none}}
 
 /* Faja de ranas tejidas */
-.faja-ranas{height:clamp(70px,8.4vw,108px);background:var(--maiz) url(/img/faja-ranas.webp) left center/auto 100% repeat-x;border-block:3px solid var(--edge);filter:var(--tejido)}
+.faja-ranas{height:clamp(70px,8.4vw,108px);background:var(--maiz) url(/img/faja-ranas-v2.webp) left center/auto 100% repeat-x;border-block:3px solid var(--edge);filter:var(--tejido)}
 
 /* ---------- Botones ---------- */
 .btn-acc,.btn-linea{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:50px;padding:10px 22px;border-radius:999px;border:2px solid var(--edge);font-weight:700;font-size:17px;text-decoration:none;line-height:1.15;text-align:center}
@@ -225,17 +225,17 @@ main>.notice{text-align:center}
 
 /* Cabecera de cada sección, con su medallón tejido */
 .vista-head{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;margin:18px 0 24px}
-.vista-head::before{content:"";flex:none;width:76px;aspect-ratio:176/229;background:var(--med,url(/img/med-rana.webp)) center/contain no-repeat;filter:drop-shadow(3px 4px 0 rgb(43 25 11 / .22))}
+.vista-head::before{content:"";flex:none;width:76px;aspect-ratio:176/229;background:var(--med,url(/img/med-rana-v2.webp)) center/contain no-repeat;filter:drop-shadow(3px 4px 0 rgb(43 25 11 / .22))}
 .vista-head>div{min-width:0;max-width:64ch}
 .vista-h{font:800 clamp(34px,5vw,56px)/.94 var(--display);font-stretch:80%;letter-spacing:-.012em;margin:0 0 10px;text-wrap:balance}
 .intro{margin:0 0 14px;max-width:66ch;color:var(--muted)}
 .vista-head .intro{margin:0 auto}
-#v-tablon{--med:url(/img/med-rana.webp)}
+#v-tablon{--med:url(/img/med-rana-v2.webp)}
 #v-comunidades{--med:url(/img/med-cerro-laguna.webp)}
 #v-personas,#v-perfil{--med:url(/img/med-quenua.webp)}
 #v-calendario{--med:url(/img/med-laguna.webp)}
 #v-artesania{--med:url(/img/med-lupino.webp)}
-#v-especie{--med:url(/img/med-rana-2.webp)}
+#v-especie{--med:url(/img/med-rana-2-v2.webp)}
 #v-recompensas{--med:url(/img/med-ichu.webp)}
 #v-app{--med:url(/img/med-cerro.webp)}
 @media (max-width:560px){.vista-head{gap:10px}.vista-head::before{width:56px}}
@@ -379,8 +379,8 @@ input[type=file]{padding:8px}
 
 /* ---------- Pie ---------- */
 .pie{position:relative;isolation:isolate;margin-top:56px;padding:clamp(60px,9vw,112px) 0 clamp(84px,12vw,150px);border-top:3px solid var(--edge);overflow:hidden}
-.pie::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--maiz) url(/img/tejido-bandas-1536.webp) center top/cover no-repeat;filter:var(--tejido)}
-@media (max-width:900px){.pie::before{background-image:url(/img/tejido-bandas-800.webp)}}
+.pie::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--maiz) url(/img/tejido-bandas-1536-v2.webp) center top/cover no-repeat;filter:var(--tejido)}
+@media (max-width:900px){.pie::before{background-image:url(/img/tejido-bandas-800-v2.webp)}}
 .pie-card{position:relative;max-width:720px;margin-inline:auto;background:var(--manta);border:2px solid var(--edge);border-radius:22px;box-shadow:8px 8px 0 rgb(43 25 11 / .88);padding:26px clamp(20px,3vw,34px);display:flex;flex-direction:column;gap:18px;align-items:center;text-align:center}
 .pie-card::after{content:"";position:absolute;inset:8px;border:1.5px dashed color-mix(in srgb,var(--muted) 40%,transparent);border-radius:15px;pointer-events:none}
 .pie-card p{margin:0}
@@ -578,7 +578,7 @@ img.avatar{background:var(--maiz)}
 /* ---------- Página «App» ---------- */
 .app-instalar{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);background:var(--manta);border:2px solid var(--edge);border-radius:24px;overflow:hidden;box-shadow:var(--sombra)}
 .app-equipos{position:relative;isolation:isolate;min-height:440px;border-right:1.5px solid var(--edge);overflow:hidden}
-.app-equipos::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--maiz) url(/img/tejido-ranas-800.webp) center/cover;filter:var(--tejido)}
+.app-equipos::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--maiz) url(/img/tejido-ranas-800-v2.webp) center/cover;filter:var(--tejido)}
 .pc{position:absolute;left:6%;top:11%;width:80%}
 .pc-pantalla{background:#1f150c;border-radius:12px 12px 0 0;padding:8px 8px 10px;box-shadow:0 18px 30px -18px rgb(0 0 0 / .7)}
 .pc-pantalla img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:top;border-radius:4px;background:var(--lana)}
@@ -627,7 +627,7 @@ img.avatar{background:var(--maiz)}
 @media print{.topbar,.abajo,.faja-ranas,.faja-top,.paseo{display:none}}
 
 /* «He visto al hampatu» y «Apoya» */
-#v-visto{--med:url(/img/med-rana.webp)}
+#v-visto{--med:url(/img/med-rana-v2.webp)}
 #v-apoya{--med:url(/img/med-cerro-laguna.webp)}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .visto-cuenta,.visto-ok{display:grid;gap:12px;justify-items:start}
@@ -754,7 +754,7 @@ span.chat-ref{cursor:default}
 .carta.t-necesitamos{--c:var(--need)}.carta.t-ofrecemos{--c:var(--offer)}
 .carta-img{position:relative;flex:0 0 46%;background:var(--maiz);display:grid;place-items:center;overflow:hidden;border-bottom:2px solid var(--edge)}
 .carta-img img{width:100%;height:100%;object-fit:cover;pointer-events:none}
-.carta-img.sin-foto{background:color-mix(in srgb,var(--c) 18%,var(--maiz)) url(/img/tejido-fondo-640.webp) center/cover;background-blend-mode:soft-light}
+.carta-img.sin-foto{background:color-mix(in srgb,var(--c) 18%,var(--maiz)) url(/img/tejido-fondo-640-v2.webp) center/cover;background-blend-mode:soft-light}
 .carta-img .simbolo{transform:scale(1.9)}
 .carta-img .pill{position:absolute;top:12px;left:12px;background:var(--manta);border:1.5px solid var(--c)}
 .carta-img .tag{position:absolute;top:12px;right:12px;background:var(--manta);border:1.5px solid var(--line)}
@@ -944,7 +944,7 @@ select{max-width:100%;text-overflow:ellipsis}
 .proy{background:var(--manta);border:2px solid var(--edge);border-radius:var(--r);box-shadow:var(--sombra);overflow:hidden;display:flex;flex-direction:column}
 .proy-enlace{display:block}
 .proy-portada{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-bottom:2px solid var(--edge)}
-.proy-portada.sin-foto{display:grid;place-items:center;background:var(--maiz) url(/img/tejido-rombos-900.webp) center/320px auto;filter:var(--tejido)}
+.proy-portada.sin-foto{display:grid;place-items:center;background:var(--maiz) url(/img/tejido-rombos-900-v2.webp) center/320px auto;filter:var(--tejido)}
 .proy-portada.sin-foto span{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--manta);border:2px solid var(--edge);font:800 30px/1 var(--display);color:var(--ink)}
 .proy-portada.grande{aspect-ratio:21/9;border-radius:16px;border:2px solid var(--edge)}
 .proy-cuerpo{padding:16px 18px 18px;display:grid;gap:8px;align-content:start}
@@ -1073,7 +1073,7 @@ g[tabindex]:focus-visible .g-hit{stroke:var(--link);stroke-width:2}
 .apoya-hero-txt .intro{margin:0;text-align:left;max-width:52ch}
 .apoya-kicker{margin:0;font-weight:700;color:var(--need);text-transform:uppercase;letter-spacing:.06em;font-size:14px}
 .apoya-hero-img{margin:0;position:relative}
-.apoya-hero-img::before{content:"";position:absolute;inset:18% 4% 0;border-radius:50% 50% 16px 16px;background:var(--maiz) url(/img/tejido-ranas-800.webp) center/360px auto;opacity:.55;filter:var(--tejido)}
+.apoya-hero-img::before{content:"";position:absolute;inset:18% 4% 0;border-radius:50% 50% 16px 16px;background:var(--maiz) url(/img/tejido-ranas-800-v2.webp) center/360px auto;opacity:.55;filter:var(--tejido)}
 .apoya-hero-img img{position:relative;display:block;width:100%;height:auto;filter:drop-shadow(6px 10px 0 rgb(43 25 11 / .25))}
 @media (max-width:760px){.apoya-hero{grid-template-columns:1fr}.apoya-hero-img{max-width:420px;justify-self:center}}
 .vuelta{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
