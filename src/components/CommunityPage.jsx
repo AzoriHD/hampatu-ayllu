@@ -79,7 +79,7 @@ export default function CommunityPage({ id }) {
       <article className="caja ficha-com">
         <p className="volver"><a href="#comunidades">← {L("Comunidades", "Communities")}</a></p>
         <div className="com-top">
-          <Simbolo k={simboloDe(c)} />
+          <Simbolo com={c} />
           <div>
             <div className="row"><span className="pill">{t(TC[c.tipo] || TC.otro)}</span>{c.ejemplo && <span className="tag tag-ej">{L("Ejemplo", "Example")}</span>}</div>
             <h2 className="vista-h" id="h-comunidad">{c.nombre}</h2>

@@ -214,7 +214,7 @@ function Post({ a, votos, mio }) {
   const fotos = Array.isArray(a.fotos) ? a.fotos.slice(0, 3) : [];
   const enl = enlaceAviso(id), txt = t("Mira este aviso en Hampatu Ayllu") + ": " + String(a.titulo || "") + "\n" + enl;
   const firmaEsCom = c && String(a.firma || "").trim() === String(c.nombre || "").trim();
-  const enlaceCom = c && <><Simbolo k={simboloDe(c)} mini /><button type="button" className="linkbtn" onClick={() => goCom(c.id)}>{c.nombre}</button></>;
+  const enlaceCom = c && <><Simbolo com={c} mini /><button type="button" className="linkbtn" onClick={() => goCom(c.id)}>{c.nombre}</button></>;
   const verificar = (on) => write(setMsg, () => store.update("avisos", id, on ? { verificada: true, verificadaTs: Date.now() } : { verificada: false }));
 
   return (

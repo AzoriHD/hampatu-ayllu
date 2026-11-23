@@ -205,7 +205,7 @@ function Carta({ a, nivel, arriba, saliendo, votos, ayudan, onDecidir }) {
     <article className={"carta t-" + a.tipo + (arriba ? " arriba" : "")} style={estilo} aria-hidden={!arriba}
       onPointerDown={abajo} onPointerMove={mueve} onPointerUp={arriba_} onPointerCancel={arriba_}>
       <div className={"carta-img" + (foto ? "" : " sin-foto")}>
-        {foto ? <img src={foto} alt="" draggable="false" loading="lazy" /> : quien.tipo === "com" ? <Simbolo k={simboloDe(quien.c)} /> : <Avatar p={quien.p} size={96} />}
+        {foto ? <img src={foto} alt="" draggable="false" loading="lazy" /> : quien.tipo === "com" ? <Simbolo com={quien.c} /> : <Avatar p={quien.p} size={96} />}
         <span className="pill">{t(a.tipo === "necesitamos" ? "Necesitamos" : "Ofrecemos")}</span>
         {a.ejemplo && <span className="tag tag-ej">{t("Ejemplo")}</span>}
         <span className={"carta-votos" + (votos ? "" : " cero")} aria-label={votos + (en ? (votos === 1 ? " vote" : " votes") : (votos === 1 ? " voto" : " votos"))}>
@@ -216,7 +216,7 @@ function Carta({ a, nivel, arriba, saliendo, votos, ayudan, onDecidir }) {
       <span className="sello sello-paso" style={{ opacity: paso }}>{en ? "PASS" : "PASO"}</span>
       <div className="carta-cuerpo">
         <div className="carta-quien">
-          {quien.tipo === "com" ? <Simbolo k={simboloDe(quien.c)} mini /> : <Avatar p={quien.p} size={30} />}
+          {quien.tipo === "com" ? <Simbolo com={quien.c} mini /> : <Avatar p={quien.p} size={30} />}
           <span><strong>{quien.nombre}</strong>{quien.sub && <span className="meta"> · {quien.sub}</span>}</span>
         </div>
         <h3>{a.titulo}</h3>
@@ -236,7 +236,7 @@ function Mini({ a, votos, onMensaje, onAyuda, piden }) {
   return (
     <li className="gustado">
       <button type="button" className="gustado-main" onClick={() => goAviso(a.id)}>
-        {quien.tipo === "com" ? <Simbolo k={simboloDe(quien.c)} mini /> : <Avatar p={quien.p} size={32} />}
+        {quien.tipo === "com" ? <Simbolo com={quien.c} mini /> : <Avatar p={quien.p} size={32} />}
         <span><strong>{a.titulo}</strong><span className="meta">{quien.nombre} · ♥ {votos}</span></span>
       </button>
       {!a.ejemplo && <span className="gustado-acc">

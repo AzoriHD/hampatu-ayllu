@@ -118,7 +118,7 @@ export function Profile({ id, editar }) {
             {p.rol && <p className="perfil-rol">{p.rol}</p>}
             <p className="meta">
               {p.lugar}{p.lugar && c && " · "}
-              {c && <span className="nowrap-ini"><Simbolo k={simboloDe(c)} mini /><button type="button" className="linkbtn" onClick={() => goCom(c.id)}>{c.nombre}</button></span>}
+              {c && <span className="nowrap-ini"><Simbolo com={c} mini /><button type="button" className="linkbtn" onClick={() => goCom(c.id)}>{c.nombre}</button></span>}
               {desde && <>{(p.lugar || c) && " · "}{t("En la comunidad desde")} {desde}</>}
             </p>
           </div>

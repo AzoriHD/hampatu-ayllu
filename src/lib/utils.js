@@ -1,4 +1,4 @@
-import { SIMB, SIMB_K } from "../data/constants.js";
+import { SIMB, SIMB_K, SIMB_VIEJOS, TONOS } from "../data/constants.js";
 
 export const str = (v, max) => String(v == null ? "" : v).trim().slice(0, max);
 export const pad2 = (n) => (n < 10 ? "0" : "") + n;
@@ -44,7 +44,14 @@ export function simboloDe(c) {
   if (SIMB[c.simbolo]) return c.simbolo;
   let h = 0; const s = String(c.id || c.nombre || "");
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
-  return SIMB_K[h % SIMB_K.length];
+  return SIMB_VIEJOS[h % SIMB_VIEJOS.length];
+}
+/* Color del símbolo: el elegido o, si no hay, el de siempre. */
+export function colorDe(c) {
+  const n = c && c.color !== "" && c.color != null ? Number(c.color) : NaN;
+  if (Number.isInteger(n) && n >= 0 && n < TONOS.length) return n;
+  const k = simboloDe(c || {}); const i = SIMB_VIEJOS.indexOf(k);
+  return i >= 0 ? i % 3 : SIMB_K.indexOf(k) % TONOS.length;
 }
 
 export function errMsg(e) {

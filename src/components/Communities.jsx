@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useApp } from "../AppContext.jsx";
-import { COORD, COORD_MSG, P, SIMB, SIMB_K, TC, TCD } from "../data/constants.js";
+import { COORD, COORD_MSG, P, SIMB, SIMB_K, TC, TCD, TONOS } from "../data/constants.js";
 import { newId, store } from "../lib/store.js";
-import { plural, simboloDe, str } from "../lib/utils.js";
+import { colorDe, plural, simboloDe, str } from "../lib/utils.js";
 import ZonaRail from "./Rail.jsx";
 import { CommunitiesHeader } from "./Headers.jsx";
 import { CopyBtn, DelBtns, EmptyBox, Msg, Simbolo } from "./Shared.jsx";
@@ -38,7 +38,7 @@ export default function Communities() {
           return (
             <article className="com" id={"c-" + c.id} key={c.id}>
               <div className="com-top">
-                <Simbolo k={simboloDe(c)} />
+                <Simbolo com={c} />
                 <div>
                   <div className="row"><span className="pill">{t(TC[c.tipo] || TC.otro)}</span>{c.ejemplo && <span className="tag tag-ej">{t("Ejemplo")}</span>}</div>
                   <h3><a href={"#comunidad-" + c.id}>{c.nombre}</a></h3>
@@ -77,7 +77,7 @@ export function CommunityForm({ editId, onClose, completo }) {
   const [f, setF] = useState(() => ({
     nombre: prev?.nombre || "", tipo: TC[prev?.tipo] ? prev.tipo : "local", zona: P[prev?.zona] ? prev.zona : "", zonaotra: prev?.zonaOtra || "",
     region: prev?.region || "", especies: prev?.especies || "", ofrece: prev?.ofrece || "", necesita: prev?.necesita || "",
-    contacto: prev?.contacto || "", simbolo: prev ? simboloDe(prev) : "",
+    contacto: prev?.contacto || "", simbolo: prev ? simboloDe(prev) : "", color: prev ? colorDe(prev) : 0,
     presentacion: prev?.presentacion || "", ecosistemas: prev?.ecosistemas || "", biodiversidad: prev?.biodiversidad || "",
     actividades: prev?.actividades || "", apoyos: prev?.apoyos || "", resultados: prev?.resultados || "", fotos: Array.isArray(prev?.fotos) ? prev.fotos : [],
   }));
@@ -92,7 +92,7 @@ export function CommunityForm({ editId, onClose, completo }) {
     const d = {
       nombre: str(f.nombre, 80), tipo: TC[f.tipo] ? f.tipo : "otro", zona: P[f.zona] ? f.zona : "",
       region: str(f.region, 80), especies: str(f.especies, 160), ofrece: str(f.ofrece, 300), necesita: str(f.necesita, 300),
-      contacto: str(f.contacto, 120), simbolo: SIMB[f.simbolo] ? f.simbolo : "",
+      contacto: str(f.contacto, 120), simbolo: SIMB[f.simbolo] ? f.simbolo : "", color: Number.isInteger(f.color) && f.color >= 0 && f.color < TONOS.length ? f.color : 0,
       ts: prev ? Number(prev.ts) || Date.now() : Date.now(), by: prev ? String(prev.by || "") : uid,
       presentacion: str(f.presentacion, 1500), ecosistemas: str(f.ecosistemas, 300), biodiversidad: str(f.biodiversidad, 500),
       actividades: str(f.actividades, 1000), apoyos: str(f.apoyos, 800), resultados: str(f.resultados, 1000), fotos: f.fotos.slice(0, 6),
@@ -137,7 +137,15 @@ export function CommunityForm({ editId, onClose, completo }) {
             {SIMB_K.map((k) => (
               <label className="sim-op" key={k} title={SIMB[k][en ? 1 : 0]}>
                 <input type="radio" name="simbolo" value={k} checked={f.simbolo === k} onChange={() => set("simbolo", k)} />
-                <Simbolo k={k} /><span className="sr">{SIMB[k][en ? 1 : 0]}</span>
+                <Simbolo k={k} tono={f.color} /><span className="sr">{SIMB[k][en ? 1 : 0]}</span>
+              </label>
+            ))}
+          </div>
+          <div className="sim-colores" role="radiogroup" aria-label={L("Color del símbolo", "Symbol colour")}>
+            {TONOS.map((n, i) => (
+              <label className="sim-color" key={i} title={n[en ? 1 : 0]}>
+                <input type="radio" name="color" value={i} checked={f.color === i} onChange={() => set("color", i)} />
+                <span className={"muestra tono-" + i} /><span className="sr">{n[en ? 1 : 0]}</span>
               </label>
             ))}
           </div>

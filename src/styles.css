@@ -312,7 +312,15 @@ input[type=file]{padding:8px}
 /* Símbolos de las comunidades */
 .simbolo{flex:0 0 auto;width:56px;height:56px;border-radius:50%;border:1.5px solid var(--edge);display:grid;place-items:center;box-shadow:3px 3px 0 var(--shade)}
 .simbolo svg{width:32px;height:32px}
-.tono-0{background:#e8a42a;color:#2b190b}.tono-1{background:#2b190b;color:#e8a42a}.tono-2{background:#f7e2ae;color:#2b190b}
+.tono-0{background:#e8a42a;color:#2b190b;--sa:#a4471a}.tono-1{background:#2b190b;color:#e8a42a;--sa:#f7e2ae}.tono-2{background:#f7e2ae;color:#2b190b;--sa:#c0661e}.tono-3{background:#3e573e;color:#f7e2ae;--sa:#e8a42a}.tono-4{background:#2c5f63;color:#f7e2ae;--sa:#e8a42a}.tono-5{background:#a4471a;color:#fbf0d4;--sa:#e8a42a}.tono-6{background:#6a5590;color:#fbf0d4;--sa:#e8a42a}.tono-7{background:#9b2a3a;color:#fbf0d4;--sa:#f7c25a}
+.simbolo svg .f,.simbolo-mini svg .f{fill:currentColor;stroke:none}.simbolo svg .a,.simbolo-mini svg .a{fill:var(--sa);stroke:none}.simbolo svg .s,.simbolo-mini svg .s{stroke:var(--sa);fill:none}
+.simbolo svg{width:36px;height:36px}.simbolo-mini svg{width:16px;height:16px}
+.sim-colores{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.sim-color{position:relative;margin:0;cursor:pointer}
+.sim-color input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer;min-height:0}
+.sim-color .muestra{display:block;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--edge);background-image:linear-gradient(135deg,transparent 55%,var(--sa) 55%)}
+.sim-color input:checked+.muestra{outline:3px solid var(--ink);outline-offset:2px}
+.sim-color input:focus-visible+.muestra{outline:3px solid var(--link);outline-offset:2px}
 .simbolo-mini{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--edge);vertical-align:-6px;margin-right:6px}
 .simbolo-mini svg{width:14px;height:14px}
 .sim-campo{border:0;padding:0;margin:0}
@@ -321,7 +329,7 @@ input[type=file]{padding:8px}
 .sim-op{position:relative;margin:0;cursor:pointer}
 .sim-op input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer;min-height:0}
 .sim-op .simbolo{width:46px;height:46px;box-shadow:none}
-.sim-op .simbolo svg{width:26px;height:26px}
+.sim-op .simbolo svg{width:30px;height:30px}
 .sim-op input:checked+.simbolo{outline:3px solid var(--ink);outline-offset:2px;box-shadow:3px 3px 0 var(--shade)}
 .sim-op input:focus-visible+.simbolo{outline:3px solid var(--link);outline-offset:2px}
 

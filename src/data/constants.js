@@ -53,18 +53,4 @@ export const TCD={local:"Comunidad campesina, ronda, comité de regantes o junta
 export const COORD=/(-?\d{1,3}[.,]\d{3,}\s*[,;\/ ]\s*-?\d{1,3}[.,]\d{3,})|(\d{1,3}\s*°\s*\d{1,2}\s*['’′])|(\b\d{1,2}\s?[C-Xc-x]\s+\d{6}\s+\d{7}\b)/;
 export const COORD_MSG="Quita las coordenadas exactas e indica solo la región. Los traficantes de fauna buscan esos datos.";
 
-export const SIMB={
-  sapo:['Sapo','Toad','<ellipse cx="12" cy="13.5" rx="4" ry="5.2"/><circle cx="10" cy="7.6" r="1.4"/><circle cx="14" cy="7.6" r="1.4"/><path d="M8.6 11 5 8.4 3.4 9.4M15.4 11 19 8.4l1.6 1M8.6 17 5 19.6l-1.6-.6M15.4 17l3.6 2.6 1.6-.6"/>'],
-  gota:['Gota','Drop','<path d="M12 3c3.6 4.7 6 8 6 11a6 6 0 0 1-12 0c0-3 2.4-6.3 6-11z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2 2.4"/>'],
-  montana:['Montaña','Mountain','<path d="M2 19 9 8l4 6 3-4 6 9z"/><path d="M7.4 10.6 9 12.2l1.6-1.6"/>'],
-  sol:['Sol','Sun','<circle cx="12" cy="12" r="4"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>'],
-  luna:['Luna','Moon','<path d="M19.5 14.6A8 8 0 1 1 9.4 4.5a6.4 6.4 0 0 0 10.1 10.1z"/>'],
-  hoja:['Hoja','Leaf','<path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19 14.5 9.5"/>'],
-  chakana:['Chakana','Chakana','<path d="M9 2.5h6v3.5h3v3h3.5v6H18v3h-3v3.5H9V18H6v-3H2.5V9H6V6h3z"/><circle cx="12" cy="12" r="2.4"/>'],
-  espiral:['Espiral','Spiral','<path d="M11 12a1 1 0 0 1 2 0 2 2 0 0 1-4 0 3 3 0 0 1 6 0 4 4 0 0 1-8 0 5 5 0 0 1 10 0"/>'],
-  ola:['Ola','Wave','<path d="M2.5 9.5c2.4-2.8 4.8-2.8 7.2 0s4.8 2.8 7.2 0c1.6-1.8 3.2-2.2 4.6-1.2M2.5 15.5c2.4-2.8 4.8-2.8 7.2 0s4.8 2.8 7.2 0c1.6-1.8 3.2-2.2 4.6-1.2"/>'],
-  flor:['Flor','Flower','<circle cx="12" cy="12" r="2.2"/><path d="M12 9.8C10 6 11 3.5 12 3.5s2 2.5 0 6.3zM14.1 11.3c3.2-2.6 5.8-2.3 6.1-1.3s-1.6 2.9-5.6 3.3zM13.3 14c1.6 3.7.4 6-.6 6.3s-2.4-2-1.4-5.8zM10.7 14c-1 3.8-3.3 5.1-4.1 4.5s-.3-3.4 3.4-5.3zM9.9 11.3c-4-.4-5.9-2.3-5.6-3.3s2.9-1.3 6.1 1.3z"/>'],
-  ichu:['Ichu','Ichu grass','<path d="M12 20.5V7M12 20.5C10.4 14.6 7.6 11.4 4 9.8M12 20.5c1.6-5.9 4.4-9.1 8-10.7M12 20.5c-.8-3.8-2.4-6.6-4.6-8.7M12 20.5c.8-3.8 2.4-6.6 4.6-8.7M3 20.5h18"/>'],
-  estrella:['Estrella','Star','<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>']
-};
-export const SIMB_K=Object.keys(SIMB);
+export { SIMB, SIMB_K, SIMB_VIEJOS, TONOS } from "./simbolos.js";
