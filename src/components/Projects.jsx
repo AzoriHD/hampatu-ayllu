@@ -166,6 +166,7 @@ export function ProjectPage({ id }) {
   const visibles = datos.equipo.filter((e) => e.publico || participa);
   const demo = demoEjemplo(p);
   const donable = p.acepta_donaciones && p.publicado && !p.ejemplo && (p.estado === "buscando" || p.estado === "activo");
+  const ejDonable = p.ejemplo && (p.estado === "buscando" || p.estado === "activo");
   const objetivos = lineas(p.objetivos), actividades = lineas(p.actividades), calendario = lineas(p.calendario, "hito"), necesidades = lineas(p.necesidades);
   const abiertas = datos.ops.filter((o) => o.estado === "abierta" || o.estado === "en_curso");
 
@@ -199,6 +200,7 @@ export function ProjectPage({ id }) {
           <p className="meta">{[t(P[p.zona] || ""), p.region].filter(Boolean).join(" · ")}</p>
           <div className="row ficha-acciones">
             {donable && <button type="button" className="btn-acc" onClick={() => irDonar(p.id)}>{L("Apoyar este proyecto", "Support this project")}</button>}
+            {ejDonable && <BotonDonarEjemplo />}
             {p.publicado && !p.ejemplo && (
               <button type="button" className={datos.sigo ? "btn-ghost activo" : "btn-ghost"} aria-pressed={datos.sigo ? "true" : "false"} onClick={seguir} disabled={env.ocupado}>
                 {datos.sigo ? L("Siguiendo", "Following") : L("Seguir", "Follow")}{seguidores > 0 ? " · " + seguidores : ""}
@@ -278,7 +280,7 @@ export function ProjectPage({ id }) {
         <aside className="ficha-lado">
           <div className="caja">
             <h3 className="sub">{L("Financiación", "Funding")}</h3>
-            {p.ejemplo ? (demo ? <FinanzasEjemplo p={p} demo={demo} /> : <p className="meta">{L("Un proyecto de ejemplo no recibe ni muestra dinero.", "An example project neither receives nor shows money.")}</p>) : (
+            {p.ejemplo ? (demo ? <FinanzasEjemplo p={p} demo={demo} donable={ejDonable} /> : <p className="meta">{L("Un proyecto de ejemplo no recibe ni muestra dinero.", "An example project neither receives nor shows money.")}</p>) : (
               <>
                 {p.meta_fondos > 0 ? (
                   <div className="dona-meta">
@@ -369,7 +371,19 @@ function EquipoEjemplo({ demo }) {
   );
 }
 
-function FinanzasEjemplo({ p, demo }) {
+/* Botón de donar de los proyectos de ejemplo: desactivado, solo enseña dónde va en los proyectos reales. */
+function BotonDonarEjemplo({ ancho }) {
+  const L = useL();
+  const nota = L("Botón de ejemplo: en un proyecto real abre la página para donar.", "Sample button: on a real project it opens the donation page.");
+  return (
+    <span className={ancho ? "boton-ej boton-ej-ancho" : "boton-ej"}>
+      <button type="button" className={ancho ? "btn-acc btn-ancho" : "btn-acc"} disabled aria-disabled="true" title={nota}>{L("Apoyar este proyecto", "Support this project")} · {L("ejemplo", "example")}</button>
+      <span className="meta">{nota}</span>
+    </span>
+  );
+}
+
+function FinanzasEjemplo({ p, demo, donable }) {
   const { en } = useApp();
   const L = useL();
   const d = (c) => dinero(c, p.moneda, en);
@@ -393,6 +407,7 @@ function FinanzasEjemplo({ p, demo }) {
         <li className="desglose-total"><span>{L("Total", "Total")}</span><b>{d(demo.presupuesto)}</b></li>
       </ul>
       {p.destino_fondos && <><h4>{L("A qué se destinan los fondos", "What the funds are for")}</h4><Parrafos texto={p.destino_fondos} /></>}
+      {donable && <BotonDonarEjemplo ancho />}
     </>
   );
 }

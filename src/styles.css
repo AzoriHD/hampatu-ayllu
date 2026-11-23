@@ -22,7 +22,7 @@
     --ink:#f7e6c0; --muted:#dcc08e; --line:#4f3819; --edge:#8a6531; --shade:#0b0703;
     --accent:#eaa92c; --accent-ink:#22150a; --link:#f0b448;
     --sight:#9fc98d; --need:#f39a6c; --offer:#86c4c8; --event:#bba7e3; --ask:#d8c194;
-    --tejido:brightness(.72) saturate(.85); --velo:rgb(16 10 5 / .68);
+    --tejido:brightness(.72) saturate(.85); --velo:transparent;
     --sombra:5px 5px 0 rgb(0 0 0 / .6);
     color-scheme:dark;
   }
@@ -32,7 +32,7 @@
   --ink:#f7e6c0; --muted:#dcc08e; --line:#4f3819; --edge:#8a6531; --shade:#0b0703;
   --accent:#eaa92c; --accent-ink:#22150a; --link:#f0b448;
   --sight:#9fc98d; --need:#f39a6c; --offer:#86c4c8; --event:#bba7e3; --ask:#d8c194;
-  --tejido:brightness(.72) saturate(.85); --velo:rgb(16 10 5 / .68);
+  --tejido:brightness(.72) saturate(.85); --velo:transparent;
   --sombra:5px 5px 0 rgb(0 0 0 / .6);
   color-scheme:dark;
 }
@@ -40,10 +40,13 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--top-h) + 12px)}
-body{margin:0;min-height:100vh;min-height:100dvh;color:var(--ink);font:400 17px/1.55 var(--body);
-  background-color:#c9a361;background-image:linear-gradient(var(--velo),var(--velo)),url(/img/tejido-fondo-v2.webp);
-  background-size:auto,var(--tejido-ancho) auto;background-position:0 0,center top;background-repeat:repeat}
-@media (max-width:760px){body{background-image:linear-gradient(var(--velo),var(--velo)),url(/img/tejido-fondo-640-v2.webp)}}
+body{margin:0;min-height:100vh;min-height:100dvh;color:var(--ink);font:400 17px/1.55 var(--body);position:relative;background-color:#c9a361}
+/* El tejido del fondo va en una capa aparte para llevar el mismo filtro (--tejido) que el pie y las fajas:
+   así en modo noche todo el fondo se oscurece igual. */
+body::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(var(--velo),var(--velo)),url(/img/tejido-fondo-v2.webp);
+  background-size:auto,var(--tejido-ancho) auto;background-position:0 0,center top;background-repeat:repeat;filter:var(--tejido)}
+@media (max-width:760px){body::before{background-image:linear-gradient(var(--velo),var(--velo)),url(/img/tejido-fondo-640-v2.webp)}}
 #root{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 #root>main{flex:1 0 auto;width:100%}
 a{color:var(--link);text-underline-offset:3px}
@@ -904,6 +907,10 @@ select{max-width:100%;text-overflow:ellipsis}
 .desglose>li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1.5px dashed var(--line);font-size:15px}
 .desglose>li b{white-space:nowrap}
 .desglose>li.desglose-total{border-bottom:0;font-weight:700}
+.boton-ej{display:inline-grid;gap:4px;max-width:340px}
+.boton-ej-ancho{display:grid;max-width:none;margin-top:6px}
+.boton-ej .meta{font-size:13px;line-height:1.35}
+.boton-ej button:disabled{opacity:.55;cursor:not-allowed}
 .calendario-p{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .calendario-p li{display:grid;grid-template-columns:minmax(90px,150px) 1fr;gap:12px;padding:8px 12px;border-left:4px solid var(--accent);background:var(--lana);border-radius:0 10px 10px 0}
 @media (max-width:480px){.calendario-p li{grid-template-columns:1fr;gap:2px}}
