@@ -199,8 +199,7 @@ export function ProjectPage({ id }) {
           {p.resumen && <p className="intro">{p.resumen}</p>}
           <p className="meta">{[t(P[p.zona] || ""), p.region].filter(Boolean).join(" · ")}</p>
           <div className="row ficha-acciones">
-            {donable && <button type="button" className="btn-acc" onClick={() => irDonar(p.id)}>{L("Apoyar este proyecto", "Support this project")}</button>}
-            {ejDonable && <BotonDonarEjemplo />}
+            {/* El botón de donar va solo en «Financiación», después de poder leer el proyecto */}
             {p.publicado && !p.ejemplo && (
               <button type="button" className={datos.sigo ? "btn-ghost activo" : "btn-ghost"} aria-pressed={datos.sigo ? "true" : "false"} onClick={seguir} disabled={env.ocupado}>
                 {datos.sigo ? L("Siguiendo", "Following") : L("Seguir", "Follow")}{seguidores > 0 ? " · " + seguidores : ""}
