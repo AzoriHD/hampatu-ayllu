@@ -900,6 +900,10 @@ select{max-width:100%;text-overflow:ellipsis}
 .datos-p dt{font-size:14px;font-weight:700;color:var(--muted)}
 .datos-p dt.d-ofrece{color:var(--offer)}.datos-p dt.d-necesita{color:var(--need)}
 .datos-p dd{margin:0;overflow-wrap:anywhere}
+.desglose{gap:0;margin-bottom:14px}
+.desglose>li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1.5px dashed var(--line);font-size:15px}
+.desglose>li b{white-space:nowrap}
+.desglose>li.desglose-total{border-bottom:0;font-weight:700}
 .calendario-p{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .calendario-p li{display:grid;grid-template-columns:minmax(90px,150px) 1fr;gap:12px;padding:8px 12px;border-left:4px solid var(--accent);background:var(--lana);border-radius:0 10px 10px 0}
 @media (max-width:480px){.calendario-p li{grid-template-columns:1fr;gap:2px}}
@@ -944,7 +948,7 @@ select{max-width:100%;text-overflow:ellipsis}
 .proy{background:var(--manta);border:2px solid var(--edge);border-radius:var(--r);box-shadow:var(--sombra);overflow:hidden;display:flex;flex-direction:column}
 .proy-enlace{display:block}
 .proy-portada{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-bottom:2px solid var(--edge)}
-.proy-portada.sin-foto{display:grid;place-items:center;background:var(--maiz) url(/img/tejido-rombos-900-v2.webp) center/320px auto;filter:var(--tejido)}
+.proy-portada.sin-foto{display:grid;place-items:center;background:var(--maiz) url(/img/tejido-rombos-tile-v3.webp) center/320px auto;filter:var(--tejido)}
 .proy-portada.sin-foto span{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--manta);border:2px solid var(--edge);font:800 30px/1 var(--display);color:var(--ink)}
 .proy-portada.grande{aspect-ratio:21/9;border-radius:16px;border:2px solid var(--edge)}
 .proy-cuerpo{padding:16px 18px 18px;display:grid;gap:8px;align-content:start}

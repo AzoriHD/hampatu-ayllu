@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useApp } from "../AppContext.jsx";
 import { COORD, COORD_MSG, P } from "../data/constants.js";
-import { CATEGORIAS_C, ESTADOS_O, ESTADOS_P, TIPOS_ACT, TIPOS_NEC } from "../data/proyectos.js";
+import { CATEGORIAS_C, demoEjemplo, ESTADOS_O, ESTADOS_P, TIPOS_ACT, TIPOS_NEC } from "../data/proyectos.js";
 import { borrar, cambiar, crear, fila, filas, useCarga, useCifras } from "../lib/tablas.js";
 import { puede } from "../lib/permisos.js";
 import { dinero } from "../lib/donaciones.js";
@@ -91,6 +91,7 @@ function ProjectCard({ p, vinculos, nombreCom, cifra }) {
   const { t, en } = useApp();
   const L = useL();
   const meta = p.meta_fondos || 0, rec = (cifra && cifra.recaudado) || 0;
+  const demo = demoEjemplo(p);
   return (
     <article className="proy">
       <a className="proy-enlace" href={"#proyecto-" + p.id} aria-label={p.nombre}><Portada p={p} /></a>
@@ -106,6 +107,12 @@ function ProjectCard({ p, vinculos, nombreCom, cifra }) {
           <div className="proy-fondos">
             <Barra valor={rec} total={meta} etiqueta={L("Financiación conseguida", "Funding raised")} />
             <p className="meta"><b>{dinero(rec, p.moneda, en)}</b> {L("de", "of")} {dinero(meta, p.moneda, en)}</p>
+          </div>
+        )}
+        {demo && demo.meta > 0 && (
+          <div className="proy-fondos">
+            <Barra valor={demo.conseguido} total={demo.meta} etiqueta={L("Financiación conseguida (cifra ficticia)", "Funding raised (fictional figure)")} />
+            <p className="meta"><b>{dinero(demo.conseguido, p.moneda, en)}</b> {L("de", "of")} {dinero(demo.meta, p.moneda, en)} <span className="tag tag-ej">{L("Cifras ficticias", "Fictional figures")}</span></p>
           </div>
         )}
       </div>
@@ -157,6 +164,7 @@ export function ProjectPage({ id }) {
   const com = (cid) => data.comunidades.find((c) => c.id === cid);
   const aceptadas = datos.vinculos.filter((v) => v.estado === "aceptada");
   const visibles = datos.equipo.filter((e) => e.publico || participa);
+  const demo = demoEjemplo(p);
   const donable = p.acepta_donaciones && p.publicado && !p.ejemplo && (p.estado === "buscando" || p.estado === "activo");
   const objetivos = lineas(p.objetivos), actividades = lineas(p.actividades), calendario = lineas(p.calendario, "hito"), necesidades = lineas(p.necesidades);
   const abiertas = datos.ops.filter((o) => o.estado === "abierta" || o.estado === "en_curso");
@@ -270,7 +278,7 @@ export function ProjectPage({ id }) {
         <aside className="ficha-lado">
           <div className="caja">
             <h3 className="sub">{L("Financiación", "Funding")}</h3>
-            {p.ejemplo ? <p className="meta">{L("Un proyecto de ejemplo no recibe ni muestra dinero.", "An example project neither receives nor shows money.")}</p> : (
+            {p.ejemplo ? (demo ? <FinanzasEjemplo p={p} demo={demo} /> : <p className="meta">{L("Un proyecto de ejemplo no recibe ni muestra dinero.", "An example project neither receives nor shows money.")}</p>) : (
               <>
                 {p.meta_fondos > 0 ? (
                   <div className="dona-meta">
@@ -303,7 +311,8 @@ export function ProjectPage({ id }) {
                 {visibles.map((e) => <li key={e.id}><Autor by={e.user_id} /> <span className="meta">· {e.rol === "responsable" ? L("Responsable", "Lead") : e.funcion ? et(CATEGORIAS_C, e.funcion) : L("Colabora", "Collaborator")}{!e.publico ? " · " + L("oculto en público", "hidden from the public") : ""}</span></li>)}
               </ul>
             )}
-            {!p.responsable_org && !aceptadas.length && !visibles.length && <p className="meta">{L("Sin datos públicos todavía.", "No public details yet.")}</p>}
+            {demo && <EquipoEjemplo demo={demo} />}
+            {!p.responsable_org && !aceptadas.length && !visibles.length && !demo && <p className="meta">{L("Sin datos públicos todavía.", "No public details yet.")}</p>}
           </div>
 
           {(p.especies || p.ecosistemas) && (
@@ -335,7 +344,7 @@ export function ProjectPage({ id }) {
 
       {participa && <Vinculos p={p} vinculos={datos.vinculos} gestiona={gestiona} />}
       {!participa && meta.cuenta && permisos.representa && permisos.representa.size > 0 && <Vinculos p={p} vinculos={datos.vinculos} gestiona={false} />}
-      {participa && <Equipo p={p} equipo={datos.equipo} gestiona={gestiona} />}
+      {participa && <Equipo p={p} equipo={datos.equipo} gestiona={gestiona} demo={demo} />}
       {gestiona && !p.ejemplo && (
         <div className="caja">
           <h3 className="sub">{L("Ingresos y gastos del proyecto", "Project income and spending")}</h3>
@@ -344,6 +353,47 @@ export function ProjectPage({ id }) {
         </div>
       )}
     </section>
+  );
+}
+
+/* ---------- Proyectos de ejemplo: equipo y cifras inventados, siempre marcados como ficticios ---------- */
+function EquipoEjemplo({ demo }) {
+  const L = useL();
+  return (
+    <>
+      <ul className="lista-limpia equipo">
+        {demo.equipo.map((e, i) => <li key={i}>{e.nombre} <span className="tag tag-ej">{L("Ficticio", "Fictional")}</span> <span className="meta">· {e.rol === "responsable" ? L("Responsable", "Lead") : L("Colabora", "Collaborator")} · {L(...e.funcion)}</span></li>)}
+      </ul>
+      <p className="hint">{L("Nombres inventados para el ejemplo: no son personas reales.", "Names made up for the example: they are not real people.")}</p>
+    </>
+  );
+}
+
+function FinanzasEjemplo({ p, demo }) {
+  const { en } = useApp();
+  const L = useL();
+  const d = (c) => dinero(c, p.moneda, en);
+  return (
+    <>
+      <p className="notice aviso-ejemplo"><span className="tag tag-ej">{L("Cifras ficticias", "Fictional figures")}</span> {L("Todo lo de este apartado es inventado para enseñar cómo se ve. Este proyecto no recibe dinero.", "Everything in this section is made up to show how it looks. This project does not receive money.")}</p>
+      {demo.meta > 0 ? (
+        <div className="dona-meta">
+          <p><b>{d(demo.conseguido)}</b> {L("conseguidos de", "raised of")} <b>{d(demo.meta)}</b></p>
+          <Barra valor={demo.conseguido} total={demo.meta} etiqueta={L("Financiación conseguida (cifra ficticia)", "Funding raised (fictional figure)")} />
+          <p className="meta">{Math.min(100, Math.round((demo.conseguido / demo.meta) * 100))} % · {demo.aportaciones} {demo.aportaciones === 1 ? L("aportación", "contribution") : L("aportaciones", "contributions")}</p>
+        </div>
+      ) : <p className="meta">{L("Todavía no busca financiación: primero se cierra el presupuesto con la comunidad.", "Not fundraising yet: the budget is agreed with the community first.")}</p>}
+      <dl className="datos-p">
+        <div><dt>{L("Presupuesto estimado", "Estimated budget")}</dt><dd>{d(demo.presupuesto)}</dd></div>
+        {demo.gastado > 0 && <div><dt>{L("Gastos verificados", "Verified spending")}</dt><dd>{d(demo.gastado)}</dd></div>}
+      </dl>
+      <h4>{L("Desglose del presupuesto", "Budget breakdown")}</h4>
+      <ul className="lista-limpia desglose">
+        {demo.partidas.map((x, i) => <li key={i}><span>{L(...x.concepto)}</span><b>{d(x.importe)}</b></li>)}
+        <li className="desglose-total"><span>{L("Total", "Total")}</span><b>{d(demo.presupuesto)}</b></li>
+      </ul>
+      {p.destino_fondos && <><h4>{L("A qué se destinan los fondos", "What the funds are for")}</h4><Parrafos texto={p.destino_fondos} /></>}
+    </>
   );
 }
 
@@ -555,7 +605,7 @@ function Vinculos({ p, vinculos, gestiona }) {
 }
 
 /* ---------- Equipo ---------- */
-function Equipo({ p, equipo, gestiona }) {
+function Equipo({ p, equipo, gestiona, demo }) {
   const { data, uid, perfilDe } = useApp();
   const L = useL(), et = useEt();
   const env = useEnviar();
@@ -572,6 +622,18 @@ function Equipo({ p, equipo, gestiona }) {
     <div className="caja">
       <h3 className="sub">{L("Equipo", "Team")}</h3>
       <p className="hint">{L("Cada persona decide si su nombre sale en la ficha pública.", "Each person decides whether their name appears on the public page.")}</p>
+      {demo && (
+        <ul className="lista-gestion">
+          {demo.equipo.map((e, i) => (
+            <li key={"ej" + i}>
+              <span>{e.nombre}</span>
+              <span className="meta"> · {e.rol === "responsable" ? L("Responsable", "Lead") : L(...e.funcion)}</span>
+              <span className="tag tag-ej">{L("Ejemplo · ficticio", "Example · fictional")}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {demo && <p className="hint">{L("Las personas marcadas como ficticias son inventadas para el ejemplo: no tienen cuenta y no se pueden editar.", "People marked as fictional are made up for the example: they have no account and cannot be edited.")}</p>}
       <ul className="lista-gestion">
         {equipo.map((e) => (
           <li key={e.id}>

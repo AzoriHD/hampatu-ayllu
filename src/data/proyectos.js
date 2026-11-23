@@ -332,3 +332,125 @@ export const PROYECTOS_EJEMPLO = [
     publicado: true,
   },
 ];
+
+/* Equipo y cifras de los proyectos de ejemplo. TODO ES INVENTADO: personas que no existen y dinero que no se ha movido.
+   Solo sale en fichas con ejemplo = true, siempre marcado como ficticio, y nunca entra en ninguna cifra real.
+   Va aquí y no en la base de datos para no tocar las tablas: se busca por el nombre del proyecto. Importes en céntimos. */
+const S = (soles) => soles * 100;
+const EQ = (nombre, rol, es, en) => ({ nombre, rol, funcion: [es, en] });
+const PA = (es, en, soles) => ({ concepto: [es, en], importe: S(soles) });
+
+const DEMO = {
+  "Protección de hábitats altoandinos para Atelopus peruensis": {
+    equipo: [
+      EQ("Rosa Quispe Mendoza", "responsable", "Coordinación comunal", "Community coordination"),
+      EQ("Julián Rímac Torres", "colaborador", "Guía local", "Local guide"),
+      EQ("Elena Valdivia Paz", "colaborador", "Herpetología", "Herpetology"),
+      EQ("Marco Antúnez Ríos", "colaborador", "Educación ambiental", "Environmental education"),
+    ],
+    partidas: [
+      PA("Material de campo y bioseguridad", "Field and biosafety materials", 1800),
+      PA("Transporte a las quebradas", "Transport to the streams", 1500),
+      PA("Talleres en escuelas", "School workshops", 900),
+      PA("Alimentación en las salidas", "Food on field trips", 800),
+      PA("Informe y devolución a las comunidades", "Report and feedback to communities", 500),
+    ],
+    meta: 0, conseguido: 0, aportaciones: 0, gastado: 0,
+  },
+  "Vigilantes de quebrada: monitoreo comunitario del sapo arlequín": {
+    equipo: [
+      EQ("Teodoro Huerta Cáceres", "responsable", "Presidente del comité de vigilancia", "Head of the monitoring committee"),
+      EQ("Lucía Mamani Flores", "colaborador", "Vigilante de quebrada", "Stream monitor"),
+      EQ("Fermín Alvarado Sáenz", "colaborador", "Vigilante de quebrada", "Stream monitor"),
+      EQ("Nélida Chávez Rojas", "colaborador", "Registro de datos", "Data recording"),
+      EQ("Óscar Palomino Vera", "colaborador", "Formación en bioseguridad", "Biosafety training"),
+    ],
+    partidas: [
+      PA("Viáticos de los vigilantes", "Monitors' daily allowances", 3000),
+      PA("Formación inicial", "Initial training", 1200),
+      PA("Libretas impermeables y linternas frontales", "Waterproof notebooks and headlamps", 900),
+      PA("Kits de desinfección", "Disinfection kits", 700),
+      PA("Transporte", "Transport", 700),
+    ],
+    meta: S(4000), conseguido: S(2650), aportaciones: 37, gastado: S(1980),
+  },
+  "Vivero comunitario de queñua para proteger las nacientes": {
+    equipo: [
+      EQ("Sonia Ccahua Ramos", "responsable", "Presidenta de la asociación de mujeres", "President of the women's association"),
+      EQ("Maribel Tinoco Ayala", "colaborador", "Encargada del vivero", "Nursery keeper"),
+      EQ("Benito Yauri Cruz", "colaborador", "Recolección de semilla", "Seed collection"),
+      EQ("Andrés Villena Soto", "colaborador", "Asesoría forestal", "Forestry advice"),
+    ],
+    partidas: [
+      PA("Construcción del vivero (malla de sombra, madera)", "Building the nursery (shade cloth, timber)", 3500),
+      PA("Comida para las faenas comunales", "Food for communal work days", 2500),
+      PA("Bolsas, sustrato y herramientas", "Bags, substrate and tools", 2200),
+      PA("Transporte de plantones", "Seedling transport", 2000),
+      PA("Asesoría técnica", "Technical advice", 1000),
+      PA("Recolección de semilla", "Seed collection", 800),
+    ],
+    meta: S(12000), conseguido: S(4180), aportaciones: 52, gastado: S(1350),
+  },
+  "Cercos para bofedales: orillas sin pisoteo de ganado": {
+    equipo: [
+      EQ("Hugo Zevallos Lima", "responsable", "Presidente de la junta de usuarios de agua", "Head of the water users' board"),
+      EQ("Carmen Inga Salazar", "colaborador", "Enlace con las familias ganaderas", "Liaison with livestock families"),
+      EQ("Raúl Espinoza Delgado", "colaborador", "Instalación de bebederos", "Trough installation"),
+    ],
+    partidas: [
+      PA("Postes y alambre", "Posts and wire", 3600),
+      PA("Mangueras y bebederos", "Hoses and troughs", 2400),
+      PA("Transporte del material", "Material transport", 1400),
+      PA("Fotos y seguimiento de la orilla", "Photos and bank monitoring", 600),
+    ],
+    meta: 0, conseguido: 0, aportaciones: 0, gastado: 0,
+  },
+  "El sapo arlequín en la escuela": {
+    equipo: [
+      EQ("Agustina Llanos Pari", "responsable", "Docente coordinadora", "Lead teacher"),
+      EQ("Valeria Montes Ugarte", "colaborador", "Ilustración del material", "Illustration"),
+      EQ("Marco Antúnez Ríos", "colaborador", "Talleres", "Workshops"),
+    ],
+    partidas: [
+      PA("Impresión de láminas y fichas", "Printing posters and worksheets", 1200),
+      PA("Transporte a las escuelas", "Transport to schools", 900),
+      PA("Refrigerios en los talleres", "Snacks at workshops", 500),
+      PA("Premios del concurso de dibujo", "Drawing contest prizes", 400),
+    ],
+    meta: S(3000), conseguido: S(3000), aportaciones: 41, gastado: S(2870),
+  },
+  "Vigilancia del hongo quitridio en quebradas con sapo": {
+    equipo: [
+      EQ("Elena Valdivia Paz", "responsable", "Herpetología", "Herpetology"),
+      EQ("Daniel Ñaupari Quinto", "colaborador", "Laboratorio", "Laboratory"),
+      EQ("Julián Rímac Torres", "colaborador", "Guía local", "Local guide"),
+    ],
+    partidas: [
+      PA("Análisis de laboratorio", "Laboratory analysis", 4800),
+      PA("Transporte y alojamiento", "Transport and lodging", 1700),
+      PA("Hisopos, guantes y desinfectante", "Swabs, gloves and disinfectant", 1600),
+      PA("Envío de muestras", "Sample shipping", 1400),
+    ],
+    meta: S(9500), conseguido: S(3200), aportaciones: 18, gastado: S(640),
+  },
+  "Tejidos del sapo: artesanía para financiar la conservación": {
+    equipo: [
+      EQ("Paulina Cusi Huamaní", "responsable", "Presidenta de la asociación de tejedoras", "President of the weavers' association"),
+      EQ("Rosa Quispe Mendoza", "colaborador", "Diseño de las piezas", "Piece design"),
+      EQ("Ignacio Bendezú Aliaga", "colaborador", "Fotografía y tienda online", "Photography and online shop"),
+    ],
+    partidas: [
+      PA("Lana de alpaca", "Alpaca wool", 1300),
+      PA("Tintes naturales", "Natural dyes", 450),
+      PA("Envíos de la primera venta", "Shipping the first sales", 400),
+      PA("Fotos y fichas de las piezas", "Photos and product sheets", 350),
+    ],
+    meta: S(2500), conseguido: S(920), aportaciones: 14, gastado: S(780),
+  },
+};
+
+/* Datos ficticios de un proyecto de ejemplo (o null). presupuesto = suma de las partidas. */
+export function demoEjemplo(p) {
+  const d = p && p.ejemplo ? DEMO[p.nombre] : null;
+  return d ? { ...d, presupuesto: d.partidas.reduce((s, x) => s + x.importe, 0) } : null;
+}
