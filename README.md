@@ -114,11 +114,144 @@ con los botones y las flechas del teclado. Botones: deshacer, paso, mensaje priv
 dinero, material, tiempo o transporte; llega como mensaje privado y queda apuntado en «Pueden ayudar») o me interesa
 (en Ofrecen) y me gusta. Lo ya visto se recuerda en el navegador; abajo sale la lista de «Te gustaron».
 
-## Apoya el proyecto
+## Ampliación: proyectos, comunidades, colabora, financiación e impacto
 
-Sección `#apoya` (`src/components/Support.jsx`). Los datos están en `src/data/apoyo.js`: Yape o Plin, cuenta
-bancaria y CCI, PayPal, correo, las líneas del presupuesto (lo que hace falta y lo gastado) y lo recibido. Lo
-que esté vacío no sale en la web.
+Cinco módulos conectados entre sí:
+
+1. **Proyectos** (`#proyectos`, ficha en `#proyecto-<id>`): iniciativas de conservación con portada, descripción, problema
+   ambiental, comunidades participantes, responsables, especies y ecosistemas, objetivos, actividades, calendario,
+   presupuesto, financiación conseguida (calculada, nunca escrita a mano), necesidades, fotos y documentos, historial de
+   actualizaciones, resultados, comentarios y seguidores. Estados: en preparación, buscando apoyo, activo, pausado y finalizado.
+   El **proyecto de ejemplo** («Protección de hábitats altoandinos para *Atelopus peruensis*») se carga desde Coordinación →
+   Proyectos: sale marcado como ejemplo, no acepta donaciones y no cuenta en ninguna cifra.
+2. **Comunidades** (`#comunidad-<id>`): cada comunidad tiene su ficha (presentación, fotos, ecosistemas, biodiversidad,
+   actividades, proyectos, necesidades, ofertas, apoyos recibidos, resultados y representantes). Una persona pide formar
+   parte o representarla; deciden **sus representantes** (o la coordinación si aún no tiene). Cada persona decide si su
+   nombre sale en público. Comunidades y proyectos se vinculan N:M: propone una parte y acepta la otra.
+3. **Colabora** (`#colabora`): necesidades reales (voluntariado, investigación, herpetología, educación, material,
+   equipamiento, transporte, tecnología, diseño, traducción, formación, colaboración institucional), siempre ligadas a un
+   proyecto o una comunidad. Candidaturas con revisión (enviada, en revisión, aceptada, no seleccionada, retirada); al
+   aceptar, la persona entra en el equipo del proyecto. Se escribe a los candidatos por mensaje privado. No es empleo.
+4. **Donaciones y financiación** (`#apoya`, `#apoya-<id>` para un proyecto): fondo general (puntual o mensual) o proyecto
+   concreto (puntual, en la moneda del proyecto). EUR, USD y PEN. Ingresos y gastos con justificante privado, verificados
+   por la coordinación y sin borrado posible (se anulan con motivo). Ver «Donaciones» abajo.
+5. **Nuestro impacto** (`#impacto`): cifras verificables y agregadas, gráficos cuando hay datos suficientes, historial de
+   actualizaciones e informes (PDF, fotos y resúmenes). Sin datos, estados vacíos que lo explican.
+
+Además, **Coordinación** (`#coordinacion`, solo para la coordinación): resumen de pendientes, proyectos (publicar, activar
+donaciones, ejemplo), comunidades (solicitudes y representantes), candidaturas, financiación (ingresos, gastos, donaciones),
+informes, validar actividades y resultados, permisos (solo administración) y registro de cambios.
+
+Las secciones nuevas se descargan al abrirlas (la portada sigue cargando rápido con poca cobertura) y funcionan también
+en la versión de demostración (sin Supabase), guardando en el navegador.
+
+### Quién puede hacer qué
+
+| | Administración | Coordinación | Representante | Responsable de proyecto | Cuenta |
+|---|:-:|:-:|:-:|:-:|:-:|
+| Dar y quitar permisos de coordinación | ✓ | | | | |
+| Publicar proyectos y activar sus donaciones | ✓ | ✓ | | | |
+| Verificar gastos, validar resultados, publicar informes | ✓ | ✓ | | | |
+| Crear proyectos (en borrador) | ✓ | ✓ | ✓ | | |
+| Editar la ficha de su comunidad y aceptar miembros | ✓ | ✓ | ✓ | | |
+| Editar su proyecto y su equipo, registrar ingresos y gastos | ✓ | ✓ | | ✓ | |
+| Publicar necesidades y revisar sus candidaturas | ✓ | ✓ | ✓ | ✓ | |
+| Seguir, comentar, ofrecerse y donar | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+- **Administración**: los correos de `admin_emails` (bloque 7 de `supabase.sql`).
+- **Coordinación**: se da desde Coordinación → Permisos (eligiendo a una persona con cuenta).
+- **Representantes**: los acepta la comunidad (o la coordinación la primera vez).
+- **Responsables**: quien crea el proyecto y a quien añada su equipo.
+
+La web solo enseña u oculta botones: quien decide es la base de datos (RLS). Cada cambio importante queda en el
+**registro de cambios** (`auditoria`), que nadie puede borrar.
+
+### Base de datos de la ampliación
+
+En **Supabase → SQL Editor**, pega `supabase.sql` **desde el bloque 10 hasta el final** y pulsa **Run** (o el archivo
+entero: se puede ejecutar más de una vez). Crea:
+
+| Bloque | Qué |
+|---|---|
+| 10 | `roles_usuario`, `comunidad_miembros` y los permisos nuevos de las fichas de comunidad (`docs`) |
+| 11 | `proyectos`, `proyecto_equipo`, `proyecto_comunidades`, `proyecto_actualizaciones`, `proyecto_comentarios`, `proyecto_seguidores` |
+| 12 | `oportunidades`, `candidaturas` |
+| 13 | `donaciones`, `donaciones_eventos`, `movimientos` y la carpeta privada `justificantes` |
+| 14 | `informes`, la carpeta pública `documentos` y la función `cifras_publicas()` |
+| 15 | `auditoria` (registro de cambios) |
+
+Los datos financieros privados (donaciones, movimientos, justificantes) nunca son públicos: lo público sale solo de
+`cifras_publicas()`, que suma registros verificados (pagos confirmados por la pasarela, movimientos verificados,
+actualizaciones validadas) y deja fuera los ejemplos.
+
+## Donaciones
+
+Arquitectura: la web nunca toca tarjetas ni claves secretas.
+
+```
+navegador ──(cantidad, moneda, destino)──▶ api/donaciones/checkout ──▶ Stripe Checkout (página de pago segura)
+Stripe ──(aviso firmado)──▶ api/donaciones/webhook ──▶ tabla donaciones (pagada / fallida / reembolsada…)
+navegador ◀── api/donaciones/estado?sid=… (confirmación real, preguntada a Stripe)
+```
+
+- `api/donaciones/*.js` son funciones de Vercel (servidor). El código común está en `server/donaciones.js`.
+- Evita duplicados: clave de idempotencia por intento (un doble clic no crea dos pagos), referencia única por sesión de
+  pago y tabla `donaciones_eventos` (si Stripe repite un aviso, no se cuenta dos veces).
+- Un pago solo cuenta como recibido cuando el **webhook** lo confirma. La página de vuelta pregunta a Stripe; nunca da
+  un pago por hecho.
+- Las donaciones a un proyecto solo se aceptan si está publicado, buscando apoyo o activo y con las donaciones activadas
+  por la coordinación; son puntuales y en la moneda del proyecto.
+
+**Ahora mismo está apagado**: falta la entidad que recibe el dinero. El formulario se ve, pero no cobra nada.
+
+### Qué falta para activar los pagos reales
+
+1. **Entidad receptora**: una asociación u ONG legalmente habilitada para recibir donaciones (en Perú o en España), o una
+   **ONG colaboradora** que gestione los fondos con un **acuerdo formal**. Con su nombre, documento fiscal y cuenta bancaria.
+2. **Cuenta de Stripe a nombre de esa entidad** (stripe.com), verificada, con la cuenta bancaria de la entidad.
+3. **Política de privacidad** de la entidad publicada (aviso RGPD / Ley 29733 de Perú) y su enlace.
+4. En **Stripe → Developers → Webhooks → Add endpoint**: `https://TU-WEB.vercel.app/api/donaciones/webhook` con estos avisos:
+   `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`,
+   `checkout.session.expired`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.deleted`, `charge.refunded`.
+5. En **Vercel → Settings → Environment Variables**, las variables de la tabla de abajo, y **Redeploy**.
+6. Prueba primero con las claves de **modo de prueba** de Stripe (`sk_test_…`) y la tarjeta `4242 4242 4242 4242`.
+   Cuando todo vaya bien, cambia a las claves reales (`sk_live_…`) y crea el webhook también en modo real.
+
+> El plan gratuito (Hobby) de Vercel es para uso personal y no comercial. Para recibir donaciones, revisa sus condiciones:
+> puede hacer falta el plan Pro.
+
+Mientras tanto, en `src/data/apoyo.js` puedes poner el enlace de donación de una **ONG colaboradora** (`ONG_COLABORADORA`)
+o los datos de Yape, transferencia o PayPal **de la entidad** (`DONAR`): salen como «Otras formas de donar». Lo que llegue
+por esas vías se registra como ingreso en Coordinación → Financiación para que cuente en las cifras públicas.
+
+### Variables de entorno (Vercel)
+
+| Variable | Dónde se usa | Qué es |
+|---|---|---|
+| `SUPABASE_URL`, `SUPABASE_ANON_KEY` (o con prefijo `NEXT_PUBLIC_`) | web | Ya las crea la integración de Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | servidor | Clave secreta de Supabase (la crea la integración). **Nunca** en el navegador |
+| `DONACIONES_ACTIVAS` | servidor | `true` para encender las donaciones (con todo lo demás configurado) |
+| `DONACIONES_ENTIDAD` | servidor | Nombre legal de la entidad que recibe el dinero (sale en el formulario y en Stripe) |
+| `STRIPE_SECRET_KEY` | servidor | Clave secreta de Stripe (`sk_test_…` o `sk_live_…`) |
+| `STRIPE_WEBHOOK_SECRET` | servidor | Secreto del webhook (`whsec_…`) |
+| `DONACIONES_PRIVACIDAD_URL` | servidor | (opcional) enlace https a la política de privacidad de la entidad |
+| `DONACIONES_MONEDAS` | servidor | (opcional) monedas admitidas, por defecto `eur,usd,pen` |
+| `SITIO_URL` | servidor | (opcional) dirección de la web para volver del pago, p. ej. `https://hampatuayllu.vercel.app` |
+
+Sin `DONACIONES_ACTIVAS=true` **y** todas las demás, las funciones responden «desactivado» y no se cobra nada.
+Hay una copia comentada en `.env.example`.
+
+## Pruebas
+
+```bash
+npm install
+npm test
+```
+
+- `pruebas/rls.test.mjs`: ejecuta `supabase.sql` en un Postgres real (PGlite) que imita Supabase y comprueba más de 100
+  permisos (quién ve, crea, cambia y borra cada cosa).
+- `pruebas/checkout.test.mjs` y `pruebas/webhook.test.mjs`: el inicio de pago y los avisos de Stripe (pagos, duplicados,
+  cuotas mensuales, reembolsos), con Stripe y Supabase simulados.
 
 ## App instalable (celular y computadora)
 
@@ -170,11 +303,18 @@ instaladas con npm, así que la primera vez que lo bajes haz `npm install`.
 
 ```
 public/img/          imágenes (logo, tejidos, fajas, medallones, avatares, sapos, artesanía)
-src/App.jsx          estado general, navegación por pestañas (#tablon, #calendario…)
+src/App.jsx          estado general, navegación por pestañas (#tablon, #calendario…) y fichas (#proyecto-…, #comunidad-…)
 src/components/      Tablón, Comunidades, Personas y perfiles, Cuenta, Calendario, Artesanía, App…
-src/data/            zonas, tipos, diseños y ejemplos
+                     Projects, CommunityPage, Collaborate, Support, Impact, Coordination, Finance (ampliación) y Kit (piezas comunes)
+src/data/            zonas, tipos, diseños y ejemplos · proyectos.js (textos de la ampliación) · apoyo.js (otras vías de donar)
 src/i18n.js          textos en inglés
 src/lib/store.js     guardado de datos (Supabase o, sin configurar, este navegador)
-supabase.sql         tablas y permisos para Supabase
+src/lib/tablas.js    tablas de la ampliación (Supabase o, en la demostración, este navegador) y cifras públicas
+src/lib/permisos.js  qué puede hacer la cuenta abierta (coordinación, representante, responsable)
+src/lib/donaciones.js llamadas a las funciones de donación del servidor
+api/donaciones/      funciones de Vercel: checkout, webhook y estado (Stripe)
+server/donaciones.js código común del servidor (claves secretas, límites, Stripe y Supabase)
+pruebas/             pruebas automáticas (npm test)
+supabase.sql         tablas y permisos para Supabase (bloques 1 a 15)
 src/styles.css       estilos (lana #fbf0d4, ocre #e8a42a y tierra #2b190b, modo claro/oscuro)
 ```

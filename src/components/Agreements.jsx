@@ -25,6 +25,12 @@ export function Footer() {
             <img src="/img/logo.webp" width="440" height="423" alt="" loading="lazy" />
             <p><strong>Hampatu Ayllu</strong> {en ? "means «community of the toad» in Quechua." : "significa «comunidad del sapo» en quechua."}</p>
           </div>
+          {view !== "apoya" && (
+            <div className="pie-app pie-apoya">
+              <p>{en ? "Hampatu Ayllu grows with the support of people like you. Every contribution and how it is used is published." : "Hampatu Ayllu crece con el apoyo de personas como tú. Cada aportación, y en qué se usa, se publica."}</p>
+              <div className="row"><a className="btn-acc" href="#apoya">{en ? "Support the cause" : "Apoya la causa"}</a><a className="btn-linea" href="#impacto">{en ? "Our impact" : "Nuestro impacto"}</a></div>
+            </div>
+          )}
           {view !== "app" && !esApp && (
             <div className="pie-app">
               <p>{en ? "Keep the community on your phone or computer. It installs from here, free, in a few seconds." : "Lleva la comunidad en tu celular o tu computadora. Se instala desde aquí, gratis y en unos segundos."}</p>

@@ -87,7 +87,7 @@ export function copiar(texto) {
   try { return navigator.clipboard.writeText(texto); } catch (e) { return Promise.reject(e); }
 }
 
-export const VIEWS = ["tablon", "descubre", "mensajes", "comunidades", "personas", "calendario", "artesania", "especie", "recompensas", "apoya", "app"];
+export const VIEWS = ["tablon", "descubre", "mensajes", "proyectos", "comunidades", "colabora", "personas", "calendario", "impacto", "artesania", "especie", "recompensas", "apoya", "coordinacion", "app"];
 export const viewOf = (h) => (VIEWS.includes(String(h || "").slice(1)) ? String(h).slice(1) : "tablon");
 export function avisoDelHash() {
   const m = /^#aviso-([A-Za-z0-9_.~:@+-]+)$/.exec(window.location.hash || "");
@@ -96,6 +96,11 @@ export function avisoDelHash() {
 export function perfilDelHash() {
   const m = /^#perfil-([A-Za-z0-9_.~:@+-]+)$/.exec(window.location.hash || "");
   return m ? m[1] : null;
+}
+/* Fichas: #proyecto-<id>, #comunidad-<id> y #apoya-<id> (donar a un proyecto) */
+export function detalleDelHash() {
+  const m = /^#(proyecto|comunidad|apoya)-([A-Za-z0-9_.~:@+-]+)$/.exec(window.location.hash || "");
+  return m ? { tipo: m[1], id: m[2] } : null;
 }
 export function marcarHash(h) {
   if (window.location.hash === "#" + h) return;

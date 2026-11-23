@@ -30,6 +30,7 @@ export default function Hero() {
           <div className="portada-cta">
             <BotonHampatu />
             <a className="btn-linea" href="#recompensas">{en ? "Rewards for those who protect" : "Recompensas para quien protege"}</a>
+            <a className="btn-linea btn-apoya" href="#apoya"><Svg width="2" d='<path d="M12 20.3s-7.8-4.6-7.8-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.8 2.5c0 5.6-7.8 10.2-7.8 10.2z"/>' />{en ? "Support the cause" : "Apoya la causa"}</a>
             {!esApp && <a className="btn-linea" href="#app"><Svg width="2" d={ICONO_APP} />{en ? "Get the app" : "Descarga la app"}</a>}
           </div>
         </div>

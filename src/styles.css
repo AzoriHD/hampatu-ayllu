@@ -841,3 +841,289 @@ span.chat-ref{cursor:default}
 .boton-hampatu.hundido .b-abajo{transform:translateY(3px)}
 button.boton-hampatu{background:none;border:0;padding:0;margin:0 0 -6px;cursor:pointer;font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
 .portada-cta{-webkit-user-select:none;user-select:none}
+
+/* =====================================================================
+   AMPLIACIÓN: proyectos, fichas de comunidad, colabora, apoya, impacto y coordinación
+   Mismas piezas que el resto (caja, panel, chipbtn, btn…); aquí solo lo nuevo.
+   ===================================================================== */
+:root{--dato:#b8700f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--dato:#c4842b}}
+:root[data-theme="dark"]{--dato:#c4842b}
+
+.label{display:block;font-size:15px;font-weight:700;margin-bottom:6px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:15.5px;font-weight:400;line-height:1.4;margin:0}
+.check input{width:20px;height:20px;min-height:0;margin:2px 0 0;flex:none;accent-color:var(--ink)}
+.check-mini{display:inline-flex;gap:7px;align-items:center;font-size:14.5px;font-weight:400;margin:0}
+.check-mini input{width:18px;height:18px;min-height:0;margin:0;accent-color:var(--ink)}
+.centro{justify-content:center;text-align:center}
+label.check-mini.centro{display:flex;margin-top:12px}
+.btn-sm{min-height:38px;padding:6px 14px;font-size:15px}
+.btn-ancho{width:100%}
+.btn-ghost.activo{background:var(--maiz);border-color:var(--edge)}
+.select-mini{width:auto;min-height:36px;padding:4px 10px;font-size:15px}
+.msg-ok{color:var(--sight);font-weight:400}
+.msg-ok strong{font-weight:700}
+.cargando{display:flex;gap:10px;align-items:center;justify-content:center;color:var(--muted);margin:20px 0}
+.cargando .punto{width:12px;height:12px;border-radius:50%;background:var(--accent);animation:latir 1s ease-in-out infinite}
+@keyframes latir{50%{transform:scale(.55);opacity:.5}}
+@media (prefers-reduced-motion:reduce){.cargando .punto{animation:none}}
+.vacio{display:flex;gap:20px;align-items:center;padding:24px clamp(18px,3vw,30px);background:var(--manta);border:2px solid var(--edge);border-radius:22px;box-shadow:var(--sombra)}
+.vacio img{width:76px;height:auto;flex:none;filter:drop-shadow(3px 4px 0 rgb(43 25 11 / .2))}
+.vacio h3{font:800 clamp(22px,3vw,28px)/1.05 var(--display);font-stretch:86%;margin:0 0 8px;text-wrap:balance}
+.vacio p{margin:0 0 12px;color:var(--muted);max-width:62ch}
+@media (max-width:520px){.vacio{flex-direction:column;text-align:center}}
+.pestanas{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.confirmar{display:inline-flex;gap:12px}
+.caja-tit{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.caja-tit .sub{margin:0!important}
+.caja h4{font:750 18px/1.2 var(--display);font-stretch:92%;margin:16px 0 8px}
+.ficha-p .caja h3.sub,.apoya .caja h3.sub,#v-impacto h3.sub,#v-coordinacion h3.sub,#v-colabora h3.sub,#v-proyectos h3.sub{font:800 clamp(22px,3vw,28px)/1.05 var(--display);font-stretch:86%;margin:0 0 14px}
+
+/* listas */
+.lista-puntos{margin:0;padding-left:22px;display:grid;gap:6px}
+.lista-limpia{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:6px}
+.lista-check{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.lista-check li{display:flex;gap:8px;align-items:baseline}
+.lista-check li>span:first-child{color:var(--muted);font-weight:700;flex:none;width:1.1em}
+.lista-check li.hecha>span:first-child{color:var(--sight)}
+.lista-gestion{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:0}
+.lista-gestion>li{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:10px 0;border-bottom:1.5px dashed var(--line)}
+.lista-gestion>li:last-child{border-bottom:0}
+.lista-gestion>li>span:first-child{flex:1 1 260px;min-width:0}
+.lista-gestion .nota{flex-basis:100%}
+.sugerencias{list-style:none;margin:6px 0 0;padding:6px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--lana)}
+.form-linea{gap:8px}
+.form-linea input,.form-linea select{flex:1 1 200px;width:auto;min-width:0;max-width:100%}
+select{max-width:100%;text-overflow:ellipsis}
+.panel-sm{padding:14px;gap:10px;box-shadow:none;border-width:1.5px;border-style:dashed}
+.datos-p{margin:0 0 8px;display:grid;gap:10px}
+.datos-p dt{font-size:14px;font-weight:700;color:var(--muted)}
+.datos-p dt.d-ofrece{color:var(--offer)}.datos-p dt.d-necesita{color:var(--need)}
+.datos-p dd{margin:0;overflow-wrap:anywhere}
+.calendario-p{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.calendario-p li{display:grid;grid-template-columns:minmax(90px,150px) 1fr;gap:12px;padding:8px 12px;border-left:4px solid var(--accent);background:var(--lana);border-radius:0 10px 10px 0}
+@media (max-width:480px){.calendario-p li{grid-template-columns:1fr;gap:2px}}
+
+/* formularios largos */
+.form-largo{gap:18px}
+.grupo{border:1.5px solid var(--line);border-radius:16px;padding:14px 16px 16px;margin:0}
+.grupo legend{font:800 19px/1 var(--display);font-stretch:90%;padding:0 6px}
+.grupo-det{border:1.5px dashed var(--line);border-radius:16px;padding:10px 16px}
+.grupo-det summary{cursor:pointer;font-weight:700;padding:4px 0}
+.grupo-det[open] summary{margin-bottom:12px}
+.filas-ed{display:grid;gap:8px}
+.fila-ed{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fila-ed input{flex:1 1 220px;width:auto}
+.fila-ed .f-fecha{flex:0 1 150px}
+.fila-ed select{flex:0 1 170px;width:auto}
+.fila-ed .linkbtn{font-size:22px;line-height:1;padding:4px 8px;text-decoration:none}
+.subir{display:grid;gap:8px}
+.subir-btn{position:relative;cursor:pointer;justify-self:start}
+.subir-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;min-height:0}
+.miniaturas{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.miniaturas li{position:relative}
+.miniaturas img{width:84px;height:84px;object-fit:cover;border-radius:10px;border:1.5px solid var(--edge);display:block}
+.miniaturas .quitar{position:absolute;top:-8px;right:-8px;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--edge);background:var(--manta);font-weight:700;line-height:1;padding:0}
+.docs-lista{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.docs-lista li{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.doc-ico{font:800 11px/1 var(--display);letter-spacing:.04em;padding:5px 6px;border-radius:6px;background:var(--ink);color:var(--manta);flex:none}
+.doc-nombre{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.enlace-doc summary{cursor:pointer;color:var(--link);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.enlace-doc .row{margin-top:8px}
+.enlace-doc input{flex:1 1 180px;width:auto}
+.archivos{display:grid;gap:10px;margin-top:8px}
+.galeria{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,140px),1fr));gap:8px}
+.galeria button{display:block;width:100%;padding:0;border:1.5px solid var(--edge);border-radius:12px;overflow:hidden;background:none}
+.galeria img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.visor{position:fixed;inset:0;z-index:60;background:rgb(20 12 6 / .9);display:grid;place-items:center;padding:16px}
+.visor img{max-width:100%;max-height:90vh;border-radius:12px}
+.visor-cerrar{position:fixed;top:14px;right:14px;font-size:24px}
+
+/* ---------- Proyectos ---------- */
+.proy-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.proy{background:var(--manta);border:2px solid var(--edge);border-radius:var(--r);box-shadow:var(--sombra);overflow:hidden;display:flex;flex-direction:column}
+.proy-enlace{display:block}
+.proy-portada{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-bottom:2px solid var(--edge)}
+.proy-portada.sin-foto{display:grid;place-items:center;background:var(--maiz) url(/img/tejido-rombos-900.webp) center/320px auto;filter:var(--tejido)}
+.proy-portada.sin-foto span{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--manta);border:2px solid var(--edge);font:800 30px/1 var(--display);color:var(--ink)}
+.proy-portada.grande{aspect-ratio:21/9;border-radius:16px;border:2px solid var(--edge)}
+.proy-cuerpo{padding:16px 18px 18px;display:grid;gap:8px;align-content:start}
+.proy-cuerpo h3{font:800 21px/1.15 var(--display);font-stretch:90%;margin:2px 0 0;text-wrap:balance}
+.proy-cuerpo h3 a{color:var(--ink);text-decoration:none}
+.proy-cuerpo h3 a:hover{text-decoration:underline}
+.proy-cuerpo p{margin:0}
+.proy-fondos{display:grid;gap:4px;margin-top:4px}
+.ficha-p{display:grid;gap:20px}
+.ficha-cabeza{display:grid;gap:18px}
+.ficha-cabeza-txt{display:grid;gap:10px}
+.ficha-cabeza-txt .vista-h,.ficha-com .vista-h{text-align:left;margin:0}
+.ficha-cabeza-txt .intro{margin:0;text-align:left}
+.volver{margin:0;font-size:15px}
+.ficha-acciones{margin-top:4px}
+.aviso-ejemplo{border-left-color:var(--event)}
+.gestion{border-style:dashed}
+.ficha-grid{display:grid;gap:20px;grid-template-columns:minmax(0,1fr) minmax(280px,360px);align-items:start}
+.ficha-main,.ficha-lado{display:grid;gap:20px;min-width:0}
+@media (max-width:900px){.ficha-grid{grid-template-columns:1fr}}
+.texto-largo p{max-width:72ch}
+.resultado-ok{margin:6px 0}
+.historial{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.historial>li{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;padding:14px 0;border-top:1.5px dashed var(--line)}
+.historial>li:first-child{border-top:0}
+.historial-fecha{margin:2px 0 0;font-size:14px;font-weight:700;color:var(--muted)}
+.historial h4{margin:6px 0 4px}
+.historial p{margin:0 0 6px}
+@media (max-width:520px){.historial>li{grid-template-columns:1fr;gap:4px}}
+.comentarios{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:12px}
+.comentarios li{padding:10px 14px;background:var(--lana);border-radius:12px;border:1px solid var(--line)}
+.comentarios li p{margin:0 0 4px}
+.comentar{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.comentar textarea{flex:1 1 260px}
+
+/* ---------- Comunidad ---------- */
+.ficha-com{display:grid;gap:12px}
+.ficha-com .com-top{align-items:flex-start}
+.ficha-com .com-top .vista-h{font-size:clamp(30px,4.6vw,46px)}
+.pendientes{margin-top:14px;padding-top:10px;border-top:1.5px dashed var(--line)}
+.mi-membresia{display:grid;gap:8px;margin-top:10px;padding-top:10px;border-top:1.5px dashed var(--line)}
+.mi-membresia p{margin:0}
+
+/* ---------- Colabora ---------- */
+.oportunidad h3{margin:4px 0 0}
+.oportunidad p{margin:0}
+.candidaturas{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:12px}
+.candidatura{display:grid;gap:8px;padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;background:var(--lana)}
+.candidatura p{margin:0}
+.nota{font-style:italic}
+
+/* ---------- Finanzas ---------- */
+.finanzas{display:grid;gap:12px}
+.cifras-fila{display:flex;flex-wrap:wrap;gap:10px}
+.cifra-mini{flex:1 1 220px;padding:10px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--lana)}
+.cifra-mini p{margin:0}
+.movs{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.mov{display:grid;gap:4px;padding:12px 14px;border:1.5px solid var(--line);border-left:6px solid var(--need);border-radius:12px;background:var(--manta)}
+.mov-ingreso{border-left-color:var(--sight)}
+.mov.anulado{opacity:.7}
+.mov.anulado .mov-imp{text-decoration:line-through}
+.mov p{margin:0}
+.mov-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mov-imp{font:800 19px/1 var(--display);font-variant-numeric:tabular-nums}
+.tabla-w{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tabla{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
+.tabla th,.tabla td{text-align:left;padding:8px;border-bottom:1.5px dashed var(--line);vertical-align:top}
+.tabla thead th{font-size:13.5px;color:var(--muted)}
+.tabla td.centro{text-align:center}
+.registro-cambios{color:var(--muted);font-size:14px;overflow-wrap:anywhere}
+
+/* ---------- Impacto ---------- */
+.tiles{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr))}
+.tiles-dinero{grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
+.tile{background:var(--manta);border:2px solid var(--edge);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sombra);display:grid;gap:2px;align-content:start;text-align:left;font:inherit;color:inherit}
+.tile p{margin:0}
+.tile-n{font:800 clamp(28px,4vw,38px)/1 var(--display);font-stretch:86%;font-variant-numeric:tabular-nums}
+.tile-n2{font:800 24px/1 var(--display);font-stretch:86%;margin-top:10px!important;font-variant-numeric:tabular-nums}
+.tile-l{font-weight:700;font-size:15px}
+.tiles-dinero .tile{box-shadow:none;border-width:1.5px}
+.tile-btn{cursor:pointer}
+.tile-btn.pendiente{border-color:var(--need);background:color-mix(in srgb,var(--need) 7%,var(--manta))}
+.tile-btn:hover{transform:translate(-1px,-1px)}
+.impacto-proy{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.impacto-proy li{display:grid;gap:6px}
+.impacto-proy p{margin:0}
+.como-se-calcula summary{cursor:pointer;font:800 20px/1.1 var(--display);font-stretch:88%}
+.como-se-calcula[open] summary{margin-bottom:12px}
+.informes{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:12px}
+.informe{display:grid;gap:6px;padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;background:var(--lana)}
+.informe h4{margin:2px 0}
+.informe p{margin:0}
+
+/* gráficos: una serie, barras finas con extremo redondeado, rejilla discreta y tabla de datos */
+.graficos{display:grid;gap:18px;margin-top:16px}
+.grafico{margin:0;display:grid;gap:8px}
+.grafico figcaption{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.g-lienzo{position:relative}
+.g-lienzo svg{display:block;width:100%;height:auto;overflow:visible}
+.g-rejilla{stroke:var(--line);stroke-width:1}
+.g-base{stroke:var(--muted);stroke-width:1}
+.g-eje{fill:var(--muted);font-size:12px;font-family:var(--body)}
+.g-valor{fill:var(--ink);font-size:12.5px;font-weight:700;font-family:var(--body)}
+.g-hit{fill:transparent}
+.g-barra{fill:var(--dato)}
+.g-barra.activa{fill:var(--ink)}
+g[tabindex]:focus{outline:none}
+g[tabindex]:focus-visible .g-hit{stroke:var(--link);stroke-width:2}
+.g-tip{position:absolute;transform:translate(-50%,calc(-100% - 10px));background:var(--ink);color:var(--manta);padding:6px 10px;border-radius:8px;font-size:13.5px;display:grid;gap:2px;pointer-events:none;white-space:nowrap;z-index:2}
+.g-barrash{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.g-barrash li{display:grid;grid-template-columns:minmax(110px,180px) 1fr;gap:10px;align-items:center;padding:4px 2px;border-radius:8px}
+.g-barrash li.activa,.g-barrash li:focus-visible{background:var(--lana);outline:none}
+.g-cat{font-size:14.5px;overflow-wrap:anywhere}
+.g-pista{display:flex;align-items:center;gap:8px;min-width:0}
+.g-barra-h{display:block;height:18px;background:var(--dato);border-radius:0 4px 4px 0;flex:none;max-width:calc(100% - 90px)}
+.g-valor-h{font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:480px){.g-barrash li{grid-template-columns:1fr;gap:2px}}
+.g-tabla summary{cursor:pointer;font-size:14.5px;color:var(--link);font-weight:700}
+.g-tabla .tabla{margin-top:8px}
+
+/* ---------- Apoya la causa ---------- */
+.apoya-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(16px,3vw,36px);align-items:center;overflow:hidden;
+  background:radial-gradient(120% 90% at 90% 60%,color-mix(in srgb,var(--sight) 22%,var(--manta)) 0,var(--manta) 62%)}
+.apoya-hero-txt{display:grid;gap:12px;justify-items:start}
+.apoya-hero-txt .vista-h{text-align:left;margin:0}
+.apoya-hero-txt .intro{margin:0;text-align:left;max-width:52ch}
+.apoya-kicker{margin:0;font-weight:700;color:var(--need);text-transform:uppercase;letter-spacing:.06em;font-size:14px}
+.apoya-hero-img{margin:0;position:relative}
+.apoya-hero-img::before{content:"";position:absolute;inset:18% 4% 0;border-radius:50% 50% 16px 16px;background:var(--maiz) url(/img/tejido-ranas-800.webp) center/360px auto;opacity:.55;filter:var(--tejido)}
+.apoya-hero-img img{position:relative;display:block;width:100%;height:auto;filter:drop-shadow(6px 10px 0 rgb(43 25 11 / .25))}
+@media (max-width:760px){.apoya-hero{grid-template-columns:1fr}.apoya-hero-img{max-width:420px;justify-self:center}}
+.vuelta{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.vuelta p{margin:0}
+.vuelta-ok{border-left-color:var(--sight)}
+.vuelta-error,.vuelta-pendiente{border-left-color:var(--need)}
+.razones{list-style:none;margin:0;padding:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr))}
+.razones li{display:flex;gap:12px;align-items:flex-start}
+.razones p{margin:2px 0 0;color:var(--muted);font-size:15.5px}
+.razon-ico{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--maiz);border:1.5px solid var(--edge)}
+.razon-ico svg{width:24px;height:24px}
+.dona-form{display:grid;gap:16px}
+.dona-off{margin:0}
+.dona-grupo{border:0;padding:0;margin:0;display:grid;gap:8px;min-width:0}
+.dona-grupo legend{font-weight:700;margin-bottom:8px;padding:0}
+.dona-grupos{display:flex;flex-wrap:wrap;gap:16px 28px}
+.opcion{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--lana);cursor:pointer;margin:0;font-weight:400}
+.opcion:has(input:checked){border-color:var(--edge);box-shadow:inset 0 0 0 1px var(--edge)}
+.opcion input{width:20px;height:20px;min-height:0;margin:3px 0 0;flex:none;accent-color:var(--ink)}
+.opcion>span{display:grid;gap:4px;flex:1;min-width:0}
+.segmento{display:inline-flex;border:1.5px solid var(--edge);border-radius:999px;overflow:hidden;background:var(--manta)}
+.segmento button{border:0;background:none;padding:9px 18px;font-weight:700;min-height:44px}
+.segmento button+button{border-left:1.5px solid var(--edge)}
+.segmento button[aria-pressed="true"]{background:var(--ink);color:var(--manta)}
+.segmento button[disabled]{opacity:.45;cursor:not-allowed}
+.cantidades{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.cantidad{min-height:54px;border:2px solid var(--edge);border-radius:14px;background:var(--manta);font:800 20px/1 var(--display);font-stretch:90%;color:var(--ink);font-variant-numeric:tabular-nums}
+.cantidad[aria-pressed="true"],.cantidad.otra.activa{background:var(--accent);color:var(--accent-ink);box-shadow:3px 3px 0 var(--edge)}
+.cantidad.otra{display:flex;align-items:center;padding:0 10px;grid-column:span 2;margin:0}
+.cantidad.otra input{border:0;background:transparent;min-height:0;padding:8px 4px;font:700 17px/1 var(--body);color:inherit}
+.cantidad.otra input::placeholder{color:inherit;opacity:.75}
+.dona-resumen{margin:0;font-size:18px}
+.dona-consent{display:grid;gap:10px;padding:14px;border:1.5px dashed var(--line);border-radius:14px}
+.dona-seguro{display:flex;gap:8px;align-items:flex-start}
+.dona-seguro svg{width:18px;height:18px;flex:none;margin-top:2px}
+.destinos{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));margin-bottom:12px}
+.destino{position:relative;padding:16px 16px 16px 58px;border:1.5px solid var(--line);border-radius:14px;background:var(--lana)}
+.destino h4{margin:0 0 4px}
+.destino p{margin:0;font-size:15.5px;color:var(--muted)}
+.destino-n{position:absolute;left:14px;top:14px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);border:1.5px solid var(--edge);font:800 17px/1 var(--display)}
+.otras-formas{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));margin-bottom:14px}
+.otras-formas .rec{box-shadow:none;border-width:1.5px}
+.apoya .como{margin-top:16px}
+
+/* navegación, portada y pie */
+.nav a.nav-donar{color:var(--need)}
+.nav a.nav-donar[aria-current="page"]{color:var(--ink)}
+.btn-apoya svg{color:var(--need)}
+.pie-apoya .row{justify-content:center}
+.ficha-p .caja>h3.sub:first-child,.ficha-p .caja-tit .sub{text-align:left}
+.caja :is(ul,ol,p,dl,div)+h3.sub{margin-top:24px!important}
+.proy-portada.grande.sin-foto{aspect-ratio:21/6}
+@media (max-width:620px){.proy-portada.grande.sin-foto{aspect-ratio:21/9}}

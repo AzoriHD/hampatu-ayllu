@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AppContext } from "./AppContext.jsx";
 import { makeT } from "./i18n.js";
 import { P } from "./data/constants.js";
 import { ensureUid, perfilVisto, store, useData, useMeta } from "./lib/store.js";
-import { ago as agoBase, avisoDelHash, errMsg, marcarHash, perfilDelHash, viewOf, VIEWS, ymd } from "./lib/utils.js";
+import { ago as agoBase, avisoDelHash, detalleDelHash, errMsg, marcarHash, perfilDelHash, viewOf, VIEWS, ymd } from "./lib/utils.js";
+import { usePermisosCarga } from "./lib/permisos.js";
 import { enApp, MODOS_APP } from "./lib/pwa.js";
 import Hero, { FajaRanas } from "./components/Hero.jsx";
 import { BottomNav, Topbar } from "./components/Topbar.jsx";
@@ -16,7 +17,6 @@ import Crafts from "./components/Crafts.jsx";
 import Species from "./components/Species.jsx";
 import Rewards from "./components/Rewards.jsx";
 import { VistoModal } from "./components/Sighting.jsx";
-import Support from "./components/Support.jsx";
 import Discover from "./components/Discover.jsx";
 import Messages from "./components/Messages.jsx";
 import { iniciarMensajes } from "./lib/mensajes.js";
@@ -24,6 +24,14 @@ import { Agreements, Footer } from "./components/Agreements.jsx";
 import AdminZone from "./components/Admin.jsx";
 import { AccountPanel } from "./components/Account.jsx";
 import { People, Profile } from "./components/People.jsx";
+/* Secciones de la ampliación: se descargan al abrirlas, para que la app siga abriendo rápido con poca cobertura */
+const Support = lazy(() => import("./components/Support.jsx"));
+const Projects = lazy(() => import("./components/Projects.jsx"));
+const ProjectPage = lazy(() => import("./components/Projects.jsx").then((m) => ({ default: m.ProjectPage })));
+const CommunityPage = lazy(() => import("./components/CommunityPage.jsx"));
+const Collaborate = lazy(() => import("./components/Collaborate.jsx"));
+const Impact = lazy(() => import("./components/Impact.jsx"));
+const Coordination = lazy(() => import("./components/Coordination.jsx"));
 
 function leer(clave, porDefecto) {
   try { return localStorage.getItem(clave) || porDefecto; } catch (e) { return porDefecto; }
@@ -79,7 +87,9 @@ export default function App() {
   /* ---- navigation ---- */
   const inicioAviso = useMemo(avisoDelHash, []);
   const [perfil, setPerfil] = useState(() => { const id = perfilDelHash(); return id ? { id, k: 0 } : null; });
-  const [view, setView] = useState(() => (perfilDelHash() ? "perfil" : inicioAviso ? "tablon" : viewOf(window.location.hash)));
+  /* Ficha abierta de un proyecto o una comunidad, o proyecto al que donar: {tipo, id, k} */
+  const [detalle, setDetalle] = useState(() => { const d = detalleDelHash(); return d ? { ...d, k: 0 } : null; });
+  const [view, setView] = useState(() => (perfilDelHash() ? "perfil" : detalleDelHash() ? detalleDelHash().tipo : inicioAviso ? "tablon" : viewOf(window.location.hash)));
   const [zona, setZona] = useState("");
   const [q, setQ] = useState("");
   const [abiertos, setAbiertos] = useState(() => (inicioAviso ? { [inicioAviso]: 1 } : {}));
@@ -99,18 +109,19 @@ export default function App() {
   /* Si se entra con un enlace a una sección (#app, #calendario…), se abre ya en ella */
   useEffect(() => {
     const h = window.location.hash;
-    if (!inicioAviso && h && h !== "#tablon" && h !== "#admin" && (perfilDelHash() || VIEWS.includes(h.slice(1)))) {
+    if (!inicioAviso && h && h !== "#tablon" && h !== "#admin" && (perfilDelHash() || detalleDelHash() || VIEWS.includes(h.slice(1)))) {
       requestAnimationFrame(() => tabsRef.current?.scrollIntoView({ block: "start" }));
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const onHash = () => {
-      const a = avisoDelHash(), pf = perfilDelHash();
+      const a = avisoDelHash(), pf = perfilDelHash(), dt = detalleDelHash();
       if (window.location.hash === "#visto") { setVisto(true); return; }
-      if (pf) { setPerfil({ id: pf, k: Date.now() }); setView("perfil"); }
+      if (dt) { setDetalle({ ...dt, k: Date.now() }); setView(dt.tipo); tabsRef.current?.scrollIntoView({ block: "start" }); }
+      else if (pf) { setPerfil({ id: pf, k: Date.now() }); setView("perfil"); }
       else if (a) { setView("tablon"); setZona(""); setAbiertos((o) => ({ ...o, [a]: 1 })); setDestino({ id: "a-" + a, block: "start" }); }
-      else { setView(viewOf(window.location.hash)); tabsRef.current?.scrollIntoView({ block: "start" }); }
+      else { setDetalle(null); setView(viewOf(window.location.hash)); tabsRef.current?.scrollIntoView({ block: "start" }); }
     };
     const onClick = (ev) => {
       if (ev.defaultPrevented) return;
@@ -120,6 +131,7 @@ export default function App() {
       if (v === "visto") { ev.preventDefault(); setVisto(true); return; }
       if (!VIEWS.includes(v)) return;
       ev.preventDefault();
+      if (v === "apoya") setDetalle(null);
       irVista(v, true);
     };
     window.addEventListener("hashchange", onHash);
@@ -144,6 +156,13 @@ export default function App() {
 
   const goAviso = (id) => { setZona(""); irVista("tablon"); setDestino({ id: "a-" + id }); };
   const goCom = (id) => { setZona(""); setQ(""); irVista("comunidades"); setDestino({ id: "c-" + id }); };
+  const irFicha = (tipo, id) => {
+    setDetalle(id ? { tipo, id, k: Date.now() } : null); setView(tipo); marcarHash(id ? tipo + "-" + id : tipo);
+    setTimeout(() => tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+  };
+  const irProyecto = (id) => irFicha("proyecto", id);
+  const irComunidad = (id) => irFicha("comunidad", id);
+  const irDonar = (id) => irFicha("apoya", id || "");
   const irPerfil = (id, editar) => {
     setPerfil({ id, editar: !!editar, k: Date.now() }); setView("perfil"); marcarHash("perfil-" + id);
     setTimeout(() => tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
@@ -153,6 +172,8 @@ export default function App() {
   const perfiles = useMemo(() => { const m = {}; data.perfiles.forEach((p) => { m[p.id] = p; }); return m; }, [data.perfiles]);
   const perfilDe = (id) => perfiles[id] || null;
   const canPost = !!meta.cuenta;
+  /* Roles de la ampliación (coordinación, representantes, responsables de proyecto) */
+  const permisos = usePermisosCarga(meta);
   const pedirCuenta = (motivo) => setCuentaPanel({ modo: "entrar", motivo: motivo || "Para hacerlo necesitas una cuenta. Es gratis y tarda un minuto.", k: Date.now() });
   /* A brand-new account opens its own profile so the person can fill it in. */
   useEffect(() => {
@@ -247,6 +268,7 @@ export default function App() {
     votar, enlaceAviso, contactoDe, zonaDe, borrar, ofrecer, formAviso, setFormAviso,
     calMes, setCalMes, calSel, setCalSel, oscuro, cambiarTema, cambiarIdioma, esApp,
     abrirVisto: () => setVisto(true), chat, setChat, escribirA,
+    permisos, irProyecto, irComunidad, irDonar, donarA: detalle && detalle.tipo === "apoya" ? detalle.id : "",
   };
   const cerrarVisto = () => { setVisto(false); if (window.location.hash === "#visto") marcarHash(view); };
 
@@ -264,6 +286,15 @@ export default function App() {
         <Msg id="m-global" role="status" text={msg} />
 
         {view === "tablon" && <Board />}
+        <Suspense fallback={<p className="cargando" role="status"><span className="punto" aria-hidden="true"></span>{en ? "Loading…" : "Cargando…"}</p>}>
+          {view === "proyectos" && <Projects />}
+          {view === "proyecto" && detalle && <ProjectPage key={detalle.id} id={detalle.id} />}
+          {view === "comunidad" && detalle && <CommunityPage key={detalle.id} id={detalle.id} />}
+          {view === "colabora" && <Collaborate />}
+          {view === "impacto" && <Impact />}
+          {view === "coordinacion" && <Coordination />}
+          {view === "apoya" && <Support />}
+        </Suspense>
         {view === "descubre" && <Discover />}
         {view === "mensajes" && <Messages />}
         {view === "comunidades" && <Communities />}
@@ -273,7 +304,6 @@ export default function App() {
         {view === "artesania" && <Crafts />}
         {view === "especie" && <Species />}
         {view === "recompensas" && <Rewards />}
-        {view === "apoya" && <Support />}
         {view === "app" && !esApp && <AppPage />}
 
         {view !== "app" && <Agreements />}

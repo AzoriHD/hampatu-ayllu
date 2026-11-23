@@ -32,6 +32,7 @@ self.addEventListener("fetch", (e) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return; // la base de datos y las fotos subidas van siempre a la red
   if (url.pathname.startsWith("/audio/")) return; // la música va por trozos (Range) directa del servidor, sin guardar
+  if (url.pathname.startsWith("/api/")) return; // donaciones y pagos: siempre al servidor, nunca de la caché
   if (req.mode === "navigate") {
     // la página: primero la red (para tener lo último) y, sin conexión, la guardada
     e.respondWith(fetch(req).then((res) => { guardar("/", res.clone()); return res; }).catch(() => caches.match("/", OPC)));

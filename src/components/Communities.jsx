@@ -6,6 +6,7 @@ import { plural, simboloDe, str } from "../lib/utils.js";
 import ZonaRail from "./Rail.jsx";
 import { CommunitiesHeader } from "./Headers.jsx";
 import { CopyBtn, DelBtns, EmptyBox, Msg, Simbolo } from "./Shared.jsx";
+import { SubirFotos } from "./Kit.jsx";
 
 export default function Communities() {
   const { t, en, data, zona, setZona, q, setQ, canPost, canEdit, uid, zonaDe, pedirCuenta } = useApp();
@@ -40,7 +41,7 @@ export default function Communities() {
                 <Simbolo k={simboloDe(c)} />
                 <div>
                   <div className="row"><span className="pill">{t(TC[c.tipo] || TC.otro)}</span>{c.ejemplo && <span className="tag tag-ej">{t("Ejemplo")}</span>}</div>
-                  <h3>{c.nombre}</h3>
+                  <h3><a href={"#comunidad-" + c.id}>{c.nombre}</a></h3>
                 </div>
               </div>
               <p className="where">{z}{c.region ? (z ? " · " : "") + c.region : ""}</p>
@@ -51,6 +52,7 @@ export default function Communities() {
                 {c.contacto && <div><dt>{t("Contacto")}</dt><dd>{c.contacto} <CopyBtn text={String(c.contacto)} id={"cp-" + c.id} /></dd></div>}
               </dl>
               <div className="row">
+                <a className="btn-mini claro" href={"#comunidad-" + c.id}>{en ? "Open page" : "Ver ficha"}</a>
                 {n > 0 && <span className="meta">{plural(t, n, "aviso", "avisos") + " " + t("en el tablón")}</span>}
                 {canPost && (canEdit || c.by === uid) && (
                   <>
@@ -68,13 +70,16 @@ export default function Communities() {
   );
 }
 
-function CommunityForm({ editId, onClose }) {
+/* Ficha de comunidad. «completo»: abre también la parte larga (presentación, naturaleza, fotos…). */
+export function CommunityForm({ editId, onClose, completo }) {
   const { t, en, data, uid, write } = useApp();
   const prev = editId ? data.comunidades.find((c) => c.id === editId) : null;
   const [f, setF] = useState(() => ({
     nombre: prev?.nombre || "", tipo: TC[prev?.tipo] ? prev.tipo : "local", zona: P[prev?.zona] ? prev.zona : "", zonaotra: prev?.zonaOtra || "",
     region: prev?.region || "", especies: prev?.especies || "", ofrece: prev?.ofrece || "", necesita: prev?.necesita || "",
     contacto: prev?.contacto || "", simbolo: prev ? simboloDe(prev) : "",
+    presentacion: prev?.presentacion || "", ecosistemas: prev?.ecosistemas || "", biodiversidad: prev?.biodiversidad || "",
+    actividades: prev?.actividades || "", apoyos: prev?.apoyos || "", resultados: prev?.resultados || "", fotos: Array.isArray(prev?.fotos) ? prev.fotos : [],
   }));
   const [m, setM] = useState("");
   const ref = useRef(null);
@@ -89,14 +94,25 @@ function CommunityForm({ editId, onClose }) {
       region: str(f.region, 80), especies: str(f.especies, 160), ofrece: str(f.ofrece, 300), necesita: str(f.necesita, 300),
       contacto: str(f.contacto, 120), simbolo: SIMB[f.simbolo] ? f.simbolo : "",
       ts: prev ? Number(prev.ts) || Date.now() : Date.now(), by: prev ? String(prev.by || "") : uid,
+      presentacion: str(f.presentacion, 1500), ecosistemas: str(f.ecosistemas, 300), biodiversidad: str(f.biodiversidad, 500),
+      actividades: str(f.actividades, 1000), apoyos: str(f.apoyos, 800), resultados: str(f.resultados, 1000), fotos: f.fotos.slice(0, 6),
     };
+    ["presentacion", "ecosistemas", "biodiversidad", "actividades", "apoyos", "resultados"].forEach((k) => { if (!d[k]) delete d[k]; });
+    if (!d.fotos.length) delete d.fotos;
     if (prev?.ejemplo) d.ejemplo = true;
     if (d.zona === "otra") d.zonaOtra = str(f.zonaotra, 60);
     if (!d.nombre) { setM("Escribe el nombre de la comunidad o grupo."); el.nombre.focus(); return; }
     if (!d.zona) { setM("Elige la zona."); el.zona.focus(); return; }
     if (d.zona === "otra" && !d.zonaOtra) { setM("Escribe qué zona es."); el.zonaotra.focus(); return; }
-    if (COORD.test([d.zonaOtra || "", d.region, d.especies, d.ofrece, d.necesita, d.contacto].join(" "))) { setM(COORD_MSG); return; }
-    write(setM, () => store.set("comunidades", editId || newId(), d), onClose);
+    if (COORD.test([d.zonaOtra || "", d.region, d.especies, d.ofrece, d.necesita, d.contacto, d.presentacion, d.ecosistemas, d.biodiversidad, d.actividades, d.apoyos, d.resultados].join(" "))) { setM(COORD_MSG); return; }
+    /* Al editar se cambia la ficha existente (así también pueden hacerlo sus representantes) */
+    if (editId && prev) {
+      const quitar = {};
+      ["presentacion", "ecosistemas", "biodiversidad", "actividades", "apoyos", "resultados", "fotos", "zonaOtra"].forEach((k) => { if (!(k in d) && k in prev) quitar[k] = k === "fotos" ? [] : ""; });
+      write(setM, () => store.update("comunidades", editId, { ...quitar, ...d }), onClose);
+    } else {
+      write(setM, () => store.set("comunidades", editId || newId(), d), onClose);
+    }
   };
 
   const L = (es, eng) => (en ? eng : es);
@@ -145,8 +161,28 @@ function CommunityForm({ editId, onClose }) {
           <p className="hint">{L("Lo que le falta a tu grupo para ayudar al sapo. Otros lo verán y podrán ofrecerlo.", "What your group is missing to help the toad. Others will see it and can offer it.")}</p></div>
         <div className="full"><label htmlFor="c-contacto">{L("Contacto", "Contact")}</label>
           <input id="c-contacto" name="contacto" maxLength={120} value={f.contacto} onChange={(e) => set("contacto", e.target.value)} placeholder={L("WhatsApp, correo o persona de referencia", "WhatsApp, email or contact person")} />
-          <p className="hint">{L("Lo verá toda la comunidad.", "The whole community will see it.")}</p></div>
+          <p className="hint">{L("Lo verá toda la comunidad. Pon un contacto de la comunidad, no datos personales de nadie sin su permiso.", "The whole community will see it. Use a community contact, never anyone's personal details without their permission.")}</p></div>
       </div>
+      <details className="grupo-det" open={!!completo}>
+        <summary>{L("Ficha completa de la comunidad (opcional)", "Full community page (optional)")}</summary>
+        <div className="fields">
+          <div className="full"><label htmlFor="c-pres">{L("Presentación", "Introduction")}</label>
+            <textarea id="c-pres" rows={4} maxLength={1500} value={f.presentacion} onChange={(e) => set("presentacion", e.target.value)} placeholder={L("Quiénes son, cómo se organizan, qué los mueve", "Who you are, how you organise, what drives you")} /></div>
+          <div><label htmlFor="c-eco">{L("Ecosistemas presentes", "Ecosystems")}</label>
+            <textarea id="c-eco" rows={2} maxLength={300} value={f.ecosistemas} onChange={(e) => set("ecosistemas", e.target.value)} placeholder={L("Quebradas, bofedales, pajonal, bosque de queñua…", "Streams, wetlands, grassland, polylepis woodland…")} /></div>
+          <div><label htmlFor="c-bio">{L("Biodiversidad de interés", "Notable wildlife")}</label>
+            <textarea id="c-bio" rows={2} maxLength={500} value={f.biodiversidad} onChange={(e) => set("biodiversidad", e.target.value)} /></div>
+          <div className="full"><label htmlFor="c-act">{L("Actividades comunitarias", "Community activities")}</label>
+            <textarea id="c-act" rows={3} maxLength={1000} value={f.actividades} onChange={(e) => set("actividades", e.target.value)} placeholder={L("Faenas, rondas, monitoreo, talleres…", "Work days, patrols, monitoring, workshops…")} /></div>
+          <div><label htmlFor="c-apo">{L("Apoyos recibidos", "Support received")}</label>
+            <textarea id="c-apo" rows={3} maxLength={800} value={f.apoyos} onChange={(e) => set("apoyos", e.target.value)} placeholder={L("Material, formación o visitas que ha recibido la comunidad", "Materials, training or visits the community has received")} /></div>
+          <div><label htmlFor="c-resu">{L("Resultados de conservación", "Conservation results")}</label>
+            <textarea id="c-resu" rows={3} maxLength={1000} value={f.resultados} onChange={(e) => set("resultados", e.target.value)} placeholder={L("Solo resultados comprobados", "Only verified results")} /></div>
+          <div className="full"><span className="label">{L("Fotografías", "Photos")}</span>
+            <SubirFotos id="c-fotos" fotos={f.fotos} onChange={(v) => set("fotos", v)} max={6} />
+            <p className="hint">{L("Fotos reales de la comunidad o del lugar, con permiso de las personas que aparecen.", "Real photos of the community or the place, with the permission of anyone shown.")}</p></div>
+        </div>
+      </details>
       <Msg id="m-com" text={m} />
       <div className="panel-actions">
         <button className="btn" type="submit">{t("Guardar comunidad")}</button>
