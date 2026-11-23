@@ -379,7 +379,7 @@ input[type=file]{padding:8px}
 
 /* ---------- Pie ---------- */
 .pie{position:relative;isolation:isolate;margin-top:56px;padding:clamp(60px,9vw,112px) 0 clamp(84px,12vw,150px);border-top:3px solid var(--edge);overflow:hidden}
-.pie::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--maiz) url(/img/tejido-bandas-1536.webp) center/cover no-repeat;filter:var(--tejido)}
+.pie::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--maiz) url(/img/tejido-bandas-1536.webp) center top/cover no-repeat;filter:var(--tejido)}
 @media (max-width:900px){.pie::before{background-image:url(/img/tejido-bandas-800.webp)}}
 .pie-card{position:relative;max-width:720px;margin-inline:auto;background:var(--manta);border:2px solid var(--edge);border-radius:22px;box-shadow:8px 8px 0 rgb(43 25 11 / .88);padding:26px clamp(20px,3vw,34px);display:flex;flex-direction:column;gap:18px;align-items:center;text-align:center}
 .pie-card::after{content:"";position:absolute;inset:8px;border:1.5px dashed color-mix(in srgb,var(--muted) 40%,transparent);border-radius:15px;pointer-events:none}
