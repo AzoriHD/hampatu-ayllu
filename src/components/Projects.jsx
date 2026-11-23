@@ -248,7 +248,7 @@ export function ProjectPage({ id }) {
             <div className="caja">
               {objetivos.length > 0 && <><h3 className="sub">{L("Objetivos", "Goals")}</h3><ul className="lista-puntos">{objetivos.map((o, i) => <li key={i}>{o.texto}</li>)}</ul></>}
               {actividades.length > 0 && <><h3 className="sub">{L("Actividades previstas", "Planned activities")}</h3>
-                <ul className="lista-check">{actividades.map((a, i) => <li key={i} className={a.hecha ? "hecha" : ""}><span aria-hidden="true">{a.hecha ? "✓" : "○"}</span> {a.texto}{a.hecha && <span className="sr"> ({L("hecha", "done")})</span>}</li>)}</ul></>}
+                <ul className="lista-check">{actividades.map((a, i) => <li key={i} className={a.hecha ? "hecha" : ""}><span aria-hidden="true">{a.hecha ? "✓" : "○"}</span><span>{a.texto}{a.hecha && <span className="sr"> ({L("hecha", "done")})</span>}</span></li>)}</ul></>}
               {calendario.length > 0 && <><h3 className="sub">{L("Calendario", "Timeline")}</h3>
                 <ol className="calendario-p">{calendario.map((c, i) => <li key={i}><b>{c.fecha}</b><span>{c.hito}</span></li>)}</ol></>}
             </div>
@@ -329,7 +329,7 @@ export function ProjectPage({ id }) {
           <div className="caja" id="p-colabora">
             <h3 className="sub">{L("Necesidades", "Needs")}</h3>
             {necesidades.length > 0 && (
-              <ul className="lista-check">{necesidades.map((x, i) => <li key={i} className={x.cubierta ? "hecha" : ""}><span aria-hidden="true">{x.cubierta ? "✓" : "○"}</span> {x.texto} <span className="meta">· {et(TIPOS_NEC, x.tipo)}{x.cubierta ? " · " + L("cubierta", "covered") : ""}</span></li>)}</ul>
+              <ul className="lista-check">{necesidades.map((x, i) => <li key={i} className={x.cubierta ? "hecha" : ""}><span aria-hidden="true">{x.cubierta ? "✓" : "○"}</span><span>{x.texto} <span className="meta etiqueta">· {et(TIPOS_NEC, x.tipo)}{x.cubierta ? " · " + L("cubierta", "covered") : ""}</span></span></li>)}</ul>
             )}
             {abiertas.length > 0 && (
               <>
