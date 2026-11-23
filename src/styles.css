@@ -1066,7 +1066,7 @@ g[tabindex]:focus-visible .g-hit{stroke:var(--link);stroke-width:2}
 .g-tabla .tabla{margin-top:8px}
 
 /* ---------- Apoya la causa ---------- */
-.apoya-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(16px,3vw,36px);align-items:center;overflow:hidden;
+.apoya-hero{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(16px,3vw,36px);align-items:center;overflow:hidden;
   background:radial-gradient(120% 90% at 90% 60%,color-mix(in srgb,var(--sight) 22%,var(--manta)) 0,var(--manta) 62%)}
 .apoya-hero-txt{display:grid;gap:12px;justify-items:start}
 .apoya-hero-txt .vista-h{text-align:left;margin:0}

@@ -5,7 +5,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { useApp } from "../AppContext.jsx";
-import { DONAR, FOTO_CABECERA, ONG_COLABORADORA } from "../data/apoyo.js";
+import { DONAR, ONG_COLABORADORA } from "../data/apoyo.js";
 import { MONEDAS, PRESETS } from "../data/proyectos.js";
 import { claveIdempotencia, comprobarDonacion, dinero, estadoDonaciones, iniciarDonacion } from "../lib/donaciones.js";
 import { filas, useCarga, useCifras } from "../lib/tablas.js";
@@ -133,9 +133,6 @@ export default function Support() {
           <p className="intro">{L("Ayúdanos a construir una red de conservación comunitaria en Perú. Cada apoyo nos acerca a comunidades mejor preparadas para proteger su biodiversidad.", "Help us build a community conservation network in Peru. Every contribution brings us closer to communities better prepared to protect their biodiversity.")}</p>
           <button type="button" className="btn-acc" onClick={irForm}>{L("Quiero apoyar", "I want to help")}</button>
         </div>
-        <figure className="apoya-hero-img">
-          <img src={FOTO_CABECERA.src} width="736" height="486" alt={en ? FOTO_CABECERA.en : FOTO_CABECERA.es} />
-        </figure>
       </div>
 
       {vuelta && <Vuelta v={vuelta} onCerrar={() => setVuelta(null)} />}
