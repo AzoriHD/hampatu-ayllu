@@ -10,7 +10,8 @@ const SEED = {
    "nombre": "Escuela primaria Los Quinuales",
    "ofrece": "38 alumnos que suben a pastear y conocen las quebradas. Los maestros podemos dar charlas a los padres.",
    "region": "Provincia de Hualgayoc",
-   "simbolo": "sol",
+   "simbolo": "arbol",
+   "color": 3,
    "tipo": "escuela",
    "ts": 1794438000001,
    "zona": "caj"
@@ -24,7 +25,8 @@ const SEED = {
    "nombre": "Guías locales Ruta de las Lagunas",
    "ofrece": "Movilidad desde el pueblo, conocimiento de las rutas y contacto con visitantes.",
    "region": "Callejón de Conchucos",
-   "simbolo": "montana",
+   "simbolo": "laguna",
+   "color": 4,
    "tipo": "guias",
    "ts": 1794438000006,
    "zona": "anc"
@@ -38,7 +40,8 @@ const SEED = {
    "nombre": "Asociación Jalca Viva",
    "ofrece": "Afiches y materiales de campañas anteriores, apoyo para organizar faenas y charlas.",
    "region": "Cajamarca ciudad",
-   "simbolo": "hoja",
+   "simbolo": "ichu",
+   "color": 2,
    "tipo": "ong",
    "ts": 1794438000007,
    "zona": "caj"
@@ -52,7 +55,8 @@ const SEED = {
    "nombre": "Comité de Regantes Canal Tres Acequias",
    "ofrece": "Somos 46 usuarios del canal. Recorremos todo el tramo en cada faena y podemos avisar de lo que se ve.",
    "region": "Callejón de Conchucos",
-   "simbolo": "ola",
+   "simbolo": "gota",
+   "color": 1,
    "tipo": "local",
    "ts": 1794438000004,
    "zona": "anc"
@@ -66,7 +70,8 @@ const SEED = {
    "nombre": "Ronda Campesina El Pajonal",
    "ofrece": "Rondas de noche dos veces por semana por tres quebradas. Conocemos cada puquio y cada camino.",
    "region": "Provincia de Celendín",
-   "simbolo": "luna",
+   "simbolo": "chakana",
+   "color": 5,
    "tipo": "local",
    "ts": 1794438000005,
    "zona": "caj"
@@ -80,7 +85,8 @@ const SEED = {
    "nombre": "Asociación de Tejedoras Santa Rosa",
    "ofrece": "Tejemos chullos, llaveros y mantas con el sapo arlequín. Parte de cada venta va a la comunidad que cuida la quebrada.",
    "region": "Callejón de Conchucos",
-   "simbolo": "espiral",
+   "simbolo": "tejido",
+   "color": 7,
    "tipo": "local",
    "ts": 1794438000008,
    "zona": "anc"
@@ -95,6 +101,7 @@ const SEED = {
    "ofrece": "Identificar fotos, pruebas de quitridio y talleres de bioseguridad. Podemos viajar los fines de semana.",
    "region": "Facultad de Biología",
    "simbolo": "sapo",
+   "colores": { "f": "#1f3a2b", "p": "#e8c22a", "a": "#d2421f" },
    "tipo": "investigacion",
    "ts": 1794438000002,
    "zona": "otra",
