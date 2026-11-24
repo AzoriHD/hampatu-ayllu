@@ -185,7 +185,12 @@ h1{font:800 clamp(60px,10.4vw,128px)/.84 var(--display);font-stretch:76%;letter-
   @keyframes sentar{0%,4.7%{opacity:1}5.2%,44.8%{opacity:0}45.3%,54.7%{opacity:1}55.2%,94.8%{opacity:0}95.3%,100%{opacity:1}}
 }
 @media (prefers-reduced-motion:reduce){.sapo-anda{display:none}.sapo-sienta{opacity:1}}
-@media (max-width:760px){.paseo{display:none}}
+/* En el móvil el logo va en el centro del borde de arriba: el sapo de la portada pasea por la mitad izquierda
+   y el del pie, por todo el borde. */
+@media (max-width:760px){
+  .paseo{--sapo:60px;left:14px;right:calc(50% + 58px);bottom:calc(100% - 6px)}
+  .paseo-pie{right:14px}
+}
 
 /* Faja de ranas tejidas */
 .faja-ranas{height:clamp(70px,8.4vw,108px);background:var(--maiz) url(/img/faja-ranas-v2.webp) left center/auto 100% repeat-x;border-block:3px solid var(--edge);filter:var(--tejido)}
