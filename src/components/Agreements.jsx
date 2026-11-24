@@ -22,7 +22,7 @@ export function Footer() {
     <footer className="pie">
       <div className="wrap">
         <div className="pie-card">
-          <Paseo color="verde" className="paseo-pie" />
+          <Paseo color="amarillo" className="paseo-pie" />
           <div className="pie-marca">
             <img src="/img/logo.webp" width="440" height="423" alt="" loading="lazy" />
             <p><strong>Hampatu Ayllu</strong> {en ? "means «community of the toad» in Quechua." : "significa «comunidad del sapo» en quechua."}</p>

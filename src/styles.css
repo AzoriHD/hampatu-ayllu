@@ -161,7 +161,7 @@ h1{font:800 clamp(60px,10.4vw,128px)/.84 var(--display);font-stretch:76%;letter-
 :root[data-theme="dark"] .manta,:root[data-theme="dark"] .pie-card{box-shadow:10px 10px 0 rgb(0 0 0 / .55)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) :is(.manta,.pie-card){box-shadow:10px 10px 0 rgb(0 0 0 / .55)}}
 
-/* Los sapos que pasean por el borde de arriba de la manta (amarillo) y de la caja del pie (verde): salen
+/* Los sapos que pasean por el borde de arriba de la manta (verde) y de la caja del pie (amarillo): salen
    sentados, caminan despacio hasta el otro lado, se sientan, se dan la vuelta y vuelven. Sentados, a veces
    cazan una mosca (Paseo.jsx la dibuja en el <canvas>). Nunca aparecen ni desaparecen de golpe. */
 .paseo{--sapo:clamp(96px,9.6vw,128px);position:absolute;left:34px;right:150px;bottom:calc(100% - 12px);height:0;pointer-events:none;z-index:1}

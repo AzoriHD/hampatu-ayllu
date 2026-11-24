@@ -14,8 +14,8 @@ export default function Hero() {
     <section className="portada" aria-labelledby="h-portada">
       <div className="wrap portada-in">
         <div className="manta">
-          {/* El sapo amarillo pasea por el borde de arriba: va, se sienta (y a veces caza una mosca), se da la vuelta y vuelve */}
-          <Paseo color="amarillo" />
+          {/* El sapo verde pasea por el borde de arriba: va, se sienta (y a veces caza una mosca), se da la vuelta y vuelve */}
+          <Paseo color="verde" />
           <img className="manta-logo" src="/img/logo.webp" width="440" height="423"
             alt={en ? "Hampatu Ayllu logo: a harlequin toad on a rock, with hills and a stream behind it" : "Logo de Hampatu Ayllu: un sapo arlequín sobre una piedra, con cerros y una quebrada al fondo"} />
           <HeroText />
