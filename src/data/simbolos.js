@@ -38,4 +38,5 @@ export const SIMB_K=Object.keys(SIMB);
 /* Orden antiguo: así las comunidades que nunca eligieron símbolo conservan el suyo. */
 export const SIMB_VIEJOS=["sapo","gota","montana","sol","luna","hoja","chakana","espiral","ola","flor","ichu","estrella"];
 /* Colores del símbolo: nombre ES, nombre EN (fondo, dibujo y acento en styles.css, .tono-N) */
-export const TONOS=[["Maíz","Corn"],["Tierra","Earth"],["Lana","Wool"],["Monte","Forest"],["Laguna","Lagoon"],["Achiote","Achiote"],["Mashua","Mashua"],["Cochinilla","Cochineal"]];
+/* [ES, EN, fondo, color 1 (dibujo), color 2 (detalles)] */
+export const TONOS=[["Maíz","Corn","#e8a42a","#2b190b","#a4471a"],["Tierra","Earth","#2b190b","#e8a42a","#f7e2ae"],["Lana","Wool","#f7e2ae","#2b190b","#c0661e"],["Monte","Forest","#3e573e","#f7e2ae","#e8a42a"],["Laguna","Lagoon","#2c5f63","#f7e2ae","#e8a42a"],["Achiote","Achiote","#a4471a","#fbf0d4","#e8a42a"],["Mashua","Mashua","#6a5590","#fbf0d4","#e8a42a"],["Cochinilla","Cochineal","#9b2a3a","#fbf0d4","#f7c25a"]];

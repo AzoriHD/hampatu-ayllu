@@ -1168,3 +1168,10 @@ g[tabindex]:focus-visible .g-hit{stroke:var(--link);stroke-width:2}
 .lamina .letra{display:inline-grid;place-items:center;width:1.35em;height:1.35em;border-radius:50%;background:var(--muted);color:var(--manta);font:700 .72em/1 var(--body);font-style:normal;vertical-align:.12em;margin-right:.15em}
 .lamina-pie ol{list-style:none;margin:.3em 0 0;padding:0}
 .lamina-pie li{padding-left:1.6em;text-indent:-1.6em}
+
+.sim-propios{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
+.sim-picker{display:inline-flex;align-items:center;gap:6px;margin:0;cursor:pointer;font-size:14px;font-weight:700}
+.sim-picker input[type=color]{width:38px;height:38px;padding:0;border:1.5px solid var(--edge);border-radius:50%;background:none;cursor:pointer;min-height:0}
+.sim-picker input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+.sim-picker input[type=color]::-webkit-color-swatch{border:0;border-radius:50%}
+.sim-picker input[type=color]::-moz-color-swatch{border:0;border-radius:50%}

@@ -46,6 +46,12 @@ export function simboloDe(c) {
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
   return SIMB_VIEJOS[h % SIMB_VIEJOS.length];
 }
+/* Colores propios del símbolo { f: fondo, p: color 1, a: color 2 }, o null. */
+const HEX = /^#[0-9a-f]{6}$/i;
+export function coloresDe(c) {
+  const x = c && c.colores;
+  return x && HEX.test(x.f) && HEX.test(x.p) && HEX.test(x.a) ? { f: x.f, p: x.p, a: x.a } : null;
+}
 /* Color del símbolo: el elegido o, si no hay, el de siempre. */
 export function colorDe(c) {
   const n = c && c.color !== "" && c.color != null ? Number(c.color) : NaN;

@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useApp } from "../AppContext.jsx";
 import { JOIN, SIMB, SIMB_K } from "../data/constants.js";
-import { colorDe, copiar, cuandoTexto, simboloDe, str, waEnlace, waNumero } from "../lib/utils.js";
+import { colorDe, coloresDe, copiar, cuandoTexto, simboloDe, str, waEnlace, waNumero } from "../lib/utils.js";
 
 export function Svg({ d, width = "1.8" }) {
   return (
@@ -11,10 +11,12 @@ export function Svg({ d, width = "1.8" }) {
 }
 
 /* Pasa com={comunidad}, o k y tono sueltos (selector). */
-export function Simbolo({ k, com, tono, mini }) {
+export function Simbolo({ k, com, tono, colores, mini }) {
   const key = com ? simboloDe(com) : SIMB[k] ? k : SIMB_K[0];
   const t = com ? colorDe(com) : Number.isInteger(tono) ? tono : 0;
-  return <span className={(mini ? "simbolo-mini" : "simbolo") + " tono-" + t} aria-hidden="true"><Svg d={SIMB[key][2]} /></span>;
+  const cs = com ? coloresDe(com) : colores;
+  const st = cs ? { background: cs.f, color: cs.p, "--sa": cs.a } : undefined;
+  return <span className={(mini ? "simbolo-mini" : "simbolo") + " tono-" + t} style={st} aria-hidden="true"><Svg d={SIMB[key][2]} /></span>;
 }
 
 export function Msg({ id, text, role = "alert" }) {

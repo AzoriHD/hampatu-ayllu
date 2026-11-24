@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useApp } from "../AppContext.jsx";
 import { COORD, COORD_MSG, P, SIMB, SIMB_K, TC, TCD, TONOS } from "../data/constants.js";
 import { newId, store } from "../lib/store.js";
-import { colorDe, plural, simboloDe, str } from "../lib/utils.js";
+import { colorDe, coloresDe, plural, simboloDe, str } from "../lib/utils.js";
 import ZonaRail from "./Rail.jsx";
 import { CommunitiesHeader } from "./Headers.jsx";
 import { CopyBtn, DelBtns, EmptyBox, Msg, Simbolo } from "./Shared.jsx";
@@ -77,7 +77,7 @@ export function CommunityForm({ editId, onClose, completo }) {
   const [f, setF] = useState(() => ({
     nombre: prev?.nombre || "", tipo: TC[prev?.tipo] ? prev.tipo : "local", zona: P[prev?.zona] ? prev.zona : "", zonaotra: prev?.zonaOtra || "",
     region: prev?.region || "", especies: prev?.especies || "", ofrece: prev?.ofrece || "", necesita: prev?.necesita || "",
-    contacto: prev?.contacto || "", simbolo: prev ? simboloDe(prev) : "", color: prev ? colorDe(prev) : 0,
+    contacto: prev?.contacto || "", simbolo: prev ? simboloDe(prev) : "", color: prev ? colorDe(prev) : 0, colores: prev ? coloresDe(prev) : null,
     presentacion: prev?.presentacion || "", ecosistemas: prev?.ecosistemas || "", biodiversidad: prev?.biodiversidad || "",
     actividades: prev?.actividades || "", apoyos: prev?.apoyos || "", resultados: prev?.resultados || "", fotos: Array.isArray(prev?.fotos) ? prev.fotos : [],
   }));
@@ -92,11 +92,12 @@ export function CommunityForm({ editId, onClose, completo }) {
     const d = {
       nombre: str(f.nombre, 80), tipo: TC[f.tipo] ? f.tipo : "otro", zona: P[f.zona] ? f.zona : "",
       region: str(f.region, 80), especies: str(f.especies, 160), ofrece: str(f.ofrece, 300), necesita: str(f.necesita, 300),
-      contacto: str(f.contacto, 120), simbolo: SIMB[f.simbolo] ? f.simbolo : "", color: Number.isInteger(f.color) && f.color >= 0 && f.color < TONOS.length ? f.color : 0,
+      contacto: str(f.contacto, 120), simbolo: SIMB[f.simbolo] ? f.simbolo : "", color: Number.isInteger(f.color) && f.color >= 0 && f.color < TONOS.length ? f.color : 0, colores: coloresDe(f) || undefined,
       ts: prev ? Number(prev.ts) || Date.now() : Date.now(), by: prev ? String(prev.by || "") : uid,
       presentacion: str(f.presentacion, 1500), ecosistemas: str(f.ecosistemas, 300), biodiversidad: str(f.biodiversidad, 500),
       actividades: str(f.actividades, 1000), apoyos: str(f.apoyos, 800), resultados: str(f.resultados, 1000), fotos: f.fotos.slice(0, 6),
     };
+    if (!d.colores) delete d.colores;
     ["presentacion", "ecosistemas", "biodiversidad", "actividades", "apoyos", "resultados"].forEach((k) => { if (!d[k]) delete d[k]; });
     if (!d.fotos.length) delete d.fotos;
     if (prev?.ejemplo) d.ejemplo = true;
@@ -137,15 +138,27 @@ export function CommunityForm({ editId, onClose, completo }) {
             {SIMB_K.map((k) => (
               <label className="sim-op" key={k} title={SIMB[k][en ? 1 : 0]}>
                 <input type="radio" name="simbolo" value={k} checked={f.simbolo === k} onChange={() => set("simbolo", k)} />
-                <Simbolo k={k} tono={f.color} /><span className="sr">{SIMB[k][en ? 1 : 0]}</span>
+                <Simbolo k={k} tono={f.color} colores={f.colores} /><span className="sr">{SIMB[k][en ? 1 : 0]}</span>
               </label>
             ))}
           </div>
           <div className="sim-colores" role="radiogroup" aria-label={L("Color del símbolo", "Symbol colour")}>
             {TONOS.map((n, i) => (
               <label className="sim-color" key={i} title={n[en ? 1 : 0]}>
-                <input type="radio" name="color" value={i} checked={f.color === i} onChange={() => set("color", i)} />
+                <input type="radio" name="color" value={i} checked={!f.colores && f.color === i} onChange={() => setF((o) => ({ ...o, color: i, colores: null }))} />
                 <span className={"muestra tono-" + i} /><span className="sr">{n[en ? 1 : 0]}</span>
+              </label>
+            ))}
+          </div>
+          <div className="sim-propios">
+            {[["f", L("Fondo", "Background"), 2], ["p", L("Color 1", "Colour 1"), 3], ["a", L("Color 2", "Colour 2"), 4]].map(([q, txt, j]) => (
+              <label className="sim-picker" key={q}>
+                <input type="color" value={(f.colores || {})[q] || TONOS[f.color][j]}
+                  onChange={(e) => setF((o) => {
+                    const base = o.colores || { f: TONOS[o.color][2], p: TONOS[o.color][3], a: TONOS[o.color][4] };
+                    return { ...o, colores: { ...base, [q]: e.target.value } };
+                  })} />
+                <span>{txt}</span>
               </label>
             ))}
           </div>
