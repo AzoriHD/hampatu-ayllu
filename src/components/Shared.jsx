@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useApp } from "../AppContext.jsx";
 import { JOIN, SIMB, SIMB_K } from "../data/constants.js";
-import { colorDe, coloresDe, copiar, cuandoTexto, simboloDe, str, waEnlace, waNumero } from "../lib/utils.js";
+import { colorDe, coloresDe, copiar, cuandoTexto, fotoSegura, simboloDe, str, waEnlace, waNumero } from "../lib/utils.js";
 
 export function Svg({ d, width = "1.8" }) {
   return (
@@ -11,12 +11,16 @@ export function Svg({ d, width = "1.8" }) {
 }
 
 /* Pasa com={comunidad}, o k y tono sueltos (selector). */
-export function Simbolo({ k, com, tono, colores, mini }) {
+/* Emblema: la foto propia de la comunidad (com.foto o foto) o, si no tiene, su símbolo con colores. */
+export function Simbolo({ k, com, tono, colores, mini, foto, grande }) {
+  const img = fotoSegura(foto !== undefined ? foto : com ? com.foto : "");
+  const clase = (mini ? "simbolo-mini" : "simbolo") + (grande ? " simbolo-xl" : "");
+  if (img) return <span className={clase + " simbolo-foto"} aria-hidden="true"><img src={img} alt="" loading="lazy" decoding="async" /></span>;
   const key = com ? simboloDe(com) : SIMB[k] ? k : SIMB_K[0];
   const t = com ? colorDe(com) : Number.isInteger(tono) ? tono : 0;
   const cs = com ? coloresDe(com) : colores;
   const st = cs ? { background: cs.f, color: cs.p, "--sa": cs.a, "--sb": cs.f } : undefined;
-  return <span className={(mini ? "simbolo-mini" : "simbolo") + " tono-" + t} style={st} aria-hidden="true"><Svg d={SIMB[key][2]} /></span>;
+  return <span className={clase + " tono-" + t} style={st} aria-hidden="true"><Svg d={SIMB[key][2]} /></span>;
 }
 
 export function Msg({ id, text, role = "alert" }) {

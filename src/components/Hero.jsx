@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { descargarApp } from "../lib/pwa.js";
 import { useApp } from "../AppContext.jsx";
 import { prepararClic, sonarClic } from "../lib/musica.js";
 import { HeroText } from "./Headers.jsx";
@@ -16,7 +17,7 @@ export default function Hero() {
         <div className="manta">
           {/* El sapo verde pasea por el borde de arriba: va, se sienta (y a veces caza una mosca), se da la vuelta y vuelve */}
           <Paseo color="verde" />
-          <img className="manta-logo" src="/img/logo.webp" width="440" height="365"
+          <img className="manta-logo" src="/img/logo.svg" width="440" height="365"
             alt={en ? "Hampatu Ayllu logo: a heart embracing the map of Peru, with a harlequin toad on it" : "Logo de Hampatu Ayllu: un corazón que abraza el mapa de Perú, con un sapo arlequín encima"} />
           <HeroText />
           <p className="cifras" id="stats" aria-live="polite">
@@ -27,7 +28,7 @@ export default function Hero() {
             <BotonHampatu />
             <a className="btn-linea" href="#recompensas">{en ? "Rewards for those who protect" : "Recompensas para quien protege"}</a>
             <a className="btn-linea btn-apoya" href="#apoya"><Svg width="2" d='<path d="M12 20.3s-7.8-4.6-7.8-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.8 2.5c0 5.6-7.8 10.2-7.8 10.2z"/>' />{en ? "Support the cause" : "Apoya la causa"}</a>
-            {!esApp && <a className="btn-linea" href="#app"><Svg width="2" d={ICONO_APP} />{en ? "Get the app" : "Descarga la app"}</a>}
+            {!esApp && <a className="btn-linea" href="#app" onClick={descargarApp}><Svg width="2" d={ICONO_APP} />{en ? "Get the app" : "Descarga la app"}</a>}
           </div>
         </div>
       </div>

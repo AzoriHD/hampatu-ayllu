@@ -36,6 +36,25 @@ export async function instalar() {
   return ok;
 }
 
+/*
+ * Botones «Descargar app»: instalan directamente con el aviso del navegador.
+ * Si el navegador no lo permite (iPhone, navegador dentro de WhatsApp/Facebook, ya rechazado…),
+ * se abre una ventanita con los pasos, sin salir de la página.
+ */
+export const AYUDA_INSTALAR = "hampatu-instalar-ayuda";
+export async function descargarApp(e) {
+  if (e) e.preventDefault();
+  if (!aviso && !recienInstalada && plataforma() !== "ios") {
+    /* a veces el navegador avisa un poco tarde: se espera un momento */
+    await new Promise((ok) => { const q = suscribir(() => { q(); ok(); }); setTimeout(() => { q(); ok(); }, 1200); });
+  }
+  if (aviso) { await instalar(); return; }
+  window.dispatchEvent(new Event(AYUDA_INSTALAR));
+}
+
+/* Navegador metido dentro de otra app (WhatsApp, Facebook, Instagram…): ahí no se puede instalar */
+export const enOtraApp = () => /FBAN|FBAV|FB_IAB|Instagram|Messenger|WhatsApp|Line\/|; wv\)|TikTok|Snapchat/i.test(navigator.userAgent || "");
+
 export function plataforma() {
   const ua = navigator.userAgent || "";
   if (/iphone|ipad|ipod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) return "ios";

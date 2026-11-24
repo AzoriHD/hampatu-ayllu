@@ -1,4 +1,5 @@
 import { useApp } from "../AppContext.jsx";
+import { descargarApp } from "../lib/pwa.js";
 import Paseo from "./Paseo.jsx";
 
 export function Agreements() {
@@ -24,7 +25,7 @@ export function Footer() {
         <div className="pie-card">
           <Paseo color="amarillo" className="paseo-pie" />
           <div className="pie-marca">
-            <img src="/img/logo.webp" width="440" height="365" alt="" loading="lazy" />
+            <img src="/img/logo.svg" width="440" height="365" alt="" loading="lazy" />
             <p><strong>Hampatu Ayllu</strong> {en ? "means «community of the toad» in Quechua." : "significa «comunidad del sapo» en quechua."}</p>
           </div>
           {view !== "apoya" && (
@@ -36,7 +37,7 @@ export function Footer() {
           {view !== "app" && !esApp && (
             <div className="pie-app">
               <p>{en ? "Keep the community on your phone or computer. It installs from here, free, in a few seconds." : "Lleva la comunidad en tu celular o tu computadora. Se instala desde aquí, gratis y en unos segundos."}</p>
-              <a className="btn-acc" href="#app">{en ? "Get the app" : "Descarga la app"}</a>
+              <a className="btn-acc" href="#app" onClick={descargarApp}>{en ? "Get the app" : "Descarga la app"}</a>
             </div>
           )}
         </div>

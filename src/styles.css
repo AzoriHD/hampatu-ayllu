@@ -503,6 +503,13 @@ input[type=file]{padding:8px}
 .dis .apunte{font-size:14px;padding:3px 10px}
 .dis .apunte-form{grid-template-columns:1fr}
 .dis .apuntados{font-size:14px}
+.dis-col{display:flex;gap:6px;flex-wrap:wrap}
+.dis-col .sw{display:inline-flex;align-items:center;gap:6px;font:600 13px/1 inherit;padding:5px 10px 5px 6px;border-radius:999px;border:2px solid var(--edge);background:transparent;color:inherit;cursor:pointer}
+.dis-col .sw::before{content:"";width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px rgb(0 0 0 / .25)}
+.dis-col .sw-am::before{background:linear-gradient(135deg,#c99a3e 50%,#ead9b4 50%)}
+.dis-col .sw-ve::before{background:linear-gradient(135deg,#5d6e42 50%,#ec9828 50%)}
+.dis-col .sw[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent)}
+
 
 /* Calendario */
 .cal-wrap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
@@ -1176,3 +1183,55 @@ g[tabindex]:focus-visible .g-hit{stroke:var(--link);stroke-width:2}
 .sim-picker input[type=color]::-webkit-color-swatch-wrapper{padding:0}
 .sim-picker input[type=color]::-webkit-color-swatch{border:0;border-radius:50%}
 .sim-picker input[type=color]::-moz-color-swatch{border:0;border-radius:50%}
+
+/* ---------- Comunidades como clanes ---------- */
+.simbolo-foto{overflow:hidden;padding:0;background:var(--maiz)}
+.simbolo-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.simbolo-xl{width:96px;height:96px;border-width:2px;box-shadow:4px 4px 0 var(--shade)}
+.simbolo-xl svg{width:58px;height:58px}
+.lema{margin:0;font-style:italic;color:var(--muted);font-size:15px;line-height:1.3;overflow-wrap:break-word}
+.lema-xl{font-size:clamp(16px,2vw,19px);margin-bottom:4px}
+.clan-filtros{margin-top:14px}
+.clan-linea{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.clan-n{font-weight:700;font-size:14.5px;font-variant-numeric:tabular-nums}
+.clan-n::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--sight);margin-right:6px;vertical-align:1px}
+.tag-ingreso{font-weight:700;border-color:currentColor;background:transparent}
+.tag-ingreso.ing-abierta{color:var(--sight)}
+.tag-ingreso.ing-solicitud{color:var(--link)}
+.tag-ingreso.ing-cerrada{color:var(--muted);border-style:dashed}
+.tag-pend{background:var(--need);color:var(--manta);font-weight:700;text-decoration:none}
+.tag-mio{font-weight:700;background:var(--maiz);border-color:var(--edge);color:var(--ink)}
+.tag-mio.est-aceptada{background:var(--sight);color:var(--manta);border-color:var(--sight)}
+.tag-mio.est-rechazada{background:transparent;border-style:dashed;color:var(--muted)}
+.com-mia{outline:3px solid var(--sight);outline-offset:-6px}
+.unirse-estado{display:inline-flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.unirse-estado .msg{flex-basis:100%;margin:0}
+.btn-unirse{background:var(--sight);border-color:var(--edge)}
+.clan-cabeza .com-top{align-items:center}
+.clan-cabeza .vista-h{margin:0}
+.clan-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0 0}
+.clan-stats>div{background:var(--lana);border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;text-align:center}
+.clan-stats dt{font-size:13.5px;color:var(--muted);font-weight:700}
+.clan-stats dd{margin:2px 0 0;font:800 26px/1 var(--display);font-variant-numeric:tabular-nums}
+@media (max-width:560px){.clan-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.simbolo-xl{width:76px;height:76px}}
+.requisitos{margin:14px 0 0;padding:10px 14px;border-left:4px solid var(--accent);background:var(--lana);border-radius:0 12px 12px 0}
+.requisitos p{margin:4px 0 0}
+.clan-cabeza .ficha-acciones{margin-top:16px}
+.clan-cabeza .pestanas{margin-top:18px;padding-top:16px;border-top:1.5px dashed var(--line)}
+.ingresos{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));margin-bottom:12px}
+.ingreso-op{display:grid;gap:2px;position:relative;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px 10px 38px;cursor:pointer;font-weight:400;margin:0;background:var(--manta)}
+.ingreso-op input{position:absolute;left:12px;top:12px;width:18px;height:18px;min-height:0;margin:0;accent-color:var(--ink)}
+.ingreso-op span{font-size:14px;color:var(--muted)}
+.ingreso-op:has(input:checked){border-color:var(--edge);background:var(--maiz)}
+.ingreso-op.ing-abierta b{color:var(--sight)}.ingreso-op.ing-solicitud b{color:var(--link)}.ingreso-op.ing-cerrada b{color:var(--muted)}
+.emblema-modo{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.emblema-modo .chipbtn{cursor:pointer;margin:0;font-weight:700}
+.emblema-modo .chipbtn:has(input:checked){background:var(--ink);color:var(--manta);border-color:var(--ink)}
+.emblema-modo .chipbtn:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.emblema-foto{display:grid;gap:10px;justify-items:start;margin-bottom:6px}
+.rango{margin:16px 0 6px;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.roster{list-style:none;margin:0;padding:0;display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))}
+.roster>li{display:grid;gap:2px;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--lana)}
+.roster>li.rol-representante{border-color:var(--edge);background:var(--maiz)}
+.dialogo-clan{display:grid;gap:14px}
+.dialogo-clan .panel-h{margin:0}

@@ -1,42 +1,48 @@
-/* Ficha de cada comunidad: presentación, naturaleza, proyectos, necesidades, apoyos, resultados y representantes.
+/* Ficha de cada comunidad, por apartados como un clan (inicio, miembros, proyectos, necesidades, gestión): presentación, naturaleza, proyectos, necesidades, apoyos, resultados y representantes.
    La comunidad decide quién la representa y qué se publica (supabase.sql, bloque 10). */
 import { useState } from "react";
 import { useApp } from "../AppContext.jsx";
 import { TC } from "../data/constants.js";
 import { CATEGORIAS_C, ESTADOS_O } from "../data/proyectos.js";
-import { borrar, cambiar, crear, filas, useCarga, useCifras } from "../lib/tablas.js";
+import { borrar, cambiar, filas, useCarga, useCifras } from "../lib/tablas.js";
 import { puede } from "../lib/permisos.js";
 import { dinero } from "../lib/donaciones.js";
-import { copiar, simboloDe, str } from "../lib/utils.js";
-import { Simbolo } from "./Shared.jsx";
+import { copiar } from "../lib/utils.js";
+import { store } from "../lib/store.js";
+import { cuentasMiembros, INGRESOS, ingresoDe } from "../lib/clanes.js";
+import { Msg, Simbolo } from "./Shared.jsx";
+import { IngresoTag, Unirse } from "./Clan.jsx";
 import { Autor } from "./People.jsx";
 import { CommunityForm } from "./Communities.jsx";
 import { OportunidadForm } from "./Collaborate.jsx";
 import { InformesLista } from "./Impact.jsx";
-import { Aviso, Cargando, Confirmar, EstadoP, Galeria, Parrafos, useEnviar, useEt, useL, Vacio } from "./Kit.jsx";
+import { Aviso, Cargando, Confirmar, EstadoP, Galeria, Parrafos, Pestanas, useEnviar, useEt, useL, Vacio } from "./Kit.jsx";
 
 export default function CommunityPage({ id }) {
-  const { t, en, data, meta, uid, canPost, pedirCuenta, permisos, zonaDe } = useApp();
+  const { t, en, data, meta, uid, canPost, permisos, zonaDe, write } = useApp();
   const L = useL(), et = useEt();
   const [editar, setEditar] = useState(false);
   const [necesidad, setNecesidad] = useState(false);
   const [copiado, setCopiado] = useState(false);
+  const [pestana, setPestana] = useState(() => { const v = sessionStorage.getItem("hampatu-pestana") || "inicio"; sessionStorage.removeItem("hampatu-pestana"); return v; });
+  const [mIng, setMIng] = useState("");
   const env = useEnviar();
   const c = data.comunidades.find((x) => x.id === id);
   const { datos, cargando } = useCarga(async () => {
     if (!c) return null;
-    const [miembros, vinculos, ops, infs] = await Promise.all([
+    const [miembros, vinculos, ops, infs, cuentas] = await Promise.all([
       filas("comunidad_miembros", { eq: { comunidad: id }, orden: "created_at", desc: false }),
       filas("proyecto_comunidades", { eq: { comunidad: id } }),
       filas("oportunidades", { eq: { comunidad: id } }),
       filas("informes", { eq: { comunidad: id }, orden: "fecha" }),
+      cuentasMiembros(),
     ]);
     const ids = [...new Set(vinculos.map((v) => v.proyecto))];
     const [ps, res] = ids.length ? await Promise.all([
       filas("proyectos", { en: { id: ids } }),
       filas("proyecto_actualizaciones", { en: { proyecto: ids }, eq: { tipo: "resultado", validada: true }, orden: "fecha" }),
     ]) : [[], []];
-    return { miembros, vinculos, ops, infs, ps, res };
+    return { miembros, vinculos, ops, infs, ps, res, total: cuentas[id] || 0 };
   }, [id, !!c]);
   const cif = useCifras();
 
@@ -54,13 +60,16 @@ export default function CommunityPage({ id }) {
   const editable = canPost && (meta.admin || c.by === uid || representa);
   if (editar) return <section className="ficha-p"><CommunityForm editId={c.id} onClose={() => setEditar(false)} completo /></section>;
 
-  const d = datos || { miembros: [], vinculos: [], ops: [], infs: [], ps: [], res: [] };
+  const d = datos || { miembros: [], vinculos: [], ops: [], infs: [], ps: [], res: [], total: 0 };
   const aceptados = d.vinculos.filter((v) => v.estado === "aceptada");
   const proy = (pid) => d.ps.find((p) => p.id === pid);
   const reps = d.miembros.filter((m) => m.estado === "aceptada" && m.rol === "representante" && m.publico);
   const otrosPublicos = d.miembros.filter((m) => m.estado === "aceptada" && m.rol === "miembro" && m.publico);
+  const ocultos = Math.max(0, d.total - reps.length - otrosPublicos.length);
   const mio = meta.cuenta ? d.miembros.find((m) => m.user_id === uid) : null;
+  const pend = d.miembros.filter((m) => m.estado === "solicitada" && m.user_id !== uid).length;
   const abiertas = d.ops.filter((o) => o.estado === "abierta" || o.estado === "en_curso");
+  const nAvisos = data.avisos.filter((a) => a.com === c.id).length;
   /* Apoyos verificados que han recibido sus proyectos, por moneda */
   const apoyos = {};
   aceptados.forEach((v) => {
@@ -73,64 +82,116 @@ export default function CommunityPage({ id }) {
     else copiar(url).then(() => { setCopiado(true); setTimeout(() => setCopiado(false), 1600); }, () => {});
   };
   const z = zonaDe(c);
+  const PEST = [
+    ["inicio", L("Inicio", "Overview")],
+    ["miembros", L("Miembros", "Members"), d.total],
+    ["proyectos", L("Proyectos", "Projects"), aceptados.length],
+    ["necesidades", L("Necesidades", "Needs"), abiertas.length],
+    ...(representa ? [["gestion", L("Gestión", "Manage"), pend]] : []),
+  ];
+  const vista = PEST.some((x) => x[0] === pestana) ? pestana : "inicio";
+  const cambiarIngreso = (k) => write(setMIng, () => store.update("comunidades", c.id, { ingreso: k }));
 
   return (
     <section id="v-comunidad" className="ficha-p" aria-labelledby="h-comunidad">
-      <article className="caja ficha-com">
+      <article className="caja ficha-com clan-cabeza">
         <p className="volver"><a href="#comunidades">← {L("Comunidades", "Communities")}</a></p>
         <div className="com-top">
-          <Simbolo com={c} />
+          <Simbolo com={c} grande />
           <div>
-            <div className="row"><span className="pill">{t(TC[c.tipo] || TC.otro)}</span>{c.ejemplo && <span className="tag tag-ej">{L("Ejemplo", "Example")}</span>}</div>
+            <div className="row"><span className="pill">{t(TC[c.tipo] || TC.otro)}</span><IngresoTag c={c} />{c.ejemplo && <span className="tag tag-ej">{L("Ejemplo", "Example")}</span>}</div>
             <h2 className="vista-h" id="h-comunidad">{c.nombre}</h2>
+            {c.lema && <p className="lema lema-xl">«{c.lema}»</p>}
             <p className="meta">{z}{c.region ? (z ? " · " : "") + c.region : ""}</p>
           </div>
         </div>
+        <dl className="clan-stats">
+          <div><dt>{L("Miembros", "Members")}</dt><dd>{d.total}</dd></div>
+          <div><dt>{L("Proyectos", "Projects")}</dt><dd>{aceptados.length}</dd></div>
+          <div><dt>{L("Pide ayuda", "Help wanted")}</dt><dd>{abiertas.length}</dd></div>
+          <div><dt>{L("Avisos", "Posts")}</dt><dd>{nAvisos}</dd></div>
+        </dl>
+        {c.requisitos && <div className="requisitos"><b>{L("Lo que pide a quien quiera unirse", "What it asks of new members")}</b><p>{c.requisitos}</p></div>}
         <div className="row ficha-acciones">
-          {editable && <button type="button" className="btn" onClick={() => setEditar(true)}>{L("Editar la ficha", "Edit the page")}</button>}
+          <Unirse c={c} mio={mio} grande />
+          {editable && <button type="button" className="btn-ghost" onClick={() => setEditar(true)}>{L("Editar la ficha", "Edit the page")}</button>}
           <button type="button" className="btn-ghost" onClick={compartir}>{copiado ? L("Enlace copiado", "Link copied") : L("Compartir", "Share")}</button>
         </div>
-        <Parrafos texto={c.presentacion} />
-        {!c.presentacion && editable && <p className="hint">{L("Añade una presentación, fotos, la naturaleza del lugar y lo que hace la comunidad: «Editar la ficha».", "Add an introduction, photos, the nature of the place and what the community does: “Edit the page”.")}</p>}
-        <Galeria fotos={c.fotos} />
+        <Pestanas opciones={PEST} valor={vista} onCambio={setPestana} etiqueta={L("Apartados de la comunidad", "Community sections")} />
       </article>
 
-      <div className="ficha-grid">
-        <div className="ficha-main">
-          {(c.ecosistemas || c.biodiversidad || c.especies) && (
+      {vista === "inicio" && (
+        <div className="ficha-grid">
+          <div className="ficha-main">
             <div className="caja">
-              <h3 className="sub">{L("Naturaleza", "Nature")}</h3>
-              <dl className="datos-p">
-                {c.ecosistemas && <div><dt>{L("Ecosistemas presentes", "Ecosystems")}</dt><dd>{c.ecosistemas}</dd></div>}
-                {c.biodiversidad && <div><dt>{L("Biodiversidad de interés", "Notable wildlife")}</dt><dd>{c.biodiversidad}</dd></div>}
-                {c.especies && <div><dt>{t("Allí lo llaman")}</dt><dd>{c.especies}</dd></div>}
-              </dl>
+              <h3 className="sub">{L("Presentación", "Introduction")}</h3>
+              <Parrafos texto={c.presentacion} />
+              {!c.presentacion && <p className="meta">{editable ? L("Añade una presentación, fotos, la naturaleza del lugar y lo que hace la comunidad: «Editar la ficha».", "Add an introduction, photos, the nature of the place and what the community does: “Edit the page”.") : L("Todavía sin presentación.", "No introduction yet.")}</p>}
+              <Galeria fotos={c.fotos} />
             </div>
-          )}
-          {c.actividades && <div className="caja"><h3 className="sub">{L("Actividades comunitarias", "Community activities")}</h3><Parrafos texto={c.actividades} /></div>}
-
-          <div className="caja">
-            <h3 className="sub">{L("Proyectos", "Projects")}</h3>
-            {cargando && !datos ? <Cargando /> : aceptados.length ? (
-              <ul className="lista-gestion">
-                {aceptados.map((v) => { const p = proy(v.proyecto); return p ? <li key={v.id}><a href={"#proyecto-" + p.id}><b>{p.nombre}</b></a><EstadoP estado={p.estado} />{v.papel && <span className="meta">{v.papel}</span>}</li> : null; })}
-              </ul>
-            ) : <p className="meta">{L("Todavía no participa en ningún proyecto publicado.", "Not taking part in any published project yet.")}</p>}
-            {representa && <Propuestas vinculos={d.vinculos.filter((v) => v.estado === "propuesta")} proy={proy} />}
+            {c.actividades && <div className="caja"><h3 className="sub">{L("Actividades comunitarias", "Community activities")}</h3><Parrafos texto={c.actividades} /></div>}
+            {(c.resultados || d.res.length > 0) && (
+              <div className="caja">
+                <h3 className="sub">{L("Resultados de conservación", "Conservation results")}</h3>
+                <Parrafos texto={c.resultados} />
+                {d.res.map((a) => <p key={a.id} className="resultado-ok"><span className="tag tag-ok">{L("Validado", "Validated")}</span> {a.titulo} <span className="meta">· <a href={"#proyecto-" + a.proyecto}>{(proy(a.proyecto) || {}).nombre}</a></span></p>)}
+              </div>
+            )}
+            {d.infs.length > 0 && <div className="caja"><h3 className="sub">{L("Informes", "Reports")}</h3><InformesLista lista={d.infs} compacto /></div>}
           </div>
-
-          {(c.resultados || d.res.length > 0) && (
+          <aside className="ficha-lado">
+            {(c.ecosistemas || c.biodiversidad || c.especies) && (
+              <div className="caja">
+                <h3 className="sub">{L("Naturaleza", "Nature")}</h3>
+                <dl className="datos-p">
+                  {c.ecosistemas && <div><dt>{L("Ecosistemas presentes", "Ecosystems")}</dt><dd>{c.ecosistemas}</dd></div>}
+                  {c.biodiversidad && <div><dt>{L("Biodiversidad de interés", "Notable wildlife")}</dt><dd>{c.biodiversidad}</dd></div>}
+                  {c.especies && <div><dt>{t("Allí lo llaman")}</dt><dd>{c.especies}</dd></div>}
+                </dl>
+              </div>
+            )}
             <div className="caja">
-              <h3 className="sub">{L("Resultados de conservación", "Conservation results")}</h3>
-              <Parrafos texto={c.resultados} />
-              {d.res.map((a) => <p key={a.id} className="resultado-ok"><span className="tag tag-ok">{L("Validado", "Validated")}</span> {a.titulo} <span className="meta">· <a href={"#proyecto-" + a.proyecto}>{(proy(a.proyecto) || {}).nombre}</a></span></p>)}
+              <h3 className="sub">{L("Quién la representa", "Who represents it")}</h3>
+              {reps.length ? <ul className="lista-limpia equipo">{reps.map((m) => <li key={m.id}><Autor by={m.user_id} />{m.cargo && <span className="meta"> · {m.cargo}</span>}</li>)}</ul>
+                : <p className="meta">{L("Sus representantes aún no se muestran en público.", "Its representatives are not shown publicly yet.")}</p>}
+              {c.contacto && <p><span className="meta">{t("Contacto")}: </span>{c.contacto}</p>}
             </div>
-          )}
-          {d.infs.length > 0 && <div className="caja"><h3 className="sub">{L("Informes", "Reports")}</h3><InformesLista lista={d.infs} compacto /></div>}
+          </aside>
         </div>
+      )}
 
-        <aside className="ficha-lado">
-          <div className="caja">
+      {vista === "miembros" && (
+        <div className="caja">
+          <h3 className="sub">{L("Miembros", "Members")} <span className="meta">· {d.total}</span></h3>
+          {cargando && !datos ? <Cargando /> : (
+            <>
+              <h4 className="rango">{L("Representantes", "Representatives")}</h4>
+              {reps.length ? <ul className="roster">{reps.map((m) => <FilaMiembro key={m.id} m={m} />)}</ul> : <p className="meta">{L("Aún no se muestran en público.", "Not shown publicly yet.")}</p>}
+              <h4 className="rango">{L("Miembros", "Members")}</h4>
+              {otrosPublicos.length ? <ul className="roster">{otrosPublicos.map((m) => <FilaMiembro key={m.id} m={m} />)}</ul> : null}
+              {ocultos > 0 && <p className="meta">{ocultos === 1 ? L("Y 1 persona más que prefiere no salir en público.", "And 1 more person who prefers not to be shown.") : L("Y " + ocultos + " personas más que prefieren no salir en público.", "And " + ocultos + " more people who prefer not to be shown.")}</p>}
+              {!otrosPublicos.length && !ocultos && <p className="meta">{L("Todavía no hay miembros.", "No members yet.")}</p>}
+            </>
+          )}
+          <MiEstado c={c} mio={mio} />
+        </div>
+      )}
+
+      {vista === "proyectos" && (
+        <div className="caja">
+          <h3 className="sub">{L("Proyectos", "Projects")}</h3>
+          {cargando && !datos ? <Cargando /> : aceptados.length ? (
+            <ul className="lista-gestion">
+              {aceptados.map((v) => { const p = proy(v.proyecto); return p ? <li key={v.id}><a href={"#proyecto-" + p.id}><b>{p.nombre}</b></a><EstadoP estado={p.estado} />{v.papel && <span className="meta">{v.papel}</span>}</li> : null; })}
+            </ul>
+          ) : <p className="meta">{L("Todavía no participa en ningún proyecto publicado.", "Not taking part in any published project yet.")}</p>}
+          {representa && <Propuestas vinculos={d.vinculos.filter((v) => v.estado === "propuesta")} proy={proy} />}
+        </div>
+      )}
+
+      {vista === "necesidades" && (
+        <div className="ficha-grid">
+          <div className="ficha-main caja">
             <h3 className="sub">{L("Necesidades y ofertas", "Needs and offers")}</h3>
             <dl className="datos-p">
               {c.necesita && <div><dt className="d-necesita">{t("Necesita")}</dt><dd>{c.necesita}</dd></div>}
@@ -146,29 +207,44 @@ export default function CommunityPage({ id }) {
             {representa && (necesidad ? <OportunidadForm presetComunidad={c.id} onClose={() => setNecesidad(false)} />
               : <button type="button" className="btn-ghost btn-sm" onClick={() => setNecesidad(true)}>{L("Publicar una necesidad de colaboración", "Post a call for help")}</button>)}
           </div>
-
-          <div className="caja">
+          <aside className="ficha-lado caja">
             <h3 className="sub">{L("Apoyos recibidos", "Support received")}</h3>
             <Parrafos texto={c.apoyos} />
             {Object.keys(apoyos).length > 0 && <p>{L("Fondos verificados de sus proyectos: ", "Verified funds for its projects: ")}<b>{Object.entries(apoyos).map(([m, v]) => dinero(v, m, en)).join(" · ")}</b></p>}
             {!c.apoyos && !Object.keys(apoyos).length && <p className="meta">{L("Sin apoyos registrados todavía.", "No support recorded yet.")}</p>}
-          </div>
+          </aside>
+        </div>
+      )}
 
+      {vista === "gestion" && representa && (
+        <>
           <div className="caja">
-            <h3 className="sub">{L("Quién la representa", "Who represents it")}</h3>
-            {reps.length ? (
-              <ul className="lista-limpia equipo">{reps.map((m) => <li key={m.id}><Autor by={m.user_id} />{m.cargo && <span className="meta"> · {m.cargo}</span>}</li>)}</ul>
-            ) : <p className="meta">{L("Sus representantes aún no se muestran en público.", "Its representatives are not shown publicly yet.")}</p>}
-            {otrosPublicos.length > 0 && <p className="meta">{L("También forman parte: ", "Also members: ")}{otrosPublicos.map((m, i) => <span key={m.id}>{i ? ", " : ""}<Autor by={m.user_id} /></span>)}</p>}
-            {c.contacto && <p><span className="meta">{t("Contacto")}: </span>{c.contacto}</p>}
-            <MiMembresia c={c} mio={mio} canPost={canPost} pedirCuenta={pedirCuenta} />
+            <h3 className="sub">{L("Reclutamiento", "Recruitment")}</h3>
+            <div className="ingresos">
+              {Object.keys(INGRESOS).map((k) => (
+                <label className={"ingreso-op ing-" + k} key={k}>
+                  <input type="radio" name="g-ingreso" checked={ingresoDe(c) === k} onChange={() => cambiarIngreso(k)} disabled={!!c.ejemplo} />
+                  <b>{INGRESOS[k][en ? 1 : 0]}</b><span>{INGRESOS[k][en ? 3 : 2]}</span>
+                </label>
+              ))}
+            </div>
+            <Msg id="m-ingreso" text={mIng} role="status" />
           </div>
-        </aside>
-      </div>
-
-      {representa && <GestionMiembros c={c} miembros={d.miembros} />}
+          <GestionMiembros c={c} miembros={d.miembros} />
+        </>
+      )}
       <Aviso texto={env.msg} />
     </section>
+  );
+}
+
+function FilaMiembro({ m }) {
+  const L = useL();
+  return (
+    <li className={"rol-" + m.rol}>
+      <Autor by={m.user_id} />
+      <span className="meta">{m.rol === "representante" ? L("Representante", "Representative") : L("Miembro", "Member")}{m.cargo ? " · " + m.cargo : ""}</span>
+    </li>
   );
 }
 
@@ -195,49 +271,18 @@ function Propuestas({ vinculos, proy }) {
   );
 }
 
-/* Pedir formar parte de la comunidad o representarla, y decidir si tu nombre sale en público */
-function MiMembresia({ c, mio, canPost, pedirCuenta }) {
+/* Lo mío en esta comunidad: salir o no en público y dejarla */
+function MiEstado({ c, mio }) {
   const L = useL();
   const env = useEnviar();
-  const [abierto, setAbierto] = useState(false);
-  const [f, setF] = useState({ rol_pedido: "miembro", cargo: "", mensaje: "" });
-  if (c.ejemplo) return null;
-  if (mio) {
-    return (
-      <div className="mi-membresia">
-        <p className="meta">{mio.estado === "solicitada" ? L("Tu solicitud está pendiente: la deciden sus representantes o la coordinación.", "Your request is pending: its representatives or the coordination team decide.")
-          : mio.estado === "rechazada" ? L("Tu solicitud no fue aceptada.", "Your request was not accepted.")
-          : mio.rol === "representante" ? L("Representas a esta comunidad.", "You represent this community.") : L("Formas parte de esta comunidad.", "You are a member of this community.")}</p>
-        {mio.estado === "aceptada" && (
-          <label className="check-mini"><input type="checkbox" checked={mio.publico} onChange={(e) => env.enviar(() => cambiar("comunidad_miembros", mio.id, { publico: e.target.checked }))} />{L("Mostrar mi nombre en esta ficha", "Show my name on this page")}</label>
-        )}
-        <Confirmar texto={mio.estado === "solicitada" ? L("Retirar solicitud", "Withdraw request") : L("Dejar la comunidad", "Leave the community")} onSi={() => env.enviar(() => borrar("comunidad_miembros", mio.id))} />
-        <Aviso texto={env.msg} />
-      </div>
-    );
-  }
-  if (!abierto) {
-    return <button type="button" className="btn-ghost btn-sm" onClick={() => (canPost ? setAbierto(true) : pedirCuenta(L("Para unirte a una comunidad necesitas una cuenta. Es gratis y tarda un minuto.", "To join a community you need an account. It is free and takes a minute.")))}>{L("Formo parte de esta comunidad", "I belong to this community")}</button>;
-  }
-  const enviar = (ev) => {
-    ev.preventDefault();
-    env.enviar(() => crear("comunidad_miembros", { comunidad: c.id, rol_pedido: f.rol_pedido, cargo: str(f.cargo, 80) || null, mensaje: str(f.mensaje, 500) || null }), () => setAbierto(false));
-  };
+  if (!mio || mio.estado !== "aceptada") return null;
   return (
-    <form className="panel panel-sm" onSubmit={enviar} noValidate>
-      <fieldset className="formas"><legend>{L("Quiero", "I want to")}</legend>
-        <label className="check"><input type="radio" name="rp" checked={f.rol_pedido === "miembro"} onChange={() => setF({ ...f, rol_pedido: "miembro" })} />{L("Figurar como miembro", "Be listed as a member")}</label>
-        <label className="check"><input type="radio" name="rp" checked={f.rol_pedido === "representante"} onChange={() => setF({ ...f, rol_pedido: "representante" })} />{L("Representar a la comunidad en Hampatu Ayllu", "Represent the community on Hampatu Ayllu")}</label>
-      </fieldset>
-      <div><label htmlFor="mm-cargo">{L("Cargo o papel (opcional)", "Position or role (optional)")}</label><input id="mm-cargo" maxLength={80} value={f.cargo} placeholder={L("Ej.: presidente de la comunidad, docente", "E.g. community president, teacher")} onChange={(e) => setF({ ...f, cargo: e.target.value })} /></div>
-      <div><label htmlFor="mm-msg">{L("Mensaje para quien decide (opcional)", "Message for whoever decides (optional)")}</label><textarea id="mm-msg" rows={2} maxLength={500} value={f.mensaje} onChange={(e) => setF({ ...f, mensaje: e.target.value })} /></div>
-      <p className="hint">{L("Lo deciden sus representantes (o la coordinación si aún no tiene). Tu nombre solo saldrá en la ficha si tú lo activas después.", "Its representatives decide (or the coordination team if it has none yet). Your name will only appear on the page if you turn it on later.")}</p>
+    <div className="mi-membresia">
+      <p className="meta">{mio.rol === "representante" ? L("Representas a esta comunidad.", "You represent this community.") : L("Formas parte de esta comunidad.", "You are a member of this community.")}</p>
+      <label className="check-mini"><input type="checkbox" checked={mio.publico} onChange={(e) => env.enviar(() => cambiar("comunidad_miembros", mio.id, { publico: e.target.checked }))} />{L("Mostrar mi nombre en esta ficha", "Show my name on this page")}</label>
+      <Confirmar texto={L("Dejar la comunidad", "Leave the community")} onSi={() => env.enviar(() => borrar("comunidad_miembros", mio.id))} />
       <Aviso texto={env.msg} />
-      <div className="panel-actions">
-        <button className="btn-mini" type="submit" disabled={env.ocupado}>{L("Enviar solicitud", "Send request")}</button>
-        <button className="linkbtn" type="button" onClick={() => setAbierto(false)}>{L("Cancelar", "Cancel")}</button>
-      </div>
-    </form>
+    </div>
   );
 }
 

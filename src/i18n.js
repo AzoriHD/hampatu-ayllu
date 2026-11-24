@@ -22,6 +22,7 @@ export const EN={
   "Ningún aviso con este filtro.":"No posts match this filter.",
   "Todavía no hay avisos. Publica el primero: un avistamiento, algo que tu comunidad necesita o algo que puede ofrecer.":"No posts yet. Write the first one: a sighting, something your community needs or something it can offer.",
   "Ninguna comunidad con este filtro.":"No communities match this filter.",
+  "Todavía no formas parte de ninguna comunidad.":"You are not part of any community yet.",
   "Todavía no hay comunidades. Añade la primera para que otras puedan encontrarla.":"No communities yet. Add the first one so others can find it.",
   "Sí, borrar":"Yes, delete","No":"No","Borrar":"Delete","Editar":"Edit","Copiar":"Copy","Copiado":"Copied","No se pudo copiar":"Could not copy","Quitar":"Remove",
   "Sin firma":"Unsigned","Ejemplo":"Example","Responder":"Reply","Tu respuesta":"Your reply","Tu firma":"Your name","Aún sin respuestas.":"No replies yet.",

@@ -90,6 +90,15 @@ await espera("anon ve representantes públicos", () => como("anon", `select * fr
 await espera("u2 pide C1", () => como("u2", `insert into comunidad_miembros (comunidad, mensaje) values ('c1','hola')`), bien);
 await espera("rep ve la solicitud de u2", () => como("rep", `select * from comunidad_miembros where comunidad='c1'`), filas(2));
 await espera("rep2 no ve solicitudes de C1 (solo públicos)", () => como("rep2", `select * from comunidad_miembros where comunidad='c1'`), filas(1));
+// Clanes: forma de entrar
+await espera("C3 pasa a abierta", () => como("u3", `update docs set data = data || '{"ingreso":"abierta"}' where col='comunidades' and id='c3'`), afect(1));
+await espera("u2 entra directo en C3 abierta", () => como("u2", `insert into comunidad_miembros (comunidad, publico) values ('c3', true) returning estado, rol, publico`), (r, e) => !e && r.rows[0].estado === "aceptada" && r.rows[0].rol === "miembro" && r.rows[0].publico === true);
+await espera("en abierta, representar sigue pidiendo aprobación", () => como("rep2", `insert into comunidad_miembros (comunidad, rol_pedido, publico) values ('c3','representante', true) returning estado, rol, publico`), (r, e) => !e && r.rows[0].estado === "solicitada" && r.rows[0].rol === "miembro" && r.rows[0].publico === false);
+await espera("anon ve cuántos miembros hay", () => como("anon", `select miembros from comunidad_cuentas() where comunidad='c3'`), (r, e) => !e && r.rows[0].miembros === 1);
+await espera("C3 pasa a cerrada", () => como("u3", `update docs set data = data || '{"ingreso":"cerrada"}' where col='comunidades' and id='c3'`), afect(1));
+await espera("cerrada no admite solicitudes", () => como("u3", `insert into comunidad_miembros (comunidad) values ('c3')`), error);
+await espera("limpia C3", () => como("admin", `delete from comunidad_miembros where comunidad='c3'`), bien);
+await espera("limpia C3 otra vez", () => como("admin", `delete from comunidad_miembros where comunidad='c3'`), bien);
 
 // Ficha de comunidad por su representante
 await espera("rep2 edita C2 (de u3)", () => como("rep2", `update docs set data = jsonb_set(data, '{presentacion}', '"hola"') where col='comunidades' and id='c2' returning by, data->>'by' as dby`), (r, e) => !e && r.rows[0].by === U.u3 && r.rows[0].dby === U.u3);

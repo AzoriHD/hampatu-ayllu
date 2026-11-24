@@ -1166,3 +1166,58 @@ begin
     execute format('create trigger %I after insert or update or delete on public.%I for each row execute function public.auditar()', t || '_auditar', t);
   end loop;
 end $$;
+
+-- 16. COMUNIDADES COMO CLANES: forma de entrar (abierta, con solicitud o cerrada) y número de miembros.
+-- Si la base de datos ya existe, pega solo este bloque. Sustituye a miembros_antes() del bloque 10.
+--   abierta   → quien pide ser miembro entra directamente (para representar siempre hace falta aprobación)
+--   solicitud → deciden sus representantes o la coordinación (lo de siempre; es el valor por defecto)
+--   cerrada   → no admite solicitudes nuevas (sus representantes sí pueden añadir gente)
+create or replace function public.comunidad_ingreso(c text) returns text
+language sql stable security definer set search_path = public as $$
+  select coalesce((select case when d.data ->> 'ingreso' in ('abierta','solicitud','cerrada') then d.data ->> 'ingreso' end
+    from public.docs d where d.col = 'comunidades' and d.id = c), 'solicitud');
+$$;
+grant execute on function public.comunidad_ingreso(text) to anon, authenticated;
+
+create or replace function public.miembros_antes() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare decide boolean; ingreso text;
+begin
+  if public.es_servidor() then return new; end if;
+  if tg_op = 'INSERT' then
+    if not public.comunidad_existe(new.comunidad) then raise exception 'La comunidad no existe' using errcode = '23503'; end if;
+    decide := public.es_coordinador() or public.representa(new.comunidad);
+    if not decide then
+      ingreso := public.comunidad_ingreso(new.comunidad);
+      if ingreso = 'cerrada' then raise exception 'Esta comunidad no admite solicitudes' using errcode = '42501'; end if;
+      new.user_id := auth.uid(); new.rol := 'miembro';
+      new.estado := case when ingreso = 'abierta' and new.rol_pedido = 'miembro' then 'aceptada' else 'solicitada' end;
+    end if;
+    if new.estado <> 'solicitada' then new.decidido_por := auth.uid(); new.decidido_en := now();
+    else new.decidido_por := null; new.decidido_en := null; end if;
+    if new.user_id <> auth.uid() then new.publico := false; new.mensaje := null; end if;
+    if new.estado <> 'aceptada' then new.publico := false; end if;
+    new.created_at := now();
+  else
+    decide := public.es_coordinador() or public.representa(old.comunidad);
+    new.comunidad := old.comunidad; new.user_id := old.user_id; new.created_at := old.created_at;
+    new.rol_pedido := old.rol_pedido; new.mensaje := old.mensaje;
+    if not decide then
+      new.estado := old.estado; new.rol := old.rol; new.decidido_por := old.decidido_por; new.decidido_en := old.decidido_en;
+    elsif (new.estado, new.rol) is distinct from (old.estado, old.rol) then
+      new.decidido_por := auth.uid(); new.decidido_en := now();
+    else
+      new.decidido_por := old.decidido_por; new.decidido_en := old.decidido_en;
+    end if;
+    if old.user_id <> auth.uid() then new.publico := old.publico; end if;
+    if new.estado <> 'aceptada' then new.publico := false; end if;
+  end if;
+  return new;
+end $$;
+
+-- Cuántos miembros tiene cada comunidad (solo el número, sin nombres)
+create or replace function public.comunidad_cuentas() returns table (comunidad text, miembros int)
+language sql stable security definer set search_path = public as $$
+  select m.comunidad, count(*)::int from public.comunidad_miembros m where m.estado = 'aceptada' group by m.comunidad;
+$$;
+grant execute on function public.comunidad_cuentas() to anon, authenticated;

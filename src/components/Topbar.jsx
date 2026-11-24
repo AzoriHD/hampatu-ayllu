@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { descargarApp } from "../lib/pwa.js";
 import { alternarMusica, estadoMusica, ponerVolumen, suscribir as oirMusica, volumenAjustable, volumenMusica } from "../lib/musica.js";
 import { useApp } from "../AppContext.jsx";
 import { SIMB } from "../data/constants.js";
@@ -124,7 +125,7 @@ export function Topbar() {
     <header className="topbar">
       <div className="topbar-in">
         <a className="marca" href="#tablon" onClick={inicio} aria-label={en ? "Hampatu Ayllu, home" : "Hampatu Ayllu, inicio"}>
-          <img src="/img/logo.webp" width="44" height="37" alt="" />
+          <img src="/img/logo.svg" width="44" height="37" alt="" />
           <span>Hampatu Ayllu</span>
         </a>
         <div className="nav-w" data-izq={bordes.izq ? "" : undefined} data-der={bordes.der ? "" : undefined}>
@@ -139,7 +140,7 @@ export function Topbar() {
         </div>
         <div className="acciones">
           {!esApp && (
-            <a className="btn-descarga" href="#app" id="b-app" aria-current={view === "app" ? "page" : undefined}>
+            <a className="btn-descarga" href="#app" id="b-app" onClick={descargarApp}>
               <Svg width="2" d={ICONO_APP} /><span>{en ? "Get the app" : "Descargar app"}</span>
             </a>
           )}

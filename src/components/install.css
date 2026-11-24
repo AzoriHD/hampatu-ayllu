@@ -13,3 +13,14 @@
 @keyframes instalar-entra{from{opacity:0;transform:translate(-50%,16px)}to{opacity:1;transform:translate(-50%,0)}}
 @media (prefers-reduced-motion:reduce){.instalar-app{animation:none}}
 @media print{.instalar-app{display:none}}
+
+/* Ventanita con los pasos, cuando el navegador no deja instalar con un toque */
+.instalar-fondo{position:fixed;inset:0;z-index:60;background:rgba(43,25,11,.45);display:flex;align-items:flex-end;justify-content:center;padding:12px 12px calc(12px + env(safe-area-inset-bottom))}
+.instalar-ayuda{width:min(440px,100%);display:grid;justify-items:center;gap:10px;padding:20px 18px 18px;text-align:center;
+  background:var(--manta,#fff8e8);color:var(--ink,#2b190b);border:2px solid var(--edge,#2b190b);border-radius:20px;box-shadow:5px 5px 0 var(--edge,#2b190b);animation:instalar-sube .25s ease-out both}
+.instalar-ayuda img{border-radius:22.5%}
+.instalar-ayuda strong{font-size:19px}
+.instalar-ayuda ol{margin:0;padding-left:22px;text-align:left;display:grid;gap:6px;line-height:1.4}
+@media (min-width:761px){.instalar-fondo{align-items:center}}
+@keyframes instalar-sube{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.instalar-ayuda{animation:none}}

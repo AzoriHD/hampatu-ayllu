@@ -2,6 +2,8 @@
 const SEED = {
  "comunidades": {
   "ej-escuela": {
+   "lema": "Aprendemos cuidando nuestras quebradas",
+   "ingreso": "abierta",
    "by": "",
    "contacto": "Ejemplo: directora, correo escuela@ejemplo.pe",
    "ejemplo": true,
@@ -17,6 +19,9 @@ const SEED = {
    "zona": "caj"
   },
   "ej-guias": {
+   "lema": "Caminamos el monte con respeto",
+   "ingreso": "solicitud",
+   "requisitos": "Conocer las rutas de la zona y apuntarse al menos a una salida al mes.",
    "by": "",
    "contacto": "Ejemplo: coordinador de guías, WhatsApp 900 000 003",
    "ejemplo": true,
@@ -32,6 +37,9 @@ const SEED = {
    "zona": "anc"
   },
   "ej-ong": {
+   "lema": "Ciencia con las comunidades",
+   "ingreso": "solicitud",
+   "requisitos": "Contarnos tu experiencia en conservación o educación ambiental.",
    "by": "",
    "contacto": "Ejemplo: jalcaviva@ejemplo.pe",
    "ejemplo": true,
@@ -47,6 +55,8 @@ const SEED = {
    "zona": "caj"
   },
   "ej-regantes": {
+   "lema": "Agua limpia para todos",
+   "ingreso": "abierta",
    "by": "",
    "contacto": "Ejemplo: secretaria del comité, WhatsApp 900 000 002",
    "ejemplo": true,
@@ -62,6 +72,8 @@ const SEED = {
    "zona": "anc"
   },
   "ej-ronda": {
+   "lema": "Vigilamos y cuidamos juntos",
+   "ingreso": "cerrada",
    "by": "",
    "contacto": "Ejemplo: presidente de la ronda, WhatsApp 900 000 001",
    "ejemplo": true,
@@ -77,6 +89,9 @@ const SEED = {
    "zona": "caj"
   },
   "ej-tejedoras": {
+   "lema": "Tejemos la historia del sapo",
+   "ingreso": "solicitud",
+   "requisitos": "Ganas de aprender a tejer o de ayudar a vender.",
    "by": "",
    "contacto": "Ejemplo: presidenta de la asociación, WhatsApp 900 000 004",
    "ejemplo": true,
@@ -92,6 +107,9 @@ const SEED = {
    "zona": "anc"
   },
   "ej-uni": {
+   "lema": "Investigar para conservar",
+   "ingreso": "solicitud",
+   "requisitos": "Ser estudiante o docente, o colaborar en los muestreos.",
    "by": "",
    "contacto": "Ejemplo: herpetologia@ejemplo.pe",
    "ejemplo": true,
