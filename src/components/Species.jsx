@@ -3,13 +3,37 @@ import { useApp } from "../AppContext.jsx";
 /* Lámina: las dos coloraciones conocidas. Arriba, de perfil y al mismo tamaño (public/img/morfo-verde.webp y
    morfo-amarillo.webp, 736 × 486); debajo, tres vistas pequeñas (morfo-<id>-<vista>.webp) */
 const MORFOS = [
-  { id: "verde", es: "Verde y negro", en: "Green and black", arriba: [269, 323], abajo: [285, 323], frente: [340, 234] },
-  { id: "amarillo", es: "Amarillo y marrón", en: "Yellow and brown", arriba: [245, 323], abajo: [280, 323], frente: [340, 234] },
+  { id: "verde", letra: "a", letras: ["c", "d", "e"], es: "Verde y negro", en: "Green and black", arriba: [269, 323], abajo: [285, 323], frente: [340, 234] },
+  { id: "amarillo", letra: "b", letras: ["f", "g", "h"], es: "Amarillo y marrón", en: "Yellow and brown", arriba: [245, 323], abajo: [280, 323], frente: [340, 234] },
 ];
 const VISTAS = [
   { id: "arriba", es: "Lomo", en: "Back" },
   { id: "abajo", es: "Vientre", en: "Belly" },
   { id: "frente", es: "De frente", en: "Front view" },
+];
+
+/* Pie de la lámina: una línea por letra, en el orden a–h */
+const SIN_FONDO_ES = " Sin fondo y con las zonas tapadas por musgo regeneradas con IA.";
+const SIN_FONDO_EN = " Background removed and the areas covered by moss regenerated with AI.";
+const PIE_ES = [
+  "Generada con IA a partir de b, con la coloración de una foto de Jörn Köhler.",
+  "Fotografía de Carlos Vilca Alzamora." + SIN_FONDO_ES,
+  "Generada con IA a partir de una fotografía de Jörn Köhler.",
+  "Fotografía de Jörn Köhler." + SIN_FONDO_ES,
+  "Generada con IA a partir de una fotografía de Jörn Köhler.",
+  "Generada con IA a partir de c.",
+  "Generada con IA a partir de d.",
+  "Generada con IA a partir de e.",
+];
+const PIE_EN = [
+  "AI-generated from b, with the colouring of a photo by Jörn Köhler.",
+  "Photograph by Carlos Vilca Alzamora." + SIN_FONDO_EN,
+  "AI-generated from a photograph by Jörn Köhler.",
+  "Photograph by Jörn Köhler." + SIN_FONDO_EN,
+  "AI-generated from a photograph by Jörn Köhler.",
+  "AI-generated from c.",
+  "AI-generated from d.",
+  "AI-generated from e.",
 ];
 
 /* La especie: texto fijo en dos idiomas. */
@@ -35,17 +59,22 @@ export default function Species() {
           <div className="morfos-grid">
             {MORFOS.map((m) => (
               <div className="morfo" key={m.id}>
-                <h4>{en ? m.en : m.es}</h4>
+                <h4>{en ? m.en : m.es} <span className="letra">{m.letra}</span></h4>
                 <img className="morfo-lado" src={`/img/morfo-${m.id}.webp`} width="736" height="486" alt="" loading="lazy" />
                 <div className="morfo-vistas">
-                  {VISTAS.map((v) => (
-                    <figure key={v.id}><img src={`/img/morfo-${m.id}-${v.id}.webp`} width={m[v.id][0]} height={m[v.id][1]} alt="" loading="lazy" /><figcaption>{en ? v.en : v.es}</figcaption></figure>
+                  {VISTAS.map((v, i) => (
+                    <figure key={v.id}><img src={`/img/morfo-${m.id}-${v.id}.webp`} width={m[v.id][0]} height={m[v.id][1]} alt="" loading="lazy" /><figcaption><span className="letra">{m.letras[i]}</span> {en ? v.en : v.es}</figcaption></figure>
                   ))}
                 </div>
               </div>
             ))}
           </div>
-          <figcaption className="lamina-pie">{en ? "Plate · The belly of the green-backed toad is a photograph by Jörn Köhler, retouched with AI. The belly of the yellow and brown form was generated with AI from that photograph. The other images are AI-generated and not based on any particular photographer's work." : "Lámina · El vientre del sapo de dorso verde es una fotografía de Jörn Köhler retocada con IA. El vientre de la forma amarilla y marrón se generó con IA a partir de esa foto. Las demás imágenes están generadas con IA, sin basarse en la foto de ningún autor concreto."}</figcaption>
+          <figcaption className="lamina-pie">
+            <b>{en ? "Plate" : "Lámina"}</b>
+            <ol>
+              {(en ? PIE_EN : PIE_ES).map((t, i) => <li key={i}><b>{"abcdefgh"[i]})</b> {t}</li>)}
+            </ol>
+          </figcaption>
         </figure>
 
         <h3>{en ? "Where it lives" : "Dónde vive"}</h3>

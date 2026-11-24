@@ -1150,3 +1150,8 @@ g[tabindex]:focus-visible .g-hit{stroke:var(--link);stroke-width:2}
 .caja :is(ul,ol,p,dl,div)+h3.sub{margin-top:24px!important}
 .proy-portada.grande.sin-foto{aspect-ratio:21/6}
 @media (max-width:620px){.proy-portada.grande.sin-foto{aspect-ratio:21/9}}
+
+/* Letras de la lámina de la especie (fuera de las imágenes) */
+.lamina .letra{display:inline-grid;place-items:center;width:1.35em;height:1.35em;border-radius:50%;background:var(--muted);color:var(--manta);font:700 .72em/1 var(--body);font-style:normal;vertical-align:.12em;margin-right:.15em}
+.lamina-pie ol{list-style:none;margin:.3em 0 0;padding:0}
+.lamina-pie li{padding-left:1.6em;text-indent:-1.6em}
