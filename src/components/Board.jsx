@@ -7,6 +7,7 @@ import ZonaRail from "./Rail.jsx";
 import { BoardHeader } from "./Headers.jsx";
 import { Chip, CopyBtn, Datos, DelBtns, EmptyBox, JoinBlock, JoinButton, Msg, Simbolo, Svg } from "./Shared.jsx";
 import { Autor } from "./People.jsx";
+import { CANDADO, privadoDe } from "../lib/clanes.js";
 
 const tipoDe = (a) => (TA[a.tipo] ? a.tipo : "pregunta");
 
@@ -54,7 +55,8 @@ export default function Board() {
   );
 }
 
-function PostForm({ preset, enfocar, onDone, onCancel }) {
+/* También lo usa la ficha de cada comunidad (CommunityPage.jsx), para publicar desde allí */
+export function PostForm({ preset, enfocar, onDone, onCancel }) {
   const { t, en, data, uid, firma, keepFirma, write } = useApp();
   const [f, setF] = useState(() => ({ tipo: "avistamiento", estado: "", titulo: "", texto: "", com: "", zona: "", zonaotra: "", fecha: "", hora: "", lugar: "", contacto: "", firma, ...preset }));
   const [fotos, setFotos] = useState([]);
@@ -155,7 +157,10 @@ function PostForm({ preset, enfocar, onDone, onCancel }) {
           <select id="a-com" name="com" value={f.com} onChange={(e) => elegirCom(e.target.value)}>
             <option value="">{t("Ninguna, a título personal")}</option>
             {coms.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
-          </select></div>
+          </select>
+          {privadoDe(data.comunidades.find((x) => x.id === f.com), "avisos") && (
+            <p className="hint hint-candado"><Svg width="2.2" d={CANDADO} />{en ? "This community keeps its posts private: only its members will see it." : "Esta comunidad tiene los avisos en privado: solo lo verán sus miembros."}</p>
+          )}</div>
         <div><label htmlFor="a-zona">{en ? "Area" : "Zona"}</label>
           <select id="a-zona" name="zona" value={f.zona} onChange={(e) => set("zona", e.target.value)}>
             <option value="">{t("Toda la comunidad")}</option>
@@ -201,7 +206,7 @@ function Foto({ src, i }) {
   );
 }
 
-function Post({ a, votos, mio }) {
+export function Post({ a, votos, mio }) {
   const { t, data, uid, canPost, canEdit, ago, zonaDe, contactoDe, goCom, abiertos, setAbiertos, votar, enlaceAviso, write, setMsg, pedirCuenta, escribirA, en } = useApp();
   const [compartir, setCompartir] = useState(false);
   const [notaMp, setNotaMp] = useState(false);
@@ -224,7 +229,8 @@ function Post({ a, votos, mio }) {
         {tp === "avistamiento" && ES[a.estado] && <span className="tag">{t(ES[a.estado])}</span>}
         {a.verificada && <span className="tag tag-ok">{t("Foto verificada")}</span>}
         {a.ejemplo && <span className="tag tag-ej">{t("Ejemplo")}</span>}
-        {pasado && <span className="tag tag-pasado">{t("Ya pasó")}</span>}
+        {privadoDe(c, "avisos") && <span className="tag tag-candado"><Svg width="2.2" d={CANDADO} />{en ? "Members only" : "Solo miembros"}</span>}
+        {pasado &&<span className="tag tag-pasado">{t("Ya pasó")}</span>}
         <span className="when">{ago(a.ts)}</span>
       </div>
       <h3>{a.titulo}</h3>

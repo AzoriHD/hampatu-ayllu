@@ -1221,3 +1221,65 @@ language sql stable security definer set search_path = public as $$
   select m.comunidad, count(*)::int from public.comunidad_miembros m where m.estado = 'aceptada' group by m.comunidad;
 $$;
 grant execute on function public.comunidad_cuentas() to anon, authenticated;
+
+-- 17. CANDADO EN LAS COMUNIDADES: cada comunidad decide si sus miembros, sus proyectos, sus peticiones de ayuda
+-- y sus avisos son públicos o solo para sus miembros. La ficha guarda privado = {miembros, proyectos, ayuda, avisos}.
+-- Lo privado solo lo ven sus miembros aceptados y la coordinación (y cada autor lo suyo).
+-- Si la base de datos ya existe, pega solo este bloque. Se puede ejecutar más de una vez.
+create or replace function public.es_miembro(com text) returns boolean
+language sql stable security definer set search_path = public as $$
+  select public.con_cuenta() and exists (select 1 from public.comunidad_miembros m
+    where m.comunidad = com and m.user_id = auth.uid() and m.estado = 'aceptada');
+$$;
+grant execute on function public.es_miembro(text) to anon, authenticated;
+
+create or replace function public.com_privado(com text, apartado text) returns boolean
+language sql stable security definer set search_path = public as $$
+  select coalesce((select (d.data -> 'privado' ->> apartado) = 'true'
+    from public.docs d where d.col = 'comunidades' and d.id = com), false);
+$$;
+grant execute on function public.com_privado(text, text) to anon, authenticated;
+
+-- ¿Lo puede ver quien pregunta? Lo público, todo el mundo; lo privado, sus miembros y la coordinación
+create or replace function public.ve_comunidad(com text, apartado text) returns boolean
+language sql stable security definer set search_path = public as $$
+  select com is null or com = '' or not public.com_privado(com, apartado)
+    or public.es_miembro(com) or public.es_coordinador();
+$$;
+grant execute on function public.ve_comunidad(text, text) to anon, authenticated;
+
+-- Las respuestas, votos y apuntados de un aviso privado siguen a su aviso
+create or replace function public.ve_aviso(aviso text) returns boolean
+language sql stable security definer set search_path = public as $$
+  select coalesce((select public.ve_comunidad(d.data ->> 'com', 'avisos') or coalesce(d."by" = auth.uid(), false)
+    from public.docs d where d.col = 'avisos' and d.id = aviso), true);
+$$;
+grant execute on function public.ve_aviso(text) to anon, authenticated;
+
+-- Avisos (y lo que cuelga de ellos)
+drop policy if exists "docs: leer" on public.docs;
+create policy "docs: leer" on public.docs for select to anon, authenticated using (
+  case
+    when col = 'avisos' then coalesce("by" = auth.uid(), false) or public.ve_comunidad(data ->> 'com', 'avisos')
+    when col in ('respuestas','votos','apuntes') then coalesce("by" = auth.uid(), false) or public.ve_aviso(data ->> 'aviso')
+    else true
+  end);
+
+-- Miembros: quien los mira de fuera no ve a nadie si la lista es privada (el número sigue saliendo)
+drop policy if exists "miembros: leer" on public.comunidad_miembros;
+create policy "miembros: leer" on public.comunidad_miembros for select to anon, authenticated
+  using ((estado = 'aceptada' and publico and public.ve_comunidad(comunidad, 'miembros'))
+    or user_id = auth.uid() or public.representa(comunidad) or public.es_coordinador());
+
+-- Proyectos en los que participa
+drop policy if exists "vinculos: leer" on public.proyecto_comunidades;
+create policy "vinculos: leer" on public.proyecto_comunidades for select to anon, authenticated
+  using ((estado = 'aceptada' and public.proyecto_publicado(proyecto) and public.ve_comunidad(comunidad, 'proyectos'))
+    or public.participa_proyecto(proyecto) or public.representa(comunidad));
+
+-- Peticiones de ayuda (Colabora)
+drop policy if exists "oportunidades: leer" on public.oportunidades;
+create policy "oportunidades: leer" on public.oportunidades for select to anon, authenticated
+  using ((publicado and (proyecto is null or public.proyecto_publicado(proyecto)) and public.ve_comunidad(comunidad, 'ayuda'))
+    or by = auth.uid() or public.gestiona_oportunidad(id)
+    or (proyecto is not null and public.gestiona_proyecto(proyecto)) or (comunidad is not null and public.representa(comunidad)));

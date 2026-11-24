@@ -40,3 +40,20 @@ export function useClanes(meta, uid, permisos) {
   }, [meta.cuenta, uid, coord, rep.join(",")]);
   return r.datos || { n: {}, mias: {}, pendientes: {} };
 }
+
+/* Candado de cada apartado de la ficha (supabase.sql, bloque 17). La comunidad decide si es público o solo para sus miembros.
+   [ES, EN, qué se oculta ES, qué se oculta EN] */
+export const APARTADOS = {
+  miembros: ["Miembros", "Members", "la lista de miembros y representantes", "the list of members and representatives"],
+  proyectos: ["Proyectos", "Projects", "los proyectos en los que participa", "the projects it takes part in"],
+  ayuda: ["Pide ayuda", "Help wanted", "sus peticiones de ayuda", "its calls for help"],
+  avisos: ["Avisos", "Posts", "sus avisos, también en el tablón", "its posts, also on the board"],
+};
+export const privadoDe = (c, k) => !!(c && c.privado && c.privado[k] === true);
+/* Lo público lo ve todo el mundo; lo privado, sus miembros y la coordinación.
+   Sirve para enseñar u ocultar: quien de verdad lo comprueba es la base de datos. */
+export const esMiembroDe = (permisos, com) => !!(permisos && (permisos.miembros || []).some((m) => m.comunidad === com && m.estado === "aceptada"));
+export const veApartado = (c, k, permisos) => !privadoDe(c, k) || puede.coordinar(permisos) || esMiembroDe(permisos, c && c.id);
+/* Iconos del candado (para <Svg d=…>) */
+export const CANDADO = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>';
+export const CANDADO_ABIERTO = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.75-1.4"/>';

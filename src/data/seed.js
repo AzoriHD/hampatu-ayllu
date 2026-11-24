@@ -72,6 +72,7 @@ const SEED = {
    "zona": "anc"
   },
   "ej-ronda": {
+   "privado": { "miembros": true, "avisos": true },
    "lema": "Vigilamos y cuidamos juntos",
    "ingreso": "cerrada",
    "by": "",
@@ -89,6 +90,7 @@ const SEED = {
    "zona": "caj"
   },
   "ej-tejedoras": {
+   "privado": { "miembros": true },
    "lema": "Tejemos la historia del sapo",
    "ingreso": "solicitud",
    "requisitos": "Ganas de aprender a tejer o de ayudar a vender.",
@@ -107,6 +109,7 @@ const SEED = {
    "zona": "anc"
   },
   "ej-uni": {
+   "privado": { "proyectos": true, "ayuda": true },
    "lema": "Investigar para conservar",
    "ingreso": "solicitud",
    "requisitos": "Ser estudiante o docente, o colaborar en los muestreos.",
