@@ -11,7 +11,7 @@ const SEED = {
    "ofrece": "38 alumnos que suben a pastear y conocen las quebradas. Los maestros podemos dar charlas a los padres.",
    "region": "Provincia de Hualgayoc",
    "simbolo": "arbol",
-   "color": 3,
+   "color": 9,
    "tipo": "escuela",
    "ts": 1794438000001,
    "zona": "caj"
@@ -26,7 +26,7 @@ const SEED = {
    "ofrece": "Movilidad desde el pueblo, conocimiento de las rutas y contacto con visitantes.",
    "region": "Callejón de Conchucos",
    "simbolo": "laguna",
-   "color": 4,
+   "color": 8,
    "tipo": "guias",
    "ts": 1794438000006,
    "zona": "anc"
@@ -41,7 +41,7 @@ const SEED = {
    "ofrece": "Afiches y materiales de campañas anteriores, apoyo para organizar faenas y charlas.",
    "region": "Cajamarca ciudad",
    "simbolo": "ichu",
-   "color": 2,
+   "color": 0,
    "tipo": "ong",
    "ts": 1794438000007,
    "zona": "caj"
@@ -56,7 +56,7 @@ const SEED = {
    "ofrece": "Somos 46 usuarios del canal. Recorremos todo el tramo en cada faena y podemos avisar de lo que se ve.",
    "region": "Callejón de Conchucos",
    "simbolo": "gota",
-   "color": 1,
+   "color": 4,
    "tipo": "local",
    "ts": 1794438000004,
    "zona": "anc"
@@ -71,7 +71,7 @@ const SEED = {
    "ofrece": "Rondas de noche dos veces por semana por tres quebradas. Conocemos cada puquio y cada camino.",
    "region": "Provincia de Celendín",
    "simbolo": "chakana",
-   "color": 5,
+   "color": 6,
    "tipo": "local",
    "ts": 1794438000005,
    "zona": "caj"
@@ -86,7 +86,7 @@ const SEED = {
    "ofrece": "Tejemos chullos, llaveros y mantas con el sapo arlequín. Parte de cada venta va a la comunidad que cuida la quebrada.",
    "region": "Callejón de Conchucos",
    "simbolo": "tejido",
-   "color": 7,
+   "color": 10,
    "tipo": "local",
    "ts": 1794438000008,
    "zona": "anc"

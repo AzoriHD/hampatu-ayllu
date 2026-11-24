@@ -15,7 +15,7 @@ export function Simbolo({ k, com, tono, colores, mini }) {
   const key = com ? simboloDe(com) : SIMB[k] ? k : SIMB_K[0];
   const t = com ? colorDe(com) : Number.isInteger(tono) ? tono : 0;
   const cs = com ? coloresDe(com) : colores;
-  const st = cs ? { background: cs.f, color: cs.p, "--sa": cs.a } : undefined;
+  const st = cs ? { background: cs.f, color: cs.p, "--sa": cs.a, "--sb": cs.f } : undefined;
   return <span className={(mini ? "simbolo-mini" : "simbolo") + " tono-" + t} style={st} aria-hidden="true"><Svg d={SIMB[key][2]} /></span>;
 }
 
