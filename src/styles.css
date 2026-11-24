@@ -351,9 +351,11 @@ input[type=file]{padding:8px}
 @media (max-width:620px){.morfos-grid{grid-template-columns:1fr}.morfo+.morfo::before{inset:-14px 0 auto;border-left:0;border-top:1.5px dashed var(--line)}}
 .morfo h4{margin:0;font:750 19px/1.1 var(--display);font-stretch:90%}
 .morfo-lado{display:block;width:100%;height:auto}
-.morfo-vistas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:end}
-.morfo-vistas figure{margin:0;display:grid;gap:4px;justify-items:center}
-.morfo-vistas img{width:100%;height:auto;aspect-ratio:1;max-height:130px;object-fit:contain;object-position:center bottom}
+/* Fotos en una fila y leyendas en la siguiente (subgrid): las letras c–e y f–h quedan a la misma altura
+   aunque «De frente» ocupe dos líneas */
+.morfo-vistas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto auto;gap:4px 8px}
+.morfo-vistas figure{margin:0;display:grid;grid-row:span 2;grid-template-rows:subgrid;justify-items:center;align-items:start}
+.morfo-vistas img{align-self:end;width:100%;height:auto;aspect-ratio:1;max-height:130px;object-fit:contain;object-position:center bottom}
 .morfo-vistas figcaption{font-size:14px;font-weight:700;color:var(--muted);text-align:center}
 .jalca{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
 @media (max-width:560px){.jalca{grid-template-columns:repeat(2,minmax(0,1fr))}}

@@ -1,7 +1,7 @@
 import { useApp } from "../AppContext.jsx";
 
-/* Lámina: las dos coloraciones conocidas. Arriba, de perfil y al mismo tamaño (public/img/morfo-verde.webp y
-   morfo-amarillo.webp, 736 × 486); debajo, tres vistas pequeñas (morfo-<id>-<vista>.webp) */
+/* Lámina: las dos coloraciones conocidas. Arriba, de perfil y al mismo tamaño (public/img/morfo-verde-v2.webp y
+   morfo-amarillo-v2.webp, 736 × 486); debajo, tres vistas pequeñas (morfo-<id>-<vista>.webp) */
 const MORFOS = [
   { id: "verde", letra: "a", letras: ["c", "d", "e"], es: "Verde y negro", en: "Green and black", arriba: [269, 323], abajo: [285, 323], frente: [340, 234] },
   { id: "amarillo", letra: "b", letras: ["f", "g", "h"], es: "Amarillo y marrón", en: "Yellow and brown", arriba: [245, 323], abajo: [280, 323], frente: [340, 234] },
@@ -60,7 +60,7 @@ export default function Species() {
             {MORFOS.map((m) => (
               <div className="morfo" key={m.id}>
                 <h4>{en ? m.en : m.es} <span className="letra">{m.letra}</span></h4>
-                <img className="morfo-lado" src={`/img/morfo-${m.id}.webp`} width="736" height="486" alt="" loading="lazy" />
+                <img className="morfo-lado" src={`/img/morfo-${m.id}-v2.webp`} width="736" height="486" alt="" loading="lazy" />
                 <div className="morfo-vistas">
                   {VISTAS.map((v, i) => (
                     <figure key={v.id}><img src={`/img/morfo-${m.id}-${v.id}.webp`} width={m[v.id][0]} height={m[v.id][1]} alt="" loading="lazy" /><figcaption><span className="letra">{m.letras[i]}</span> {en ? v.en : v.es}</figcaption></figure>

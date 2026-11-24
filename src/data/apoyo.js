@@ -29,7 +29,7 @@ export const ONG_COLABORADORA = {
 /* Imagen de la cabecera: el sapo arlequín peruano (foto real, recortada). Cámbiala por una foto del hábitat
    cuando la tengas: ponla en public/img/ y escribe aquí su nombre. */
 export const FOTO_CABECERA = {
-  src: "/img/morfo-verde.webp",
+  src: "/img/morfo-verde-v2.webp",
   es: "Sapo arlequín peruano (Atelopus peruensis), coloración verde y negra",
   en: "Peruvian harlequin toad (Atelopus peruensis), green and black colouring",
 };
