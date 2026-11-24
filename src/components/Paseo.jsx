@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
    El paseo lo lleva el CSS (.andarin, 66 s); aquí solo se mira en qué punto va para cazar sentado. */
 const CICLO = 66000;
 const SENTADO = [0.453, 0.953];          // inicio de cada rato sentado y mirando fijo (≈6 s cada uno)
-const PROB = 0.1;                        // caza más o menos 1 de cada 10 paradas (a un lado o al otro; nunca dos seguidas)
+const CADA = 3;                          // caza en 1 de cada 3 paradas (así le toca una vez a cada lado)
 const PASO = 80;                         // ms por frame de la caza
 const ALAS = [1, 2, 3, 2], ALETEO = 55;   // aleteo de la mosca mientras vuela (medio, reposo, pegadas)
 const FW = 293, FH = 188, OY = 40, CW = 358, CH = 228;
@@ -19,7 +19,7 @@ export default function Paseo({ color = "amarillo", className = "" }) {
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const pasos = CAZA[color];
-    let hoja, mosca, listo = false, ultima = -1, antes = false, raf = 0, vivo = true;
+    let hoja, mosca, listo = false, ultima = -1, paradas = 0, raf = 0, vivo = true;
     const cargar = () => {
       if (hoja) return;
       hoja = new Image(); hoja.src = `/img/sapo-${color}-caza.webp`;
@@ -64,7 +64,8 @@ export default function Paseo({ color = "amarillo", className = "" }) {
         if (r.bottom < 0 || r.top > innerHeight) return; // si no se ve, guarda la caza para otra parada
         ultima = id;
         cargar();
-        if (listo && !antes && Math.random() < PROB) { antes = true; cazar(); } else antes = false;
+        paradas++;
+        if (listo && paradas % CADA === 0) cazar();
       });
     }, 250);
     return () => { vivo = false; clearTimeout(espera); clearInterval(vigila); cancelAnimationFrame(raf); };
