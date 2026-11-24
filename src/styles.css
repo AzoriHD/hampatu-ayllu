@@ -161,22 +161,28 @@ h1{font:800 clamp(60px,10.4vw,128px)/.84 var(--display);font-stretch:76%;letter-
 :root[data-theme="dark"] .manta,:root[data-theme="dark"] .pie-card{box-shadow:10px 10px 0 rgb(0 0 0 / .55)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) :is(.manta,.pie-card){box-shadow:10px 10px 0 rgb(0 0 0 / .55)}}
 
-/* El sapo que pasea por el borde de arriba de la manta: sale sentado, camina despacio hasta el logo,
-   se sienta, se da la vuelta y vuelve. Nunca aparece ni desaparece de golpe. */
-.paseo{--sapo:clamp(84px,8.6vw,112px);position:absolute;left:34px;right:150px;bottom:calc(100% - 12px);height:0;pointer-events:none;z-index:1}
+/* Los sapos que pasean por el borde de arriba de la manta (amarillo) y de la caja del pie (verde): salen
+   sentados, caminan despacio hasta el otro lado, se sientan, se dan la vuelta y vuelven. Sentados, a veces
+   cazan una mosca (Paseo.jsx la dibuja en el <canvas>). Nunca aparecen ni desaparecen de golpe. */
+.paseo{--sapo:clamp(96px,9.6vw,128px);position:absolute;left:34px;right:150px;bottom:calc(100% - 12px);height:0;pointer-events:none;z-index:1}
+.paseo-pie{right:34px}
 .andarin{position:absolute;bottom:0;left:0;width:var(--sapo)}
-.giro{position:relative;width:100%;aspect-ratio:240/181}
-.giro img{position:absolute;bottom:0;left:50%;height:100%;width:auto;max-width:none;transform:translateX(-50%);filter:drop-shadow(3px 3px 0 rgb(20 10 4 / .3))}
-.sapo-sienta{opacity:0}
+.giro{position:relative;width:100%;aspect-ratio:293/188}
+.giro img,.giro canvas{position:absolute;bottom:0;left:0;width:100%;height:auto;max-width:none;filter:drop-shadow(3px 3px 0 rgb(20 10 4 / .3))}
+.sapo-sienta{position:absolute;inset:0;opacity:0}
+.sapo-sienta canvas{width:122.18%;visibility:hidden}
+.sapo-sienta.cazando canvas{visibility:visible}
+.sapo-sienta.cazando img{visibility:hidden}
 @media (prefers-reduced-motion:no-preference){
-  .andarin{animation:pasear 46s linear infinite}
-  .giro{animation:girar 46s linear infinite}
-  .sapo-anda{animation:andar 46s linear infinite}
-  .sapo-sienta{animation:sentar 46s linear infinite}
+  .andarin{animation:pasear 66s linear infinite}
+  .giro{animation:girar 66s linear infinite}
+  .sapo-anda{animation:andar 66s linear infinite}
+  .sapo-sienta{animation:sentar 66s linear infinite}
+  .paseo-pie :is(.andarin,.giro,.sapo-anda,.sapo-sienta){animation-delay:-33s}
   @keyframes pasear{0%,5%{left:0}45%,55%{left:calc(100% - var(--sapo))}95%,100%{left:0}}
-  @keyframes girar{0%,50%{transform:scaleX(1)}50.01%,97.5%{transform:scaleX(-1)}97.51%,100%{transform:scaleX(1)}}
-  @keyframes andar{0%,5%{opacity:0}5.01%,45%{opacity:1}45.01%,55%{opacity:0}55.01%,95%{opacity:1}95.01%,100%{opacity:0}}
-  @keyframes sentar{0%,5%{opacity:1}5.01%,45%{opacity:0}45.01%,55%{opacity:1}55.01%,95%{opacity:0}95.01%,100%{opacity:1}}
+  @keyframes girar{0%,4.6%{transform:scaleX(-1)}4.61%,54.6%{transform:scaleX(1)}54.61%,100%{transform:scaleX(-1)}}
+  @keyframes andar{0%,4.7%{opacity:0}5.2%,44.8%{opacity:1}45.3%,54.7%{opacity:0}55.2%,94.8%{opacity:1}95.3%,100%{opacity:0}}
+  @keyframes sentar{0%,4.7%{opacity:1}5.2%,44.8%{opacity:0}45.3%,54.7%{opacity:1}55.2%,94.8%{opacity:0}95.3%,100%{opacity:1}}
 }
 @media (prefers-reduced-motion:reduce){.sapo-anda{display:none}.sapo-sienta{opacity:1}}
 @media (max-width:760px){.paseo{display:none}}

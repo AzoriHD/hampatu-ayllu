@@ -4,6 +4,7 @@ import { prepararClic, sonarClic } from "../lib/musica.js";
 import { HeroText } from "./Headers.jsx";
 import { Svg } from "./Shared.jsx";
 import { ICONO_APP } from "./Topbar.jsx";
+import Paseo from "./Paseo.jsx";
 
 /* Portada: el tejido de rombos de fondo y, encima, la «manta» con el nombre. */
 export default function Hero() {
@@ -13,13 +14,8 @@ export default function Hero() {
     <section className="portada" aria-labelledby="h-portada">
       <div className="wrap portada-in">
         <div className="manta">
-          {/* El sapo pasea por el borde de arriba: va, se sienta, se da la vuelta y vuelve */}
-          <div className="paseo" aria-hidden="true">
-            <div className="andarin"><div className="giro">
-              <img className="sapo-anda" src="/img/sapo-paseo.webp" width="240" height="181" alt="" />
-              <img className="sapo-sienta" src="/img/sapo-lado.webp" width="380" height="306" alt="" />
-            </div></div>
-          </div>
+          {/* El sapo amarillo pasea por el borde de arriba: va, se sienta (y a veces caza una mosca), se da la vuelta y vuelve */}
+          <Paseo color="amarillo" />
           <img className="manta-logo" src="/img/logo.webp" width="440" height="423"
             alt={en ? "Hampatu Ayllu logo: a harlequin toad on a rock, with hills and a stream behind it" : "Logo de Hampatu Ayllu: un sapo arlequín sobre una piedra, con cerros y una quebrada al fondo"} />
           <HeroText />
