@@ -143,7 +143,8 @@ img{max-width:100%}
 .portada-in{position:relative}
 .manta{position:relative;max-width:680px;margin-inline:auto;text-align:center;background:var(--manta);border:2px solid var(--edge);border-radius:22px;padding:clamp(30px,4.4vw,48px) clamp(22px,4.4vw,52px) clamp(28px,4vw,42px);box-shadow:10px 10px 0 rgb(43 25 11 / .88)}
 .manta::after{content:"";position:absolute;inset:9px;border:1.5px dashed color-mix(in srgb,var(--muted) 42%,transparent);border-radius:15px;pointer-events:none}
-.manta-logo{position:absolute;z-index:2;top:-58px;right:-34px;width:156px;height:auto;transform:rotate(7deg);filter:drop-shadow(4px 6px 0 rgb(43 25 11 / .32))}
+/* Logo dentro de la manta, centrado encima del título */
+.manta-logo{position:relative;z-index:2;display:block;width:clamp(130px,15vw,178px);height:auto;margin:0 auto 12px}
 .kicker{font:700 20px/1.2 var(--display);font-stretch:90%;color:var(--need);margin:0 0 4px}
 h1{font:800 clamp(60px,10.4vw,128px)/.84 var(--display);font-stretch:76%;letter-spacing:-.018em;margin:0 0 16px;text-wrap:balance}
 .thesis{font:700 clamp(23px,2.8vw,31px)/1.1 var(--display);font-stretch:90%;margin:0 0 12px;text-wrap:balance}
@@ -154,8 +155,8 @@ h1{font:800 clamp(60px,10.4vw,128px)/.84 var(--display);font-stretch:76%;letter-
 .portada-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
 @media (max-width:760px){
   .portada{padding:92px 0 34px}
-  .manta{box-shadow:6px 6px 0 rgb(43 25 11 / .88);border-radius:18px;padding-top:58px}
-  .manta-logo{top:-62px;left:50%;right:auto;width:108px;transform:translateX(-50%) rotate(4deg)}
+  .manta{box-shadow:6px 6px 0 rgb(43 25 11 / .88);border-radius:18px;padding-top:34px}
+  .manta-logo{width:118px;margin-bottom:10px}
   .kicker{font-size:18px}
 }
 :root[data-theme="dark"] .manta,:root[data-theme="dark"] .pie-card{box-shadow:10px 10px 0 rgb(0 0 0 / .55)}
@@ -164,7 +165,7 @@ h1{font:800 clamp(60px,10.4vw,128px)/.84 var(--display);font-stretch:76%;letter-
 /* Los sapos que pasean por el borde de arriba de la manta (verde) y de la caja del pie (amarillo): salen
    sentados, caminan despacio hasta el otro lado, se sientan, se dan la vuelta y vuelven. Sentados, a veces
    cazan una mosca (Paseo.jsx la dibuja en el <canvas>). Nunca aparecen ni desaparecen de golpe. */
-.paseo{--sapo:clamp(96px,9.6vw,128px);position:absolute;left:34px;right:150px;bottom:calc(100% - 12px);height:0;pointer-events:none;z-index:1}
+.paseo{--sapo:clamp(96px,9.6vw,128px);position:absolute;left:34px;right:34px;bottom:calc(100% - 12px);height:0;pointer-events:none;z-index:1}
 .paseo-pie{right:34px}
 .andarin{position:absolute;bottom:0;left:0;width:var(--sapo)}
 .giro{position:relative;width:100%;aspect-ratio:293/188}
@@ -185,10 +186,9 @@ h1{font:800 clamp(60px,10.4vw,128px)/.84 var(--display);font-stretch:76%;letter-
   @keyframes sentar{0%,4.7%{opacity:1}5.2%,44.8%{opacity:0}45.3%,54.7%{opacity:1}55.2%,94.8%{opacity:0}95.3%,100%{opacity:1}}
 }
 @media (prefers-reduced-motion:reduce){.sapo-anda{display:none}.sapo-sienta{opacity:1}}
-/* En el móvil el logo va en el centro del borde de arriba: el sapo de la portada pasea por la mitad izquierda
-   y el del pie, por todo el borde. */
+/* En el móvil los sapos pasean por todo el borde de arriba (el logo va dentro de la manta). */
 @media (max-width:760px){
-  .paseo{--sapo:60px;left:14px;right:calc(50% + 58px);bottom:calc(100% - 6px)}
+  .paseo{--sapo:60px;left:14px;right:14px;bottom:calc(100% - 6px)}
   .paseo-pie{right:14px}
 }
 

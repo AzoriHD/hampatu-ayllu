@@ -44,7 +44,7 @@ export default function InstallBanner() {
 
   return (
     <div className="instalar-app" id="instalar" role="region" aria-label={T.titulo} lang={lang}>
-      <img src="/icon-192.png" alt="" width="48" height="48" />
+      <img src="/icon-192.png?v=2" alt="" width="48" height="48" />
       <div className="instalar-txt">
         <strong>{T.titulo}</strong>
         <span>{T.sub}</span>

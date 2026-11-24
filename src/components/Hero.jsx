@@ -16,8 +16,8 @@ export default function Hero() {
         <div className="manta">
           {/* El sapo verde pasea por el borde de arriba: va, se sienta (y a veces caza una mosca), se da la vuelta y vuelve */}
           <Paseo color="verde" />
-          <img className="manta-logo" src="/img/logo.webp" width="440" height="423"
-            alt={en ? "Hampatu Ayllu logo: a harlequin toad on a rock, with hills and a stream behind it" : "Logo de Hampatu Ayllu: un sapo arlequín sobre una piedra, con cerros y una quebrada al fondo"} />
+          <img className="manta-logo" src="/img/logo.webp" width="440" height="365"
+            alt={en ? "Hampatu Ayllu logo: a heart embracing the map of Peru, with a harlequin toad on it" : "Logo de Hampatu Ayllu: un corazón que abraza el mapa de Perú, con un sapo arlequín encima"} />
           <HeroText />
           <p className="cifras" id="stats" aria-live="polite">
             <span><b>{nc}</b> {t(nc === 1 ? "comunidad" : "comunidades")}</span>

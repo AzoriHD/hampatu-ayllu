@@ -124,7 +124,7 @@ export function Topbar() {
     <header className="topbar">
       <div className="topbar-in">
         <a className="marca" href="#tablon" onClick={inicio} aria-label={en ? "Hampatu Ayllu, home" : "Hampatu Ayllu, inicio"}>
-          <img src="/img/logo.webp" width="44" height="42" alt="" />
+          <img src="/img/logo.webp" width="44" height="37" alt="" />
           <span>Hampatu Ayllu</span>
         </a>
         <div className="nav-w" data-izq={bordes.izq ? "" : undefined} data-der={bordes.der ? "" : undefined}>
