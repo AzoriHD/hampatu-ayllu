@@ -92,10 +92,13 @@ function SolicitudDialogo({ c, onClose, onHecho }) {
             <label className="check"><input type="radio" name="rp" checked={f.rol_pedido === "miembro"} onChange={() => setF({ ...f, rol_pedido: "miembro" })} />{L("Ser miembro", "Be a member")}</label>
             <label className="check"><input type="radio" name="rp" checked={f.rol_pedido === "representante"} onChange={() => setF({ ...f, rol_pedido: "representante" })} />{L("Representar a la comunidad (lo aprueban siempre)", "Represent the community (always needs approval)")}</label>
           </fieldset>
+          <div><label htmlFor="un-msg">{directo ? L("Unas palabras para presentarte", "A few words to introduce yourself") : L("Tu mensaje para sus representantes", "Your message for its representatives")}</label>
+            <textarea id="un-msg" rows={4} maxLength={500} value={f.mensaje} placeholder={L("Quién eres, de dónde vienes y por qué quieres unirte", "Who you are, where you are from and why you want to join")} onChange={(e) => setF({ ...f, mensaje: e.target.value })} />
+            <p className="hint">{directo ? L("Lo verán sus representantes en «Gestión». Puedes dejarlo en blanco.", "Its representatives will see it under “Manage”. You can leave it blank.")
+              : L("Lo leerán al decidir si te aceptan. Puedes dejarlo en blanco, pero ayuda a que te conozcan.", "They will read it when deciding. You can leave it blank, but it helps them get to know you.")}
+              {" "}<span className="meta">{f.mensaje.length}/500</span></p></div>
           <div><label htmlFor="un-cargo">{L("Cargo o papel (opcional)", "Position or role (optional)")}</label>
             <input id="un-cargo" maxLength={80} value={f.cargo} placeholder={L("Ej.: presidente de la comunidad, docente", "E.g. community president, teacher")} onChange={(e) => setF({ ...f, cargo: e.target.value })} /></div>
-          {!directo && <div><label htmlFor="un-msg">{L("Mensaje para sus representantes (opcional)", "Message for its representatives (optional)")}</label>
-            <textarea id="un-msg" rows={3} maxLength={500} value={f.mensaje} placeholder={L("Quién eres y por qué quieres unirte", "Who you are and why you want to join")} onChange={(e) => setF({ ...f, mensaje: e.target.value })} /></div>}
           <p className="hint">{L("Cuando formes parte, tu nombre saldrá en la lista de miembros de la ficha.", "Once you are in, your name will appear on the page's member list.")}</p>
           <Aviso texto={env.msg} />
           <div className="panel-actions">
