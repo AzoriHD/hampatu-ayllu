@@ -1292,3 +1292,155 @@ create policy "oportunidades: leer" on public.oportunidades for select to anon, 
   using ((publicado and (proyecto is null or public.proyecto_publicado(proyecto)) and public.ve_comunidad(comunidad, 'ayuda'))
     or by = auth.uid() or public.gestiona_oportunidad(id)
     or (proyecto is not null and public.gestiona_proyecto(proyecto)) or (comunidad is not null and public.representa(comunidad)));
+
+-- 18. RANGOS, CALENDARIO Y ASISTENCIA EN LAS COMUNIDADES
+-- Sus representantes (o la coordinación) crean rangos con nombre y color y se los asignan a sus miembros,
+-- y publican las actividades de la comunidad (reuniones, faenas, talleres…). Sus miembros marcan «Asistiré».
+-- El calendario lleva candado como los demás apartados (privado.calendario en la ficha).
+-- Si la base de datos ya existe, pega solo este bloque. Se puede ejecutar más de una vez.
+create table if not exists public.comunidad_rangos (
+  id uuid primary key default gen_random_uuid(),
+  comunidad text not null,
+  nombre text not null check (char_length(btrim(nombre)) between 1 and 40),
+  color text not null default 'tierra' check (color in ('tierra','bosque','rio','achiote','flor','piedra')),
+  orden int not null default 0,
+  created_at timestamptz not null default now(),
+  unique (comunidad, nombre)
+);
+create index if not exists comunidad_rangos_com_idx on public.comunidad_rangos (comunidad, orden);
+alter table public.comunidad_rangos enable row level security;
+alter table public.comunidad_miembros add column if not exists rango uuid references public.comunidad_rangos (id) on delete set null;
+
+create or replace function public.rangos_antes() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  if tg_op = 'INSERT' then
+    if not public.comunidad_existe(new.comunidad) then raise exception 'La comunidad no existe' using errcode = '23503'; end if;
+    if (select count(*) from public.comunidad_rangos r where r.comunidad = new.comunidad) >= 20 then
+      raise exception 'Una comunidad puede tener como mucho 20 rangos' using errcode = '23514';
+    end if;
+    new.created_at := now();
+  else
+    new.comunidad := old.comunidad; new.created_at := old.created_at;
+  end if;
+  new.nombre := btrim(new.nombre);
+  return new;
+end $$;
+drop trigger if exists rangos_antes on public.comunidad_rangos;
+create trigger rangos_antes before insert or update on public.comunidad_rangos
+  for each row execute function public.rangos_antes();
+
+drop policy if exists "rangos: leer" on public.comunidad_rangos;
+drop policy if exists "rangos: crear" on public.comunidad_rangos;
+drop policy if exists "rangos: cambiar" on public.comunidad_rangos;
+drop policy if exists "rangos: borrar" on public.comunidad_rangos;
+create policy "rangos: leer" on public.comunidad_rangos for select to anon, authenticated
+  using (public.ve_comunidad(comunidad, 'miembros') or public.representa(comunidad));
+create policy "rangos: crear" on public.comunidad_rangos for insert to authenticated
+  with check (public.representa(comunidad) or public.es_coordinador());
+create policy "rangos: cambiar" on public.comunidad_rangos for update to authenticated
+  using (public.representa(comunidad) or public.es_coordinador())
+  with check (public.representa(comunidad) or public.es_coordinador());
+create policy "rangos: borrar" on public.comunidad_rangos for delete to authenticated
+  using (public.representa(comunidad) or public.es_coordinador());
+
+-- El rango de cada miembro solo lo ponen sus representantes o la coordinación, y tiene que ser de su comunidad
+create or replace function public.miembros_rango() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  if public.es_servidor() then return new; end if;
+  if not (public.es_coordinador() or public.representa(new.comunidad)) then
+    new.rango := case when tg_op = 'UPDATE' then old.rango else null end;
+  end if;
+  if new.rango is not null and not exists (select 1 from public.comunidad_rangos r where r.id = new.rango and r.comunidad = new.comunidad) then
+    raise exception 'Ese rango no es de esta comunidad' using errcode = '23503';
+  end if;
+  return new;
+end $$;
+drop trigger if exists miembros_rango on public.comunidad_miembros;
+create trigger miembros_rango before insert or update on public.comunidad_miembros
+  for each row execute function public.miembros_rango();
+
+create table if not exists public.comunidad_eventos (
+  id uuid primary key default gen_random_uuid(),
+  comunidad text not null,
+  titulo text not null check (char_length(btrim(titulo)) between 1 and 120),
+  tipo text not null default 'reunion' check (tipo in ('reunion','faena','taller','salida','fiesta','otro')),
+  fecha date not null,
+  hora text check (hora is null or hora ~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'),
+  hora_fin text check (hora_fin is null or hora_fin ~ '^([01][0-9]|2[0-3]):[0-5][0-9]$'),
+  lugar text check (lugar is null or char_length(lugar) <= 160),
+  descripcion text check (descripcion is null or char_length(descripcion) <= 2000),
+  by uuid default auth.uid(),
+  created_at timestamptz not null default now()
+);
+create index if not exists comunidad_eventos_com_idx on public.comunidad_eventos (comunidad, fecha);
+alter table public.comunidad_eventos enable row level security;
+
+create or replace function public.eventos_antes() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  if tg_op = 'INSERT' then
+    if not public.comunidad_existe(new.comunidad) then raise exception 'La comunidad no existe' using errcode = '23503'; end if;
+    if not public.es_servidor() then new."by" := auth.uid(); end if;
+    new.created_at := now();
+  else
+    new.comunidad := old.comunidad; new."by" := old."by"; new.created_at := old.created_at;
+  end if;
+  return new;
+end $$;
+drop trigger if exists eventos_antes on public.comunidad_eventos;
+create trigger eventos_antes before insert or update on public.comunidad_eventos
+  for each row execute function public.eventos_antes();
+
+drop policy if exists "eventos: leer" on public.comunidad_eventos;
+drop policy if exists "eventos: crear" on public.comunidad_eventos;
+drop policy if exists "eventos: cambiar" on public.comunidad_eventos;
+drop policy if exists "eventos: borrar" on public.comunidad_eventos;
+create policy "eventos: leer" on public.comunidad_eventos for select to anon, authenticated
+  using (public.ve_comunidad(comunidad, 'calendario') or public.representa(comunidad));
+create policy "eventos: crear" on public.comunidad_eventos for insert to authenticated
+  with check (public.representa(comunidad) or public.es_coordinador());
+create policy "eventos: cambiar" on public.comunidad_eventos for update to authenticated
+  using (public.representa(comunidad) or public.es_coordinador())
+  with check (public.representa(comunidad) or public.es_coordinador());
+create policy "eventos: borrar" on public.comunidad_eventos for delete to authenticated
+  using (public.representa(comunidad) or public.es_coordinador());
+
+create table if not exists public.comunidad_asistencias (
+  id uuid primary key default gen_random_uuid(),
+  evento uuid not null references public.comunidad_eventos (id) on delete cascade,
+  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  created_at timestamptz not null default now(),
+  unique (evento, user_id)
+);
+alter table public.comunidad_asistencias enable row level security;
+
+create or replace function public.evento_comunidad(e uuid) returns text
+language sql stable security definer set search_path = public as $$
+  select comunidad from public.comunidad_eventos where id = e;
+$$;
+grant execute on function public.evento_comunidad(uuid) to anon, authenticated;
+
+drop policy if exists "asistencias: leer" on public.comunidad_asistencias;
+drop policy if exists "asistencias: apuntarse" on public.comunidad_asistencias;
+drop policy if exists "asistencias: quitar" on public.comunidad_asistencias;
+create policy "asistencias: leer" on public.comunidad_asistencias for select to authenticated
+  using (user_id = auth.uid() or public.es_miembro(public.evento_comunidad(evento)) or public.es_coordinador());
+create policy "asistencias: apuntarse" on public.comunidad_asistencias for insert to authenticated
+  with check (user_id = auth.uid() and public.es_miembro(public.evento_comunidad(evento)));
+create policy "asistencias: quitar" on public.comunidad_asistencias for delete to authenticated
+  using (user_id = auth.uid() or public.representa(public.evento_comunidad(evento)) or public.es_coordinador());
+
+-- Al borrar una comunidad se van también sus rangos y sus actividades
+create or replace function public.comunidad_borrar_extra() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  if old.col = 'comunidades' then
+    delete from public.comunidad_eventos where comunidad = old.id;
+    delete from public.comunidad_rangos where comunidad = old.id;
+  end if;
+  return old;
+end $$;
+drop trigger if exists docs_comunidad_extra on public.docs;
+create trigger docs_comunidad_extra after delete on public.docs for each row execute function public.comunidad_borrar_extra();

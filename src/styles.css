@@ -1263,3 +1263,34 @@ g[tabindex]:focus-visible .g-hit{stroke:var(--link);stroke-width:2}
 .roster>li.rol-representante{border-color:var(--edge);background:var(--maiz)}
 .dialogo-clan{display:grid;gap:14px}
 .dialogo-clan .panel-h{margin:0}
+
+/* Rangos, calendario y normas de la comunidad (ComunidadExtra.jsx) */
+.clan-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width:760px){.clan-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:420px){.clan-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.pill-rango{text-transform:none;letter-spacing:0;font-size:13.5px}
+.rango .pill-rango{font-size:14px}
+.roster>li .pill-rango{justify-self:start;margin-top:2px}
+.sel-mini{min-height:36px;padding:4px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--manta);font-size:15px;max-width:100%}
+.elegir-rango{display:inline-flex;flex-direction:column;gap:4px}
+.rango-nuevo{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:12px}
+.rango-nuevo>div{display:grid;gap:4px;flex:1 1 180px;min-width:0}
+.rango-nuevo>div:nth-child(2){flex:0 1 150px}
+.cal-com-barra{justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.cal-com-barra .pestanas{margin:0}
+.eventos-com{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.evento-com{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--lana)}
+.evento-com h4{margin:6px 0 2px;font:800 19px/1.25 var(--display)}
+.evento-com .meta{margin:0}
+.evento-desc{margin-top:6px}.evento-desc p{margin:0 0 6px}
+.evento-acciones{gap:8px 14px;margin-top:8px;align-items:center;flex-wrap:wrap}
+.dia-baldosa{display:grid;place-items:center;min-width:58px;padding:6px 8px;border:1.5px solid var(--edge);border-radius:12px;background:var(--manta);line-height:1.05;text-align:center}
+.dia-baldosa b{font:800 26px/1 var(--display);font-variant-numeric:tabular-nums}
+.dia-baldosa span{font-size:13px;font-weight:700;text-transform:uppercase;color:var(--muted)}
+.ev-faena .dia-baldosa{border-color:var(--sight)}.ev-taller .dia-baldosa{border-color:var(--offer)}
+.ev-salida .dia-baldosa{border-color:var(--need)}.ev-fiesta .dia-baldosa{border-color:var(--event)}
+.proxima-fila{display:flex;gap:12px;align-items:center;margin-bottom:4px}
+.proxima-fila p{margin:2px 0 0}
+@media (max-width:420px){.clan-stat:last-child:nth-child(odd){grid-column:span 2}}
+.lista-rangos .row{gap:8px;align-items:center;flex-wrap:nowrap}
+.lista-rangos .sel-mini{width:auto}
