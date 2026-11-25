@@ -1,6 +1,6 @@
-/* Ficha de cada comunidad, por apartados como un clan (inicio, miembros, proyectos, pide ayuda, avisos, gestión): presentación, naturaleza, proyectos, necesidades, apoyos, resultados y representantes.
+/* Ficha de cada comunidad, por apartados como un clan (inicio, miembros, proyectos, pide ayuda, avisos, calendario, gestión): presentación, naturaleza, proyectos, necesidades, apoyos, resultados y representantes.
    La comunidad decide quién la representa y qué se publica (supabase.sql, bloque 10), y pone candado a cada apartado
-   para que sea público o solo para sus miembros (bloque 17). */
+   para que sea público o solo para sus miembros (bloque 17). Rangos, calendario y normas: bloque 18 (ComunidadExtra.jsx). */
 import { useState } from "react";
 import { useApp } from "../AppContext.jsx";
 import { P, TC } from "../data/constants.js";
@@ -8,7 +8,7 @@ import { CATEGORIAS_C, ESTADOS_O } from "../data/proyectos.js";
 import { borrar, cambiar, filas, useCarga, useCifras } from "../lib/tablas.js";
 import { puede } from "../lib/permisos.js";
 import { dinero } from "../lib/donaciones.js";
-import { copiar } from "../lib/utils.js";
+import { copiar, ymd } from "../lib/utils.js";
 import { store } from "../lib/store.js";
 import { APARTADOS, CANDADO, CANDADO_ABIERTO, cuentasMiembros, INGRESOS, ingresoDe, privadoDe } from "../lib/clanes.js";
 import { Msg, Simbolo, Svg } from "./Shared.jsx";
@@ -18,6 +18,7 @@ import { Autor } from "./People.jsx";
 import { CommunityForm } from "./Communities.jsx";
 import { OportunidadForm } from "./Collaborate.jsx";
 import { InformesLista } from "./Impact.jsx";
+import { CalendarioCom, ElegirRango, GestionRangos, Normas, NormasEditor, ProximaActividad, RangoPill } from "./ComunidadExtra.jsx";
 import { Aviso, Cargando, Confirmar, EstadoP, Galeria, Parrafos, Pestanas, useEnviar, useEt, useL, Vacio } from "./Kit.jsx";
 
 export default function CommunityPage({ id }) {
@@ -33,19 +34,22 @@ export default function CommunityPage({ id }) {
   const c = data.comunidades.find((x) => x.id === id);
   const { datos, cargando } = useCarga(async () => {
     if (!c) return null;
-    const [miembros, vinculos, ops, infs, cuentas] = await Promise.all([
+    const [miembros, vinculos, ops, infs, cuentas, rangos, eventos] = await Promise.all([
       filas("comunidad_miembros", { eq: { comunidad: id }, orden: "created_at", desc: false }),
       filas("proyecto_comunidades", { eq: { comunidad: id } }),
       filas("oportunidades", { eq: { comunidad: id } }),
       filas("informes", { eq: { comunidad: id }, orden: "fecha" }),
       cuentasMiembros(),
+      filas("comunidad_rangos", { eq: { comunidad: id }, orden: "orden", desc: false }).catch(() => []),
+      filas("comunidad_eventos", { eq: { comunidad: id }, orden: "fecha", desc: false }).catch(() => []),
     ]);
+    const asistencias = eventos.length ? await filas("comunidad_asistencias", { en: { evento: eventos.map((e) => e.id) }, orden: null }).catch(() => []) : [];
     const ids = [...new Set(vinculos.map((v) => v.proyecto))];
     const [ps, res] = ids.length ? await Promise.all([
       filas("proyectos", { en: { id: ids } }),
       filas("proyecto_actualizaciones", { en: { proyecto: ids }, eq: { tipo: "resultado", validada: true }, orden: "fecha" }),
     ]) : [[], []];
-    return { miembros, vinculos, ops, infs, ps, res, total: cuentas[id] || 0 };
+    return { miembros, vinculos, ops, infs, ps, res, rangos, eventos, asistencias, total: cuentas[id] || 0 };
   }, [id, !!c]);
   const cif = useCifras();
 
@@ -63,11 +67,16 @@ export default function CommunityPage({ id }) {
   const editable = canPost && (meta.admin || c.by === uid || representa);
   if (editar) return <section className="ficha-p"><CommunityForm editId={c.id} onClose={() => setEditar(false)} completo /></section>;
 
-  const d = datos || { miembros: [], vinculos: [], ops: [], infs: [], ps: [], res: [], total: 0 };
+  const d = datos || { miembros: [], vinculos: [], ops: [], infs: [], ps: [], res: [], rangos: [], eventos: [], asistencias: [], total: 0 };
+  const rangoDe = (m) => d.rangos.find((r) => r.id === m.rango) || null;
   const aceptados = d.vinculos.filter((v) => v.estado === "aceptada");
   const proy = (pid) => d.ps.find((p) => p.id === pid);
   const reps = d.miembros.filter((m) => m.estado === "aceptada" && m.rol === "representante");
   const otrosPublicos = d.miembros.filter((m) => m.estado === "aceptada" && m.rol === "miembro");
+  /* Los miembros, agrupados por rango (en el orden que decide la comunidad); al final, quien no tiene rango */
+  const porRango = d.rangos.map((r) => [r, otrosPublicos.filter((m) => m.rango === r.id)]).filter((x) => x[1].length);
+  const sinRango = otrosPublicos.filter((m) => !rangoDe(m));
+  const proximas = d.eventos.filter((e) => e.fecha >= ymd(new Date())).length;
   const ocultos = Math.max(0, d.total - reps.length - otrosPublicos.length);
   const mio = meta.cuenta ? d.miembros.find((m) => m.user_id === uid) : null;
   const pend = d.miembros.filter((m) => m.estado === "solicitada" && m.user_id !== uid).length;
@@ -99,10 +108,11 @@ export default function CommunityPage({ id }) {
     ["proyectos", rotulo("proyectos"), ver("proyectos") ? aceptados.length : 0],
     ["ayuda", rotulo("ayuda"), ver("ayuda") ? abiertas.length : 0],
     ["avisos", rotulo("avisos"), ver("avisos") ? nAvisos : 0],
+    ["calendario", rotulo("calendario"), ver("calendario") ? proximas : 0],
     ...(representa ? [["gestion", L("Gestión", "Manage"), pend]] : []),
   ];
   const vista = PEST.some((x) => x[0] === pestana) ? pestana : pestana === "necesidades" ? "ayuda" : "inicio";
-  const CIFRAS = { miembros: d.total, proyectos: aceptados.length, ayuda: abiertas.length, avisos: nAvisos };
+  const CIFRAS = { miembros: d.total, proyectos: aceptados.length, ayuda: abiertas.length, avisos: nAvisos, calendario: proximas };
   /* Las cifras de arriba llevan a su apartado */
   const irA = (k) => {
     setPestana(k);
@@ -153,6 +163,7 @@ export default function CommunityPage({ id }) {
               {!c.presentacion && <p className="meta">{editable ? L("Añade una presentación, fotos, la naturaleza del lugar y lo que hace la comunidad: «Editar la ficha».", "Add an introduction, photos, the nature of the place and what the community does: “Edit the page”.") : L("Todavía sin presentación.", "No introduction yet.")}</p>}
               <Galeria fotos={c.fotos} />
             </div>
+            <Normas c={c} />
             {c.actividades && <div className="caja"><h3 className="sub">{L("Actividades comunitarias", "Community activities")}</h3><Parrafos texto={c.actividades} /></div>}
             {(c.resultados || d.res.length > 0) && (
               <div className="caja">
@@ -164,6 +175,7 @@ export default function CommunityPage({ id }) {
             {d.infs.length > 0 && <div className="caja"><h3 className="sub">{L("Informes", "Reports")}</h3><InformesLista lista={d.infs} compacto /></div>}
           </div>
           <aside className="ficha-lado">
+            {ver("calendario") && <ProximaActividad eventos={d.eventos} onVer={() => irA("calendario")} />}
             {(c.ecosistemas || c.biodiversidad || c.especies) && (
               <div className="caja">
                 <h3 className="sub">{L("Naturaleza", "Nature")}</h3>
@@ -190,9 +202,15 @@ export default function CommunityPage({ id }) {
           {cargando && !datos ? <Cargando /> : (
             <>
               <h4 className="rango">{L("Representantes", "Representatives")}</h4>
-              {reps.length ? <ul className="roster">{reps.map((m) => <FilaMiembro key={m.id} m={m} />)}</ul> : <p className="meta">{L("Aún no se muestran en público.", "Not shown publicly yet.")}</p>}
-              <h4 className="rango">{L("Miembros", "Members")}</h4>
-              {otrosPublicos.length ? <ul className="roster">{otrosPublicos.map((m) => <FilaMiembro key={m.id} m={m} />)}</ul> : null}
+              {reps.length ? <ul className="roster">{reps.map((m) => <FilaMiembro key={m.id} m={m} rango={rangoDe(m)} />)}</ul> : <p className="meta">{L("Aún no se muestran en público.", "Not shown publicly yet.")}</p>}
+              {porRango.map(([r, l]) => (
+                <div key={r.id}>
+                  <h4 className="rango"><RangoPill rango={r} /> <span className="meta">· {l.length}</span></h4>
+                  <ul className="roster">{l.map((m) => <FilaMiembro key={m.id} m={m} rango={r} />)}</ul>
+                </div>
+              ))}
+              {(sinRango.length > 0 || !porRango.length) && <h4 className="rango">{porRango.length ? L("Otros miembros", "Other members") : L("Miembros", "Members")}</h4>}
+              {sinRango.length ? <ul className="roster">{sinRango.map((m) => <FilaMiembro key={m.id} m={m} />)}</ul> : null}
               {ocultos > 0 && <p className="meta">{ocultos === 1 ? L("Y 1 persona más que prefiere no salir en público.", "And 1 more person who prefers not to be shown.") : L("Y " + ocultos + " personas más que prefieren no salir en público.", "And " + ocultos + " more people who prefer not to be shown.")}</p>}
               {!otrosPublicos.length && !ocultos && <p className="meta">{L("Todavía no hay miembros.", "No members yet.")}</p>}
             </>
@@ -250,6 +268,12 @@ export default function CommunityPage({ id }) {
         </Apartado>
       )}
 
+      {vista === "calendario" && (
+        <Apartado c={c} k="calendario" ve={ver("calendario")} gestiona={representa} mio={mio}>
+          {cargando && !datos ? <Cargando /> : <CalendarioCom c={c} eventos={d.eventos} asistencias={d.asistencias} representa={representa} dentro={dentro} />}
+        </Apartado>
+      )}
+
       {vista === "gestion" && representa && (
         <>
           <div className="caja">
@@ -273,7 +297,9 @@ export default function CommunityPage({ id }) {
               ))}
             </ul>
           </div>
-          <GestionMiembros c={c} miembros={d.miembros} />
+          <GestionRangos c={c} rangos={d.rangos} miembros={d.miembros} />
+          <GestionMiembros c={c} miembros={d.miembros} rangos={d.rangos} />
+          <NormasEditor key={c.id + ":" + (c.normas || "")} c={c} />
         </>
       )}
       </div>
@@ -332,12 +358,13 @@ function Bloqueado({ c, k, mio }) {
   );
 }
 
-function FilaMiembro({ m }) {
+function FilaMiembro({ m, rango }) {
   const L = useL();
   return (
     <li className={"rol-" + m.rol}>
       <Autor by={m.user_id} />
-      <span className="meta">{m.rol === "representante" ? L("Representante", "Representative") : L("Miembro", "Member")}{m.cargo ? " · " + m.cargo : ""}</span>
+      <span className="meta">{m.rol === "representante" ? L("Representante", "Representative") : rango ? rango.nombre : L("Miembro", "Member")}{m.cargo ? " · " + m.cargo : ""}</span>
+      {m.rol === "representante" && rango && <span><RangoPill rango={rango} /></span>}
     </li>
   );
 }
@@ -380,7 +407,7 @@ function MiEstado({ c, mio }) {
 }
 
 /* Para representantes y coordinación: quién entra, con qué papel */
-function GestionMiembros({ c, miembros }) {
+function GestionMiembros({ c, miembros, rangos }) {
   const { uid, perfilDe, escribirA } = useApp();
   const L = useL();
   const env = useEnviar();
@@ -416,6 +443,7 @@ function GestionMiembros({ c, miembros }) {
           {dentro.map((m) => (
             <li key={m.id}>
               <span><b>{nombre(m)}</b> <span className="meta">· {m.rol === "representante" ? L("Representante", "Representative") : L("Miembro", "Member")}{m.cargo ? " · " + m.cargo : ""}</span></span>
+              <ElegirRango m={m} rangos={rangos} />
               {m.user_id !== uid && (
                 <span className="row">
                   <button type="button" className="linkbtn" onClick={() => env.enviar(() => cambiar("comunidad_miembros", m.id, { rol: m.rol === "representante" ? "miembro" : "representante" }))}>{m.rol === "representante" ? L("Quitar representación", "Remove representation") : L("Hacer representante", "Make representative")}</button>

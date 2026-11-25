@@ -48,6 +48,7 @@ export const APARTADOS = {
   proyectos: ["Proyectos", "Projects", "los proyectos en los que participa", "the projects it takes part in"],
   ayuda: ["Pide ayuda", "Help wanted", "sus peticiones de ayuda", "its calls for help"],
   avisos: ["Avisos", "Posts", "sus avisos, también en el tablón", "its posts, also on the board"],
+  calendario: ["Calendario", "Calendar", "su calendario de actividades", "its calendar of activities"],
 };
 export const privadoDe = (c, k) => !!(c && c.privado && c.privado[k] === true);
 /* Lo público lo ve todo el mundo; lo privado, sus miembros y la coordinación.
@@ -57,3 +58,24 @@ export const veApartado = (c, k, permisos) => !privadoDe(c, k) || puede.coordina
 /* Iconos del candado (para <Svg d=…>) */
 export const CANDADO = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>';
 export const CANDADO_ABIERTO = '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.75-1.4"/>';
+
+/* Rangos que crea cada comunidad (supabase.sql, bloque 18). [ES, EN, color] */
+export const RANGO_COLORES = {
+  tierra: ["Tierra", "Earth", "var(--link)"],
+  bosque: ["Bosque", "Forest", "var(--sight)"],
+  rio: ["Río", "River", "var(--offer)"],
+  achiote: ["Achiote", "Achiote", "var(--need)"],
+  flor: ["Flor", "Flower", "var(--event)"],
+  piedra: ["Piedra", "Stone", "var(--muted)"],
+};
+export const colorRango = (r) => (RANGO_COLORES[r && r.color] || RANGO_COLORES.tierra)[2];
+
+/* Actividades del calendario de la comunidad. [ES, EN] */
+export const TIPOS_EVENTO = {
+  reunion: ["Reunión", "Meeting"],
+  faena: ["Faena comunal", "Communal work day"],
+  taller: ["Taller", "Workshop"],
+  salida: ["Salida al campo", "Field trip"],
+  fiesta: ["Fiesta", "Celebration"],
+  otro: ["Otra actividad", "Other activity"],
+};
