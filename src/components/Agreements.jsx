@@ -17,6 +17,24 @@ export function Agreements() {
   );
 }
 
+/* Significado del logo (identidad de Hampatu Ayllu) */
+const SIGNIFICADO_ES = [
+  "Todo empieza con un corazón abierto, de un solo trazo, como pintado a pincel. No se cierra: deja sitio para que entre quien quiera cuidar.",
+  "Sobre él se alza el Perú, y juntos dibujan un corazón humano, con sus arterias subiendo hacia la sierra. Así nos recuerda que esta tierra no es un mapa lejano, sino algo que late dentro de cada persona.",
+  "Mirado de otra forma, es también una manzana: el corazón es el fruto y el Perú, la hoja. La manzana es la naturaleza que nos alimenta, porque lo que se cuida da fruto.",
+  "Dentro, un comunero y un hampatu están espalda con espalda, cubriéndose el uno al otro. El sapo es el centinela del agua: mientras canta en la quebrada, el comunero sabe que el agua está sana. El comunero, a su vez, mantiene limpios la quebrada y el páramo para que el sapo siga existiendo. Ninguno se salva sin el otro.",
+  "Eso es un ayllu: una comunidad donde personas, animales, agua y tierra forman una sola familia, unida por el ayni, el «hoy por ti, mañana por mí». Hampatu Ayllu, la comunidad del sapo, es esa promesa mutua.",
+  "De día el sapo es amarillo y de noche es verde, porque el hampatu tiene más de un color y la comunidad lo cuida igual en todas sus formas.",
+];
+const SIGNIFICADO_EN = [
+  "It all begins with an open heart, drawn in a single stroke, as if painted with a brush. It never closes: it leaves room for anyone who wants to care.",
+  "Above it rises Peru, and together they draw a human heart, its arteries climbing towards the highlands. It reminds us that this land is not a distant map, but something that beats inside every person.",
+  "Seen another way, it is also an apple: the heart is the fruit and Peru, the leaf. The apple is the nature that feeds us, because what is cared for bears fruit.",
+  "Inside, a comunero (a member of an Andean community) and a hampatu stand back to back, each watching over the other. The toad is the sentinel of the water: while it sings in the stream, the comunero knows the water is healthy. In turn, the comunero keeps the stream and the páramo clean so the toad can go on living. Neither is saved without the other.",
+  "That is an ayllu: a community where people, animals, water and land form a single family, bound by ayni, the «today for you, tomorrow for me». Hampatu Ayllu, the community of the toad, is that mutual promise.",
+  "By day the toad is yellow and by night it is green, because the hampatu comes in more than one colour and the community cares for it the same in every form.",
+];
+
 export function Footer() {
   const { en, view, esApp } = useApp();
   return (
@@ -28,6 +46,10 @@ export function Footer() {
             <img className="logo-tema logo-claro" src="/img/logo-claro.svg?v=7" width="789" height="843" alt="" loading="lazy" />
             <img className="logo-tema logo-noche" src="/img/logo-noche.svg?v=7" width="789" height="843" alt="" loading="lazy" />
             <p><strong>Hampatu Ayllu</strong> {en ? "means «community of the toad» in Quechua." : "significa «comunidad del sapo» en quechua."}</p>
+            <details className="pie-logo">
+              <summary>{en ? "What our logo means" : "Qué significa nuestro logo"}</summary>
+              {(en ? SIGNIFICADO_EN : SIGNIFICADO_ES).map((p) => <p key={p.slice(0, 24)}>{p}</p>)}
+            </details>
           </div>
           {view !== "apoya" && (
             <div className="pie-app pie-apoya">
