@@ -139,10 +139,10 @@ export function CommunityForm({ editId, onClose, completo }) {
       write(setM, () => store.update("comunidades", editId, { ...quitar, ...d }), onClose);
     } else {
       const nid = editId || newId();
-      /* Quien la crea pide representarla: la coordinación lo verifica (así nadie se adueña de una comunidad que no es suya) */
+      /* Quien la crea entra directamente como representante (la base de datos lo comprueba; la coordinación puede quitárselo) */
       write(setM, async () => {
         await store.set("comunidades", nid, d);
-        try { await crear("comunidad_miembros", { comunidad: nid, rol_pedido: "representante", mensaje: "Creé la ficha de esta comunidad." }); } catch (e) { console.warn(e); }
+        try { await crear("comunidad_miembros", { comunidad: nid, rol_pedido: "representante", rol: "representante", estado: "aceptada", mensaje: "Creé la ficha de esta comunidad." }); } catch (e) { console.warn(e); }
       }, onClose);
     }
   };

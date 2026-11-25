@@ -72,7 +72,7 @@ const filas = (n) => (r, e) => !e && r.rows.length === n;
 const afect = (n) => (r, e) => !e && r.affectedRows === n;
 
 // Comunidades (docs)
-await espera("rep crea C1", () => como("rep", `insert into docs (col,id,data) values ('comunidades','c1', $1)`, [{ nombre: "C1", by: U.rep }]), bien);
+await espera("u3 crea C1", () => como("u3", `insert into docs (col,id,data) values ('comunidades','c1', $1)`, [{ nombre: "C1", by: U.u3 }]), bien);
 await espera("u3 crea C2", () => como("u3", `insert into docs (col,id,data) values ('comunidades','c2', $1)`, [{ nombre: "C2", by: U.u3 }]), bien);
 await espera("u3 crea C3", () => como("u3", `insert into docs (col,id,data) values ('comunidades','c3', $1)`, [{ nombre: "C3", by: U.u3 }]), bien);
 
@@ -96,7 +96,10 @@ await espera("u2 entra directo en C3 abierta", () => como("u2", `insert into com
 await espera("en abierta, representar sigue pidiendo aprobación", () => como("rep2", `insert into comunidad_miembros (comunidad, rol_pedido, publico) values ('c3','representante', true) returning estado, rol, publico`), (r, e) => !e && r.rows[0].estado === "solicitada" && r.rows[0].rol === "miembro" && r.rows[0].publico === false);
 await espera("anon ve cuántos miembros hay", () => como("anon", `select miembros from comunidad_cuentas() where comunidad='c3'`), (r, e) => !e && r.rows[0].miembros === 1);
 await espera("C3 pasa a cerrada", () => como("u3", `update docs set data = data || '{"ingreso":"cerrada"}' where col='comunidades' and id='c3'`), afect(1));
-await espera("cerrada no admite solicitudes", () => como("u3", `insert into comunidad_miembros (comunidad) values ('c3')`), error);
+await espera("cerrada no admite solicitudes", () => como("rep", `insert into comunidad_miembros (comunidad) values ('c3')`), error);
+await espera("quien creó C3 entra directo como representante (aunque esté cerrada)", () => como("u3", `insert into comunidad_miembros (comunidad, rol_pedido, rol, estado) values ('c3','representante','representante','aceptada') returning estado, rol, decidido_por`), (r, e) => !e && r.rows[0].estado === "aceptada" && r.rows[0].rol === "representante" && r.rows[0].decidido_por === U.u3);
+await espera("quien no la creó no puede colarse como representante", () => como("u2", `insert into comunidad_miembros (comunidad, rol_pedido, rol, estado) values ('c2','representante','representante','aceptada') returning estado, rol`), (r, e) => !e && r.rows[0].estado === "solicitada" && r.rows[0].rol === "miembro");
+await espera("limpia C2 de u2", () => como("admin", `delete from comunidad_miembros where comunidad='c2' and user_id=$1`, [U.u2]), afect(1));
 await espera("limpia C3", () => como("admin", `delete from comunidad_miembros where comunidad='c3'`), bien);
 await espera("limpia C3 otra vez", () => como("admin", `delete from comunidad_miembros where comunidad='c3'`), bien);
 
