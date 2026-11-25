@@ -72,7 +72,7 @@ const filas = (n) => (r, e) => !e && r.rows.length === n;
 const afect = (n) => (r, e) => !e && r.affectedRows === n;
 
 // Comunidades (docs)
-await espera("rep crea C1", () => como("rep", `insert into docs (col,id,data) values ('comunidades','c1', $1)`, [{ nombre: "C1", by: U.rep }]), bien);
+await espera("u3 crea C1", () => como("u3", `insert into docs (col,id,data) values ('comunidades','c1', $1)`, [{ nombre: "C1", by: U.u3 }]), bien);
 await espera("u3 crea C2", () => como("u3", `insert into docs (col,id,data) values ('comunidades','c2', $1)`, [{ nombre: "C2", by: U.u3 }]), bien);
 await espera("u3 crea C3", () => como("u3", `insert into docs (col,id,data) values ('comunidades','c3', $1)`, [{ nombre: "C3", by: U.u3 }]), bien);
 
@@ -80,13 +80,13 @@ await espera("u3 crea C3", () => como("u3", `insert into docs (col,id,data) valu
 await espera("rep pide ser representante de C1", () => como("rep", `insert into comunidad_miembros (comunidad, rol_pedido, rol, estado, publico) values ('c1','representante','representante','aceptada', true) returning rol, estado`), (r, e) => !e && r.rows[0].rol === "miembro" && r.rows[0].estado === "solicitada");
 await espera("rep no se acepta a sí mismo", () => como("rep", `update comunidad_miembros set estado='aceptada', rol='representante' where comunidad='c1' returning estado, rol`), (r, e) => !e && r.rows[0].estado === "solicitada");
 await espera("comunidad inexistente", () => como("rep", `insert into comunidad_miembros (comunidad) values ('nope')`), error);
-await espera("coord acepta a rep", () => como("coord", `update comunidad_miembros set estado='aceptada', rol='representante' where comunidad='c1' returning estado, rol, decidido_por, publico`), (r, e) => !e && r.rows[0].estado === "aceptada" && r.rows[0].decidido_por === U.coord && r.rows[0].publico === false);
-await espera("rep decide salir en público", () => como("rep", `update comunidad_miembros set publico = true, cargo='Presidente' where comunidad='c1' returning publico`), (r, e) => !e && r.rows[0].publico === true);
-await espera("coord no cambia el consentimiento de rep", () => como("coord", `update comunidad_miembros set publico = false where comunidad='c1' returning publico`), (r, e) => !e && r.rows[0].publico === true);
+await espera("coord acepta a rep", () => como("coord", `update comunidad_miembros set estado='aceptada', rol='representante' where comunidad='c1' returning estado, rol, decidido_por, publico`), (r, e) => !e && r.rows[0].estado === "aceptada" && r.rows[0].decidido_por === U.coord && r.rows[0].publico === true);
+await espera("rep no puede ocultarse de la lista", () => como("rep", `update comunidad_miembros set publico = false, cargo='Presidente' where comunidad='c1' returning publico`), (r, e) => !e && r.rows[0].publico === true);
+await espera("coord tampoco puede ocultar a un miembro", () => como("coord", `update comunidad_miembros set publico = false where comunidad='c1' returning publico`), (r, e) => !e && r.rows[0].publico === true);
 await espera("rep2 pide C2", () => como("rep2", `insert into comunidad_miembros (comunidad, rol_pedido) values ('c2','representante')`), bien);
 await espera("rep (C1) no puede aceptar en C2", () => como("rep", `update comunidad_miembros set estado='aceptada' where comunidad='c2'`), afect(0));
 await espera("coord acepta rep2 en C2", () => como("coord", `update comunidad_miembros set estado='aceptada', rol='representante' where comunidad='c2'`), afect(1));
-await espera("anon ve representantes públicos", () => como("anon", `select * from comunidad_miembros`), filas(1));
+await espera("anon ve a los miembros aceptados", () => como("anon", `select * from comunidad_miembros`), filas(2));
 await espera("u2 pide C1", () => como("u2", `insert into comunidad_miembros (comunidad, mensaje) values ('c1','hola')`), bien);
 await espera("rep ve la solicitud de u2", () => como("rep", `select * from comunidad_miembros where comunidad='c1'`), filas(2));
 await espera("rep2 no ve solicitudes de C1 (solo públicos)", () => como("rep2", `select * from comunidad_miembros where comunidad='c1'`), filas(1));
@@ -96,7 +96,10 @@ await espera("u2 entra directo en C3 abierta", () => como("u2", `insert into com
 await espera("en abierta, representar sigue pidiendo aprobación", () => como("rep2", `insert into comunidad_miembros (comunidad, rol_pedido, publico) values ('c3','representante', true) returning estado, rol, publico`), (r, e) => !e && r.rows[0].estado === "solicitada" && r.rows[0].rol === "miembro" && r.rows[0].publico === false);
 await espera("anon ve cuántos miembros hay", () => como("anon", `select miembros from comunidad_cuentas() where comunidad='c3'`), (r, e) => !e && r.rows[0].miembros === 1);
 await espera("C3 pasa a cerrada", () => como("u3", `update docs set data = data || '{"ingreso":"cerrada"}' where col='comunidades' and id='c3'`), afect(1));
-await espera("cerrada no admite solicitudes", () => como("u3", `insert into comunidad_miembros (comunidad) values ('c3')`), error);
+await espera("cerrada no admite solicitudes", () => como("rep", `insert into comunidad_miembros (comunidad) values ('c3')`), error);
+await espera("quien creó C3 entra directo como representante (aunque esté cerrada)", () => como("u3", `insert into comunidad_miembros (comunidad, rol_pedido, rol, estado) values ('c3','representante','representante','aceptada') returning estado, rol, decidido_por`), (r, e) => !e && r.rows[0].estado === "aceptada" && r.rows[0].rol === "representante" && r.rows[0].decidido_por === U.u3);
+await espera("quien no la creó no puede colarse como representante", () => como("u2", `insert into comunidad_miembros (comunidad, rol_pedido, rol, estado) values ('c2','representante','representante','aceptada') returning estado, rol`), (r, e) => !e && r.rows[0].estado === "solicitada" && r.rows[0].rol === "miembro");
+await espera("limpia C2 de u2", () => como("admin", `delete from comunidad_miembros where comunidad='c2' and user_id=$1`, [U.u2]), afect(1));
 await espera("limpia C3", () => como("admin", `delete from comunidad_miembros where comunidad='c3'`), bien);
 await espera("limpia C3 otra vez", () => como("admin", `delete from comunidad_miembros where comunidad='c3'`), bien);
 
@@ -242,4 +245,90 @@ await espera("borrar C2 limpia vínculos y miembros", async () => { await como("
 
   assert.equal(fallos, 0, "Fallan:\n" + fallosLista.join("\n"));
   assert.ok(ok > 100);
+});
+
+test("comunidades: rangos, calendario y asistencia", async () => {
+  const db = await nueva();
+  const U = { rep: "00000000-0000-0000-0000-000000000011", m1: "00000000-0000-0000-0000-000000000012",
+    fuera: "00000000-0000-0000-0000-000000000013", rep2: "00000000-0000-0000-0000-000000000014", coord: "00000000-0000-0000-0000-00000000001c" };
+  for (const [k, id] of Object.entries(U)) await db.query("insert into auth.users values ($1, $2)", [id, k + "@x.pe"]);
+  await db.query("insert into public.roles_usuario (user_id, rol) values ($1, 'coordinador')", [U.coord]);
+  async function como(quien, q, p = []) {
+    if (quien === "anon") await db.exec(`set role anon; select set_config('request.jwt.claims', '{"role":"anon"}', false);`);
+    else await db.exec(`set role authenticated; select set_config('request.jwt.claims', '${JSON.stringify({ sub: U[quien], email: quien + "@x.pe", role: "authenticated", is_anonymous: false })}', false);`);
+    try { return await db.query(q, p); } finally { await db.exec("reset role; select set_config('request.jwt.claims', '', false);"); }
+  }
+  const fallosLista = [];
+  async function espera(nombre, fn, debe) {
+    let r, err = null;
+    try { r = await fn(); } catch (e) { err = e; }
+    if (!debe(r, err)) fallosLista.push(nombre + (err ? " → " + err.message : " → " + JSON.stringify(r && r.rows)));
+  }
+  const bien = (r, e) => !e, error = (r, e) => !!e;
+  const filas = (n) => (r, e) => !e && r.rows.length === n;
+  const afect = (n) => (r, e) => !e && r.affectedRows === n;
+
+  await espera("rep crea K1", () => como("rep", `insert into docs (col,id,data) values ('comunidades','k1', $1)`, [{ nombre: "K1", by: U.rep, ingreso: "abierta" }]), bien);
+  await espera("rep2 crea K2", () => como("rep2", `insert into docs (col,id,data) values ('comunidades','k2', $1)`, [{ nombre: "K2", by: U.rep2 }]), bien);
+  await espera("rep entra en K1 como representante", () => como("rep", `insert into comunidad_miembros (comunidad) values ('k1') returning rol`), (r, e) => !e && r.rows[0].rol === "representante");
+  await espera("rep2 entra en K2 como representante", () => como("rep2", `insert into comunidad_miembros (comunidad) values ('k2')`), bien);
+  await espera("m1 entra en K1 (abierta)", () => como("m1", `insert into comunidad_miembros (comunidad) values ('k1') returning estado, rango`), (r, e) => !e && r.rows[0].estado === "aceptada" && r.rows[0].rango === null);
+
+  // Rangos
+  let R, R2;
+  await espera("rep crea un rango en K1", async () => { const r = await como("rep", `insert into comunidad_rangos (comunidad, nombre, color, orden) values ('k1', '  Guardaparque ', 'bosque', 1) returning id, nombre`); R = r.rows[0].id; return r; }, (r, e) => !e && r.rows[0].nombre === "Guardaparque");
+  await espera("rep2 crea un rango en K2", async () => { const r = await como("rep2", `insert into comunidad_rangos (comunidad, nombre) values ('k2', 'Vocal') returning id`); R2 = r.rows[0].id; return r; }, bien);
+  await espera("m1 no crea rangos", () => como("m1", `insert into comunidad_rangos (comunidad, nombre) values ('k1', 'Jefe')`), error);
+  await espera("rep no crea rangos en K2", () => como("rep", `insert into comunidad_rangos (comunidad, nombre) values ('k2', 'Jefe')`), error);
+  await espera("color inventado: no", () => como("rep", `insert into comunidad_rangos (comunidad, nombre, color) values ('k1', 'Otro', 'neon')`), error);
+  await espera("nombre repetido: no", () => como("rep", `insert into comunidad_rangos (comunidad, nombre) values ('k1', 'Guardaparque')`), error);
+  await espera("rango en comunidad inexistente: no", () => como("coord", `insert into comunidad_rangos (comunidad, nombre) values ('nope', 'X')`), error);
+  await espera("rep no mueve el rango a otra comunidad", () => como("rep", `update comunidad_rangos set comunidad='k2', nombre='Guardaparques' where id=$1 returning comunidad`, [R]), (r, e) => !e && r.rows[0].comunidad === "k1");
+  await espera("m1 no se pone rango a sí misma", () => como("m1", `update comunidad_miembros set rango=$1 where user_id=$2 returning rango`, [R, U.m1]), (r, e) => !e && r.rows[0].rango === null);
+  await espera("m1 no entra con rango puesto", async () => { await como("m1", `delete from comunidad_miembros where user_id=$1`, [U.m1]); return como("m1", `insert into comunidad_miembros (comunidad, rango) values ('k1', $1) returning rango`, [R]); }, (r, e) => !e && r.rows[0].rango === null);
+  await espera("rep asigna el rango a m1", () => como("rep", `update comunidad_miembros set rango=$1 where user_id=$2 returning rango`, [R, U.m1]), (r, e) => !e && r.rows[0].rango === R);
+  await espera("rep no asigna un rango de K2", () => como("rep", `update comunidad_miembros set rango=$1 where user_id=$2`, [R2, U.m1]), error);
+  await espera("m1 cambia su cargo y conserva el rango", () => como("m1", `update comunidad_miembros set cargo='Docente' where user_id=$1 returning rango`, [U.m1]), (r, e) => !e && r.rows[0].rango === R);
+  await espera("anon ve los rangos de K1", () => como("anon", `select * from comunidad_rangos where comunidad='k1'`), filas(1));
+
+  // Calendario
+  let E;
+  await espera("rep crea una actividad", async () => { const r = await como("rep", `insert into comunidad_eventos (comunidad, titulo, tipo, fecha, hora, lugar, "by") values ('k1', 'Faena en la quebrada', 'faena', '2026-12-05', '08:00', 'Quebrada', $1) returning id, "by"`, [U.fuera]); E = r.rows[0].id; return r; }, (r, e) => !e && r.rows[0].by === U.rep);
+  await espera("m1 no crea actividades", () => como("m1", `insert into comunidad_eventos (comunidad, titulo, fecha) values ('k1', 'X', '2026-12-06')`), error);
+  await espera("rep2 no crea en K1", () => como("rep2", `insert into comunidad_eventos (comunidad, titulo, fecha) values ('k1', 'X', '2026-12-06')`), error);
+  await espera("hora mal escrita: no", () => como("rep", `insert into comunidad_eventos (comunidad, titulo, fecha, hora) values ('k1', 'X', '2026-12-06', '25:00')`), error);
+  await espera("tipo inventado: no", () => como("rep", `insert into comunidad_eventos (comunidad, titulo, fecha, tipo) values ('k1', 'X', '2026-12-06', 'rave')`), error);
+  await espera("coord crea una actividad", () => como("coord", `insert into comunidad_eventos (comunidad, titulo, fecha) values ('k1', 'Visita', '2026-12-10')`), bien);
+  await espera("anon ve el calendario público", () => como("anon", `select * from comunidad_eventos`), filas(2));
+  await espera("rep edita la actividad", () => como("rep", `update comunidad_eventos set lugar='Escuela', comunidad='k2' where id=$1 returning lugar, comunidad`, [E]), (r, e) => !e && r.rows[0].lugar === "Escuela" && r.rows[0].comunidad === "k1");
+  await espera("m1 no edita la actividad", () => como("m1", `update comunidad_eventos set titulo='x' where id=$1`, [E]), afect(0));
+
+  // Asistencia
+  await espera("m1 marca que asiste", () => como("m1", `insert into comunidad_asistencias (evento) values ($1)`, [E]), bien);
+  await espera("m1 no asiste dos veces", () => como("m1", `insert into comunidad_asistencias (evento) values ($1)`, [E]), error);
+  await espera("quien no es miembro no se apunta", () => como("fuera", `insert into comunidad_asistencias (evento) values ($1)`, [E]), error);
+  await espera("m1 no apunta a otra persona", () => como("m1", `insert into comunidad_asistencias (evento, user_id) values ($1, $2)`, [E, U.rep]), error);
+  await espera("rep ve quién asiste", () => como("rep", `select * from comunidad_asistencias`), filas(1));
+  await espera("fuera no ve quién asiste", () => como("fuera", `select * from comunidad_asistencias`), filas(0));
+  await espera("anon no ve quién asiste", () => como("anon", `select * from comunidad_asistencias`), filas(0));
+
+  // Candado del calendario y de los miembros
+  await espera("rep pone candado al calendario y a los miembros", () => como("rep", `update docs set data = data || '{"privado":{"calendario":true,"miembros":true}}' where col='comunidades' and id='k1'`), afect(1));
+  await espera("anon ya no ve el calendario", () => como("anon", `select * from comunidad_eventos`), filas(0));
+  await espera("fuera ya no ve el calendario", () => como("fuera", `select * from comunidad_eventos`), filas(0));
+  await espera("m1 sí lo ve", () => como("m1", `select * from comunidad_eventos`), filas(2));
+  await espera("anon ya no ve los rangos", () => como("anon", `select * from comunidad_rangos where comunidad='k1'`), filas(0));
+  await espera("m1 sí ve los rangos", () => como("m1", `select * from comunidad_rangos where comunidad='k1'`), filas(1));
+
+  // Borrar
+  await espera("m1 deja de asistir", () => como("m1", `delete from comunidad_asistencias where user_id=$1`, [U.m1]), afect(1));
+  await espera("borrar el rango deja al miembro sin rango", async () => { await como("rep", `delete from comunidad_rangos where id=$1`, [R]); return como("rep", `select rango from comunidad_miembros where user_id=$1`, [U.m1]); }, (r, e) => !e && r.rows[0].rango === null);
+  await espera("m1 no borra actividades", () => como("m1", `delete from comunidad_eventos where id=$1`, [E]), afect(0));
+  await espera("borrar la comunidad se lleva sus actividades y rangos", async () => {
+    await como("m1", `insert into comunidad_asistencias (evento) values ($1)`, [E]);
+    await db.query(`delete from docs where col='comunidades' and id='k1'`);
+    return db.query(`select (select count(*) from comunidad_eventos where comunidad='k1')::int a, (select count(*) from comunidad_rangos where comunidad='k1')::int b, (select count(*) from comunidad_asistencias)::int c, (select count(*) from comunidad_rangos where comunidad='k2')::int d`);
+  }, (r, e) => !e && r.rows[0].a === 0 && r.rows[0].b === 0 && r.rows[0].c === 0 && r.rows[0].d === 1);
+
+  assert.equal(fallosLista.length, 0, "Fallan:\n" + fallosLista.join("\n"));
 });

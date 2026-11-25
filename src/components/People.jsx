@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useApp } from "../AppContext.jsx";
-import { COORD, COORD_MSG, TA } from "../data/constants.js";
+import { AL_GUSTAR, alGustarDe, COORD, COORD_MSG, TA } from "../data/constants.js";
 import { salir, store, uploadPhoto } from "../lib/store.js";
 import { correoValido, enlaceRed, fotoSegura, iniciales, localeOf, shrink, simboloDe, str, waEnlace } from "../lib/utils.js";
 import { DelBtns, EmptyBox, Msg, Simbolo } from "./Shared.jsx";
@@ -166,7 +166,11 @@ export function Profile({ id, editar }) {
 
 /* Solo en tu propio perfil: los anuncios a los que diste «me gusta», para escribirles después */
 function Gustados() {
-  const { t, en, data, uid, goAviso, escribirA, votar, perfilDe } = useApp();
+  const { t, en, data, uid, goAviso, escribirA, votar, perfilDe, write } = useApp();
+  const [m, setM] = useState("");
+  const yo = perfilDe(uid);
+  const modo = alGustarDe(yo);
+  const elegir = (k) => { if (k !== modo && yo) write(setM, () => store.update("perfiles", uid, { alGustar: k })); };
   const votosDe = {};
   data.votos.forEach((v) => { votosDe[v.aviso] = (votosDe[v.aviso] || 0) + 1; });
   const mios = data.votos.filter((v) => v.by === uid).sort((x, y) => (y.ts || 0) - (x.ts || 0));
@@ -175,6 +179,13 @@ function Gustados() {
   return (
     <div className="caja" id="perfil-gustados">
       <h3 className="sub cal-prox-h">{en ? "Posts you liked" : "Anuncios que te gustaron"} {lista.length > 0 && <span className="n">{lista.length}</span>}</h3>
+      <fieldset className="formas al-gustar"><legend>{en ? "When I like a post in Discover" : "Cuando doy «me gusta» en Descubre"}</legend>
+        {Object.keys(AL_GUSTAR).map((k) => (
+          <label key={k} className="check"><input type="radio" name="al-gustar" value={k} checked={modo === k} onChange={() => elegir(k)} />{AL_GUSTAR[k][en ? 1 : 0]}</label>
+        ))}
+        <p className="hint">{en ? "Either way, it is saved here so you can write to them later." : "En los dos casos se guarda aquí, para que puedas escribirle cuando quieras."}</p>
+        <Msg text={m} />
+      </fieldset>
       {lista.length ? (
         <ul className="gustados lista-gustados">
           {lista.map((a) => {
@@ -228,6 +239,7 @@ function ProfileForm({ p, onClose }) {
       nombre: str(f.nombre, 60), rol: str(f.rol, 90), lugar: str(f.lugar, 80), com: str(f.com, 80), sobre: str(f.sobre, 1000),
       whatsapp: str(f.whatsapp, 40), telefono: str(f.telefono, 40), correo: str(f.correo, 120), web: str(f.web, 200),
       ts: p.ts || Date.now(), editado: Date.now(), by: uid,
+      alGustar: p.alGustar === "guardar" ? "guardar" : "",
     };
     REDES.forEach(([k]) => { d[k] = str(f[k], 200); });
     Object.keys(d).forEach((k) => { if (d[k] === "") delete d[k]; });

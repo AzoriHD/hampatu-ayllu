@@ -48,7 +48,8 @@ const ahora = () => new Date().toISOString();
 
 const AUTOR = { proyectos: "by", proyecto_comunidades: "by", proyecto_actualizaciones: "by", proyecto_comentarios: "by",
   proyecto_seguidores: "user_id", comunidad_miembros: "user_id", oportunidades: "by", candidaturas: "by",
-  movimientos: "registrado_por", informes: "by", proyecto_equipo: "by", roles_usuario: "by" };
+  movimientos: "registrado_por", informes: "by", proyecto_equipo: "by", roles_usuario: "by",
+  comunidad_eventos: "by", comunidad_asistencias: "user_id" };
 const DEF = {
   proyectos: { estado: "preparacion", publicado: false, revision_pedida: false, ejemplo: false, acepta_donaciones: false, moneda: "pen",
     objetivos: [], actividades: [], calendario: [], necesidades: [], fotos: [], documentos: [] },
@@ -60,6 +61,8 @@ const DEF = {
   candidaturas: { estado: "enviada", tipo: "persona", aparecer: false },
   movimientos: { estado: "registrado" },
   informes: { publicado: false, tipo: "actividad", archivos: [] },
+  comunidad_rangos: { color: "tierra", orden: 0 },
+  comunidad_eventos: { tipo: "reunion" },
 };
 
 function cumple(r, { eq, en, no } = {}) {
@@ -76,6 +79,7 @@ function ordenar(l, orden, desc) {
 /* Lo que en Supabase hacen los disparadores (triggers), aquí en pequeño */
 function efectosL(db, tabla, fila, antes, uid) {
   const T = (t) => (db[t] = db[t] || []);
+  if (tabla === "comunidad_miembros") fila.publico = fila.estado === "aceptada";
   if (tabla === "proyectos" && !antes && !fila.ejemplo && uid) {
     T("proyecto_equipo").push({ id: nuevoId(), proyecto: fila.id, user_id: uid, rol: "responsable", publico: true, by: uid, created_at: ahora() });
   }
@@ -99,6 +103,8 @@ function efectosL(db, tabla, fila, antes, uid) {
   }
 }
 function cascadaL(db, tabla, id) {
+  if (tabla === "comunidad_rangos") (db.comunidad_miembros || []).forEach((m) => { if (m.rango === id) m.rango = null; });
+  if (tabla === "comunidad_eventos") db.comunidad_asistencias = (db.comunidad_asistencias || []).filter((a) => a.evento !== id);
   if (tabla !== "proyectos") return;
   ["proyecto_equipo", "proyecto_comunidades", "proyecto_actualizaciones", "proyecto_comentarios", "proyecto_seguidores"]
     .forEach((t) => { db[t] = (db[t] || []).filter((r) => r.proyecto !== id); });
@@ -150,7 +156,8 @@ export async function crear(tabla, datos) {
     if (o) { f.proyecto = o.proyecto || null; f.comunidad = o.comunidad || null; f.categoria = o.categoria; }
   }
   const unico = { comunidad_miembros: ["comunidad", "user_id"], proyecto_comunidades: ["proyecto", "comunidad"],
-    proyecto_equipo: ["proyecto", "user_id"], proyecto_seguidores: ["proyecto", "user_id"], roles_usuario: ["user_id"] }[tabla];
+    proyecto_equipo: ["proyecto", "user_id"], proyecto_seguidores: ["proyecto", "user_id"], roles_usuario: ["user_id"],
+    comunidad_rangos: ["comunidad", "nombre"], comunidad_asistencias: ["evento", "user_id"] }[tabla];
   if (unico && l.some((r) => unico.every((k) => r[k] === f[k]))) throw { code: "23505" };
   l.push(f);
   efectosL(db, tabla, f, null, uid);

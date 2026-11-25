@@ -68,7 +68,7 @@ function SolicitudDialogo({ c, onClose, onHecho }) {
   const enviar = (ev) => {
     ev.preventDefault();
     const d = { comunidad: c.id, rol_pedido: f.rol_pedido, cargo: str(f.cargo, 80) || null, mensaje: str(f.mensaje, 500) || null };
-    if (directo) Object.assign(d, { estado: "aceptada", rol: "miembro", publico: !!f.publico });
+    if (directo) Object.assign(d, { estado: "aceptada", rol: "miembro" });
     env.enviar(() => crear("comunidad_miembros", d), (r) => {
       onHecho(r && r.estado === "aceptada" ? L("¡Ya formas parte de " + c.nombre + "!", "You're now part of " + c.nombre + "!")
         : L("Solicitud enviada. Sus representantes la verán en «Gestión».", "Request sent. Its representatives will see it under “Manage”."));
@@ -92,13 +92,14 @@ function SolicitudDialogo({ c, onClose, onHecho }) {
             <label className="check"><input type="radio" name="rp" checked={f.rol_pedido === "miembro"} onChange={() => setF({ ...f, rol_pedido: "miembro" })} />{L("Ser miembro", "Be a member")}</label>
             <label className="check"><input type="radio" name="rp" checked={f.rol_pedido === "representante"} onChange={() => setF({ ...f, rol_pedido: "representante" })} />{L("Representar a la comunidad (lo aprueban siempre)", "Represent the community (always needs approval)")}</label>
           </fieldset>
+          <div><label htmlFor="un-msg">{directo ? L("Unas palabras para presentarte", "A few words to introduce yourself") : L("Tu mensaje para sus representantes", "Your message for its representatives")}</label>
+            <textarea id="un-msg" rows={4} maxLength={500} value={f.mensaje} placeholder={L("Quién eres, de dónde vienes y por qué quieres unirte", "Who you are, where you are from and why you want to join")} onChange={(e) => setF({ ...f, mensaje: e.target.value })} />
+            <p className="hint">{directo ? L("Lo verán sus representantes en «Gestión». Puedes dejarlo en blanco.", "Its representatives will see it under “Manage”. You can leave it blank.")
+              : L("Lo leerán al decidir si te aceptan. Puedes dejarlo en blanco, pero ayuda a que te conozcan.", "They will read it when deciding. You can leave it blank, but it helps them get to know you.")}
+              {" "}<span className="meta">{f.mensaje.length}/500</span></p></div>
           <div><label htmlFor="un-cargo">{L("Cargo o papel (opcional)", "Position or role (optional)")}</label>
             <input id="un-cargo" maxLength={80} value={f.cargo} placeholder={L("Ej.: presidente de la comunidad, docente", "E.g. community president, teacher")} onChange={(e) => setF({ ...f, cargo: e.target.value })} /></div>
-          {!directo && <div><label htmlFor="un-msg">{L("Mensaje para sus representantes (opcional)", "Message for its representatives (optional)")}</label>
-            <textarea id="un-msg" rows={3} maxLength={500} value={f.mensaje} placeholder={L("Quién eres y por qué quieres unirte", "Who you are and why you want to join")} onChange={(e) => setF({ ...f, mensaje: e.target.value })} /></div>}
-          {directo
-            ? <label className="check-mini"><input type="checkbox" checked={f.publico} onChange={(e) => setF({ ...f, publico: e.target.checked })} />{L("Mostrar mi nombre entre sus miembros", "Show my name among its members")}</label>
-            : <p className="hint">{L("Tu nombre solo saldrá en la ficha si tú lo activas cuando te acepten.", "Your name will only appear on the page if you turn it on once accepted.")}</p>}
+          <p className="hint">{L("Cuando formes parte, tu nombre saldrá en la lista de miembros de la ficha.", "Once you are in, your name will appear on the page's member list.")}</p>
           <Aviso texto={env.msg} />
           <div className="panel-actions">
             <button className="btn" type="submit" disabled={env.ocupado}>{directo ? L("Unirme", "Join") : L("Enviar solicitud", "Send request")}</button>

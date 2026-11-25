@@ -836,6 +836,8 @@ span.chat-ref{cursor:default}
 .dialogo .chips{display:flex;flex-wrap:wrap;gap:8px}
 .formas{border:0;padding:0;margin:0}
 .formas legend{font-weight:700;margin-bottom:6px}
+.al-gustar{display:grid;gap:8px;margin:4px 0 16px}
+.al-gustar .hint{margin:0}
 @media (prefers-reduced-motion:reduce){.carta{transition:none!important}}
 @media (max-width:560px){.mazo-botones{gap:10px}.redondo{width:54px;height:54px}.r-gusta{width:62px;height:62px}.r-deshacer,.r-mensaje{width:46px;height:46px}}
 @media (max-width:400px){.mazo-botones{gap:8px}.mazo-botones .redondo{width:48px;height:48px}.mazo-botones .redondo svg{width:23px;height:23px}.mazo-botones .r-gusta{width:56px;height:56px}.mazo-botones .r-deshacer,.mazo-botones .r-mensaje{width:42px;height:42px}.mazo-botones .r-deshacer svg,.mazo-botones .r-mensaje svg{width:20px;height:20px}}
@@ -927,6 +929,7 @@ body{overflow-wrap:break-word;word-break:normal;hyphens:manual}
 .lista-gestion>li:last-child{border-bottom:0}
 .lista-gestion>li>span:first-child{flex:1 1 260px;min-width:0}
 .lista-gestion .nota{flex-basis:100%}
+.msg-solicitud{flex-basis:100%;margin:2px 0;padding:8px 12px;border-left:4px solid var(--line);background:var(--lana);border-radius:8px;white-space:pre-wrap}
 .sugerencias{list-style:none;margin:6px 0 0;padding:6px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--lana)}
 .form-linea{gap:8px}
 .form-linea input,.form-linea select{flex:1 1 200px;width:auto;min-width:0;max-width:100%}
@@ -1272,3 +1275,34 @@ g[tabindex]:focus-visible .g-hit{stroke:var(--link);stroke-width:2}
   :root:not([data-theme="light"]) .logo-tema.logo-claro{display:none}
   :root:not([data-theme="light"]) .logo-tema.logo-noche{display:block}
 }
+
+/* Rangos, calendario y normas de la comunidad (ComunidadExtra.jsx) */
+.clan-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width:760px){.clan-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:420px){.clan-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.pill-rango{text-transform:none;letter-spacing:0;font-size:13.5px}
+.rango .pill-rango{font-size:14px}
+.roster>li .pill-rango{justify-self:start;margin-top:2px}
+.sel-mini{min-height:36px;padding:4px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--manta);font-size:15px;max-width:100%}
+.elegir-rango{display:inline-flex;flex-direction:column;gap:4px}
+.rango-nuevo{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:12px}
+.rango-nuevo>div{display:grid;gap:4px;flex:1 1 180px;min-width:0}
+.rango-nuevo>div:nth-child(2){flex:0 1 150px}
+.cal-com-barra{justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.cal-com-barra .pestanas{margin:0}
+.eventos-com{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.evento-com{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--lana)}
+.evento-com h4{margin:6px 0 2px;font:800 19px/1.25 var(--display)}
+.evento-com .meta{margin:0}
+.evento-desc{margin-top:6px}.evento-desc p{margin:0 0 6px}
+.evento-acciones{gap:8px 14px;margin-top:8px;align-items:center;flex-wrap:wrap}
+.dia-baldosa{display:grid;place-items:center;min-width:58px;padding:6px 8px;border:1.5px solid var(--edge);border-radius:12px;background:var(--manta);line-height:1.05;text-align:center}
+.dia-baldosa b{font:800 26px/1 var(--display);font-variant-numeric:tabular-nums}
+.dia-baldosa span{font-size:13px;font-weight:700;text-transform:uppercase;color:var(--muted)}
+.ev-faena .dia-baldosa{border-color:var(--sight)}.ev-taller .dia-baldosa{border-color:var(--offer)}
+.ev-salida .dia-baldosa{border-color:var(--need)}.ev-fiesta .dia-baldosa{border-color:var(--event)}
+.proxima-fila{display:flex;gap:12px;align-items:center;margin-bottom:4px}
+.proxima-fila p{margin:2px 0 0}
+@media (max-width:420px){.clan-stat:last-child:nth-child(odd){grid-column:span 2}}
+.lista-rangos .row{gap:8px;align-items:center;flex-wrap:nowrap}
+.lista-rangos .sel-mini{width:auto}
