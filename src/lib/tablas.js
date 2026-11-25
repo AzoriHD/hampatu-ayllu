@@ -76,6 +76,7 @@ function ordenar(l, orden, desc) {
 /* Lo que en Supabase hacen los disparadores (triggers), aquí en pequeño */
 function efectosL(db, tabla, fila, antes, uid) {
   const T = (t) => (db[t] = db[t] || []);
+  if (tabla === "comunidad_miembros") fila.publico = fila.estado === "aceptada";
   if (tabla === "proyectos" && !antes && !fila.ejemplo && uid) {
     T("proyecto_equipo").push({ id: nuevoId(), proyecto: fila.id, user_id: uid, rol: "responsable", publico: true, by: uid, created_at: ahora() });
   }

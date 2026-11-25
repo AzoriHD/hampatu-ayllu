@@ -68,7 +68,7 @@ function SolicitudDialogo({ c, onClose, onHecho }) {
   const enviar = (ev) => {
     ev.preventDefault();
     const d = { comunidad: c.id, rol_pedido: f.rol_pedido, cargo: str(f.cargo, 80) || null, mensaje: str(f.mensaje, 500) || null };
-    if (directo) Object.assign(d, { estado: "aceptada", rol: "miembro", publico: !!f.publico });
+    if (directo) Object.assign(d, { estado: "aceptada", rol: "miembro" });
     env.enviar(() => crear("comunidad_miembros", d), (r) => {
       onHecho(r && r.estado === "aceptada" ? L("¡Ya formas parte de " + c.nombre + "!", "You're now part of " + c.nombre + "!")
         : L("Solicitud enviada. Sus representantes la verán en «Gestión».", "Request sent. Its representatives will see it under “Manage”."));
@@ -96,9 +96,7 @@ function SolicitudDialogo({ c, onClose, onHecho }) {
             <input id="un-cargo" maxLength={80} value={f.cargo} placeholder={L("Ej.: presidente de la comunidad, docente", "E.g. community president, teacher")} onChange={(e) => setF({ ...f, cargo: e.target.value })} /></div>
           {!directo && <div><label htmlFor="un-msg">{L("Mensaje para sus representantes (opcional)", "Message for its representatives (optional)")}</label>
             <textarea id="un-msg" rows={3} maxLength={500} value={f.mensaje} placeholder={L("Quién eres y por qué quieres unirte", "Who you are and why you want to join")} onChange={(e) => setF({ ...f, mensaje: e.target.value })} /></div>}
-          {directo
-            ? <label className="check-mini"><input type="checkbox" checked={f.publico} onChange={(e) => setF({ ...f, publico: e.target.checked })} />{L("Mostrar mi nombre entre sus miembros", "Show my name among its members")}</label>
-            : <p className="hint">{L("Tu nombre solo saldrá en la ficha si tú lo activas cuando te acepten.", "Your name will only appear on the page if you turn it on once accepted.")}</p>}
+          <p className="hint">{L("Cuando formes parte, tu nombre saldrá en la lista de miembros de la ficha.", "Once you are in, your name will appear on the page's member list.")}</p>
           <Aviso texto={env.msg} />
           <div className="panel-actions">
             <button className="btn" type="submit" disabled={env.ocupado}>{directo ? L("Unirme", "Join") : L("Enviar solicitud", "Send request")}</button>
