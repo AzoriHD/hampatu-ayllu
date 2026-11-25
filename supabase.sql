@@ -1172,6 +1172,7 @@ end $$;
 --   abierta   → quien pide ser miembro entra directamente (para representar siempre hace falta aprobación)
 --   solicitud → deciden sus representantes o la coordinación (lo de siempre; es el valor por defecto)
 --   cerrada   → no admite solicitudes nuevas (sus representantes sí pueden añadir gente)
+--   Quien creó la ficha de la comunidad entra siempre directamente como representante (la coordinación puede quitárselo).
 create or replace function public.comunidad_ingreso(c text) returns text
 language sql stable security definer set search_path = public as $$
   select coalesce((select case when d.data ->> 'ingreso' in ('abierta','solicitud','cerrada') then d.data ->> 'ingreso' end
@@ -1181,13 +1182,18 @@ grant execute on function public.comunidad_ingreso(text) to anon, authenticated;
 
 create or replace function public.miembros_antes() returns trigger
 language plpgsql security definer set search_path = public as $$
-declare decide boolean; ingreso text;
+declare decide boolean; ingreso text; creador boolean;
 begin
   if public.es_servidor() then return new; end if;
   if tg_op = 'INSERT' then
     if not public.comunidad_existe(new.comunidad) then raise exception 'La comunidad no existe' using errcode = '23503'; end if;
     decide := public.es_coordinador() or public.representa(new.comunidad);
-    if not decide then
+    creador := new.user_id = auth.uid() and public.con_cuenta() and exists (select 1 from public.docs d
+      where d.col = 'comunidades' and d.id = new.comunidad and d.by = auth.uid());
+    if creador then
+      -- Quien creó la comunidad entra ya como representante, sin esperar a nadie
+      new.rol := 'representante'; new.rol_pedido := 'representante'; new.estado := 'aceptada';
+    elsif not decide then
       ingreso := public.comunidad_ingreso(new.comunidad);
       if ingreso = 'cerrada' then raise exception 'Esta comunidad no admite solicitudes' using errcode = '42501'; end if;
       new.user_id := auth.uid(); new.rol := 'miembro';
