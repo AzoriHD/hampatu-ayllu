@@ -5,7 +5,7 @@
  */
 const VERSION = "__VERSION__";
 const CACHE = "hampatu-" + VERSION;
-const BASE = ["/", "/manifest.webmanifest", "/icon-192.png?v=6", "/apple-touch-icon.png?v=6", "/img/logo.svg",
+const BASE = ["/", "/manifest.webmanifest", "/icon-192.png?v=7", "/apple-touch-icon.png?v=7", "/img/logo-claro.svg?v=7", "/img/logo-noche.svg?v=7",
   "/img/faja-ranas-v2.webp", "/img/faja-zigzag.webp", "/img/faja-tejido.webp", "/img/tejido-fondo-640-v2.webp",
   "/img/med-rana-v2.webp", "/img/med-cerro-laguna.webp", "/img/med-quenua.webp", "/img/med-laguna.webp",
   "/img/med-lupino.webp", "/img/med-rana-2-v2.webp", "/img/med-ichu.webp", "/img/med-cerro.webp"];

@@ -64,7 +64,7 @@ img{max-width:100%}
 @media (max-width:760px){.faja-top{height:30px}}
 .topbar-in{max-width:1320px;margin:0 auto;padding:0 20px;min-height:64px;display:flex;align-items:center;gap:18px}
 .marca{display:flex;align-items:center;gap:10px;flex:none;text-decoration:none;color:var(--ink)}
-.marca img{width:44px;height:auto;display:block}
+.marca img{width:50px;height:auto;display:block}
 .marca span{font:800 23px/1 var(--display);font-stretch:84%;letter-spacing:-.01em;white-space:nowrap}
 .nav{display:flex;gap:2px;flex:1 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none;padding:4px 2px}
 .nav::-webkit-scrollbar{display:none}
@@ -126,7 +126,7 @@ img{max-width:100%}
   .topbar-in{flex-wrap:nowrap;min-height:58px;gap:8px;padding:0 12px}
   .nav-w{display:none}
   .acciones{gap:6px}
-  .marca img{width:38px}
+  .marca img{width:44px}
   .marca span{font-size:21px}
   .btn-descarga{width:40px;min-height:40px;padding:0;justify-content:center}
   .btn-descarga span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -144,7 +144,7 @@ img{max-width:100%}
 .manta{position:relative;max-width:680px;margin-inline:auto;text-align:center;background:var(--manta);border:2px solid var(--edge);border-radius:22px;padding:clamp(30px,4.4vw,48px) clamp(22px,4.4vw,52px) clamp(28px,4vw,42px);box-shadow:10px 10px 0 rgb(43 25 11 / .88)}
 .manta::after{content:"";position:absolute;inset:9px;border:1.5px dashed color-mix(in srgb,var(--muted) 42%,transparent);border-radius:15px;pointer-events:none}
 /* Logo dentro de la manta, centrado encima del título */
-.manta-logo{position:relative;z-index:2;display:block;width:clamp(130px,15vw,178px);height:auto;margin:0 auto 12px}
+.manta-logo{position:relative;z-index:2;display:block;width:clamp(170px,19vw,240px);height:auto;margin:0 auto 12px}
 .kicker{font:700 20px/1.2 var(--display);font-stretch:90%;color:var(--need);margin:0 0 4px}
 h1{font:800 clamp(60px,10.4vw,128px)/.84 var(--display);font-stretch:76%;letter-spacing:-.018em;margin:0 0 16px;text-wrap:balance}
 .thesis{font:700 clamp(23px,2.8vw,31px)/1.1 var(--display);font-stretch:90%;margin:0 0 12px;text-wrap:balance}
@@ -156,7 +156,7 @@ h1{font:800 clamp(60px,10.4vw,128px)/.84 var(--display);font-stretch:76%;letter-
 @media (max-width:760px){
   .portada{padding:92px 0 34px}
   .manta{box-shadow:6px 6px 0 rgb(43 25 11 / .88);border-radius:18px;padding-top:34px}
-  .manta-logo{width:118px;margin-bottom:10px}
+  .manta-logo{width:160px;margin-bottom:10px}
   .kicker{font-size:18px}
 }
 :root[data-theme="dark"] .manta,:root[data-theme="dark"] .pie-card{box-shadow:10px 10px 0 rgb(0 0 0 / .55)}
@@ -410,7 +410,7 @@ input[type=file]{padding:8px}
 .pie-card::after{content:"";position:absolute;inset:8px;border:1.5px dashed color-mix(in srgb,var(--muted) 40%,transparent);border-radius:15px;pointer-events:none}
 .pie-card p{margin:0}
 .pie-marca{display:flex;flex-direction:column;gap:10px;align-items:center;max-width:46ch}
-.pie-marca img{width:68px;height:auto;flex:none}
+.pie-marca img{width:120px;height:auto;flex:none}
 .pie-marca strong{font:800 21px/1 var(--display);font-stretch:86%}
 .pie-app{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px;align-items:center;max-width:52ch;padding-top:16px;border-top:1.5px dashed var(--line);width:100%}
 .pie-app p{color:var(--muted)}
@@ -865,7 +865,7 @@ span.chat-ref{cursor:default}
   .yo>span:not(.avatar){position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .yo{border-width:1.5px}
   .lang:not(.yo){padding:6px 10px;min-height:38px}
-  .marca img{width:36px}
+  .marca img{width:42px}
 }
 /* Botón «He visto al hampatu»: se hunde en cuanto se toca, sin esperas del móvil */
 .boton-hampatu{touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
@@ -1263,3 +1263,12 @@ g[tabindex]:focus-visible .g-hit{stroke:var(--link);stroke-width:2}
 .roster>li.rol-representante{border-color:var(--edge);background:var(--maiz)}
 .dialogo-clan{display:grid;gap:14px}
 .dialogo-clan .panel-h{margin:0}
+
+/* Logo según el tema: de día el sapo amarillo y Perú verde; de noche el sapo verde y Perú crema */
+.logo-tema.logo-noche{display:none}
+:root[data-theme="dark"] .logo-tema.logo-claro{display:none}
+:root[data-theme="dark"] .logo-tema.logo-noche{display:block}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .logo-tema.logo-claro{display:none}
+  :root:not([data-theme="light"]) .logo-tema.logo-noche{display:block}
+}

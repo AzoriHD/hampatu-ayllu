@@ -131,7 +131,7 @@ export default function AppPage() {
           <div className="cel"><div className="cel-pantalla"><img src="/img/app-celular.webp" width="824" height="1784" alt="" loading="lazy" /></div></div>
         </div>
         <div className="app-accion">
-          <img className="app-icono" src="/img/icono-app.png?v=5" width="512" height="512" alt="" />
+          <img className="app-icono" src="/img/icono-app.png?v=7" width="512" height="512" alt="" />
           <p className="app-nombre"><strong>Hampatu Ayllu</strong><span>{en ? "Free for Android, iPhone, Windows, Mac and Linux" : "Gratis para Android, iPhone, Windows, Mac y Linux"}</span></p>
           {estado}
           <p className="msg soft" role="status" hidden={!aviso}>{aviso}</p>

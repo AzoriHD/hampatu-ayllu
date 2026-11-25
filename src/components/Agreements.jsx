@@ -25,7 +25,8 @@ export function Footer() {
         <div className="pie-card">
           <Paseo color="amarillo" className="paseo-pie" />
           <div className="pie-marca">
-            <img src="/img/logo.svg" width="440" height="365" alt="" loading="lazy" />
+            <img className="logo-tema logo-claro" src="/img/logo-claro.svg?v=7" width="789" height="843" alt="" loading="lazy" />
+            <img className="logo-tema logo-noche" src="/img/logo-noche.svg?v=7" width="789" height="843" alt="" loading="lazy" />
             <p><strong>Hampatu Ayllu</strong> {en ? "means «community of the toad» in Quechua." : "significa «comunidad del sapo» en quechua."}</p>
           </div>
           {view !== "apoya" && (
