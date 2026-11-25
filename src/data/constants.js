@@ -54,3 +54,7 @@ export const COORD=/(-?\d{1,3}[.,]\d{3,}\s*[,;\/ ]\s*-?\d{1,3}[.,]\d{3,})|(\d{1,
 export const COORD_MSG="Quita las coordenadas exactas e indica solo la región. Los traficantes de fauna buscan esos datos.";
 
 export { SIMB, SIMB_K, SIMB_VIEJOS, TONOS } from "./simbolos.js";
+
+/* Qué pasa al dar me gusta en Descubre (se elige en el perfil): «mensaje» abre un mensaje para el autor, «guardar» solo lo guarda */
+export const AL_GUSTAR = { mensaje: ["Abrir un mensaje para quien lo publicó", "Open a message to whoever posted it"], guardar: ["Solo guardarlo en «Anuncios que te gustaron»", "Just save it in «Posts you liked»"] };
+export function alGustarDe(p) { return p && p.alGustar === "guardar" ? "guardar" : "mensaje"; }

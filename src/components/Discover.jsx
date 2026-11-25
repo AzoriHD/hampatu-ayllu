@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useApp } from "../AppContext.jsx";
-import { P } from "../data/constants.js";
+import { alGustarDe, P } from "../data/constants.js";
 import { enviarMensaje } from "../lib/mensajes.js";
 import { fotoSegura, simboloDe } from "../lib/utils.js";
 import { Msg, Simbolo, Svg } from "./Shared.jsx";
@@ -9,7 +9,9 @@ import { Avatar } from "./People.jsx";
 /*
  * Descubre: los anuncios de «Necesitamos» (piden) y «Ofrecemos» (ofrecen) de comunidades y personas,
  * de uno en uno, como cartas. Se deslizan a la derecha (me gusta) o a la izquierda (paso), o con los botones.
- * Me gusta = el voto del aviso. Mensaje = mensaje privado al autor. Donar (solo en piden) = una oferta de
+ * Me gusta = el voto del aviso, y queda guardado en «Anuncios que te gustaron» del perfil. Según lo que cada
+ * persona elija en su perfil (alGustar), al dar me gusta se abre además un mensaje para el autor
+ * («mensaje», lo normal) o solo se guarda («guardar»). Mensaje = mensaje privado al autor. Donar (solo en piden) = una oferta de
  * ayuda por mensaje privado, y queda apuntada como «Puedo ayudar». En ofrecen: «Me interesa».
  */
 const IC = {
@@ -29,7 +31,8 @@ function leerVistos() { try { return JSON.parse(localStorage.getItem(CLAVE) || "
 function guardarVistos(v) { try { localStorage.setItem(CLAVE, JSON.stringify(v)); } catch (e) { /* sin almacenamiento */ } }
 
 export default function Discover() {
-  const { en, t, data, uid, canPost, pedirCuenta, votar, apuntesDe, irPerfil } = useApp();
+  const { en, t, data, uid, canPost, pedirCuenta, votar, apuntesDe, irPerfil, perfilDe } = useApp();
+  const alGustar = alGustarDe(perfilDe(uid));
   const [mazo, setMazo] = useState("necesitamos");
   const [vistos, setVistos] = useState(leerVistos); /* {id: "paso" | "gusta"} */
   const [hist, setHist] = useState([]);              /* para deshacer */
@@ -52,11 +55,14 @@ export default function Discover() {
       if (!canPost) { pedirCuenta("Para dar me gusta necesitas una cuenta. Es gratis y tarda un minuto."); return false; }
       if (!misVotos.has(a.id)) votar(a.id);
     }
+    const escribir = dir === "gusta" && alGustar === "mensaje" && !a.ejemplo && a.by && a.by !== uid;
     setSalida({ id: a.id, dir });
     setTimeout(() => {
       setVistos((v) => { const n = { ...v, [a.id]: dir }; guardarVistos(n); return n; });
       setHist((h) => h.concat(a.id).slice(-20));
       setSalida(null);
+      if (escribir) setDialogo({ modo: "gusta", a });
+      else if (dir === "gusta") setAviso(en ? "Saved in «Posts you liked»." : "Guardado en «Anuncios que te gustaron».");
     }, 320);
     return true;
   };
@@ -133,6 +139,7 @@ export default function Discover() {
           </div>
         )}
         {actual && actual.ejemplo && <p className="meta mazo-nota">{en ? "Sample post: you cannot write to it." : "Anuncio de ejemplo: no se le puede escribir."}</p>}
+        {actual && uid && canPost && <p className="meta mazo-nota">{en ? "When you like: " : "Al dar me gusta: "}{alGustar === "mensaje" ? (en ? "a message opens for its author" : "se abre un mensaje para su autor") : (en ? "it is just saved" : "solo se guarda")} · <button type="button" className="linkbtn" onClick={() => irAjusteGustar(irPerfil, uid)}>{en ? "change" : "cambiar"}</button></p>}
         {actual && <p className="meta mazo-nota solo-raton">{en ? "Tip: use ← and → on the keyboard." : "Truco: también con ← y → del teclado."}</p>}
         <p className="mazo-toast" role="status">{aviso}</p>
       </div>
@@ -247,17 +254,24 @@ function Mini({ a, votos, onMensaje, onAyuda, piden }) {
   );
 }
 
+function irAjusteGustar(irPerfil, uid) {
+  irPerfil(uid);
+  setTimeout(() => document.getElementById("perfil-gustados")?.scrollIntoView({ behavior: "smooth", block: "start" }), 350);
+}
+
 const FORMAS = { dinero: ["Dinero", "Money"], material: ["Material", "Materials"], tiempo: ["Mi tiempo", "My time"], transporte: ["Transporte", "Transport"] };
 
 /* Mensaje rápido, oferta de ayuda (piden) o «me interesa» (ofrecen), sin salir de Descubre */
 function Dialogo({ modo, a, onClose, onHecho }) {
-  const { en, uid, firma, perfilDe, apuntar, keepFirma, irVista, setChat } = useApp();
+  const { en, uid, firma, perfilDe, apuntar, keepFirma, irVista, setChat, irPerfil } = useApp();
   const quien = useQuien()(a);
   const yo = perfilDe(uid);
   const nombre = (yo && yo.nombre) || firma;
   const [forma, setForma] = useState("dinero");
   const [cuanto, setCuanto] = useState("");
-  const [txt, setTxt] = useState(() => modo === "mensaje"
+  const [txt, setTxt] = useState(() => modo === "gusta"
+    ? (en ? `Hello! I liked your post «${a.titulo}». ` : `¡Hola! Me ha gustado tu anuncio «${a.titulo}». `)
+    : modo === "mensaje"
     ? (en ? `Hello! I saw your post «${a.titulo}». ` : `¡Hola! He visto tu anuncio «${a.titulo}». `)
     : modo === "interesa" ? (en ? `Hello! I'm interested in «${a.titulo}». ` : `¡Hola! Me interesa «${a.titulo}». `) : "");
   const [m, setM] = useState("");
@@ -283,8 +297,8 @@ function Dialogo({ modo, a, onClose, onHecho }) {
     if (!texto) { setM(en ? "Write a message." : "Escribe un mensaje."); return; }
     setEnviando(true); setM("");
     try {
-      await enviarMensaje(a.by, texto, { aviso: a.id, titulo: String(a.titulo || "").slice(0, 120), tipo: modo }, nombre);
-      if (modo !== "mensaje" && nombre) { try { await apuntar(a.id, nombre); keepFirma(nombre); } catch (e) { /* ya apuntado o sin conexión: el mensaje sí llegó */ } }
+      await enviarMensaje(a.by, texto, { aviso: a.id, titulo: String(a.titulo || "").slice(0, 120), tipo: modo === "gusta" ? "mensaje" : modo }, nombre);
+      if ((modo === "donar" || modo === "interesa") && nombre) { try { await apuntar(a.id, nombre); keepFirma(nombre); } catch (e) { /* ya apuntado o sin conexión: el mensaje sí llegó */ } }
       onHecho(modo === "donar" ? (en ? "Offer sent. They will reply in Messages." : "Oferta enviada. Te contestarán en Mensajes.") : (en ? "Message sent." : "Mensaje enviado."));
     } catch (e) {
       setM(en ? "It could not be sent. Check the connection and try again." : "No se pudo enviar. Revisa la conexión e inténtalo otra vez.");
@@ -296,7 +310,7 @@ function Dialogo({ modo, a, onClose, onHecho }) {
     <div className="modal" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="modal-caja" role="dialog" aria-modal="true" aria-labelledby="h-dialogo" ref={caja}>
         <form className="panel dialogo" onSubmit={enviar}>
-          <h2 className="panel-h" id="h-dialogo">{modo === "donar" ? (en ? "Donate or help" : "Donar o ayudar") : modo === "interesa" ? (en ? "I'm interested" : "Me interesa") : (en ? "Private message" : "Mensaje privado")}</h2>
+          <h2 className="panel-h" id="h-dialogo">{modo === "gusta" ? (en ? "You like it! Write to them?" : "¡Te gusta! ¿Le escribes?") : modo === "donar" ? (en ? "Donate or help" : "Donar o ayudar") : modo === "interesa" ? (en ? "I'm interested" : "Me interesa") : (en ? "Private message" : "Mensaje privado")}</h2>
           <p className="meta">{en ? "To " : "Para "}<strong>{quien.nombre}</strong>{en ? " · about " : " · sobre "}«{a.titulo}»</p>
           {modo === "donar" && (
             <>
@@ -312,12 +326,14 @@ function Dialogo({ modo, a, onClose, onHecho }) {
           <div><label htmlFor="d-txt">{modo === "donar" ? (en ? "Message (optional)" : "Mensaje (si quieres)") : (en ? "Message" : "Mensaje")}</label>
             <textarea id="d-txt" rows={4} maxLength={1800} value={txt} onChange={(e) => setTxt(e.target.value)} /></div>
           {modo === "donar" && <p className="hint">{en ? "It reaches them as a private message and you appear as «Can help». You arrange the details between you: Hampatu Ayllu does not collect or keep money." : "Le llega como mensaje privado y apareces en «Pueden ayudar». Los detalles los acordáis entre vosotros: Hampatu Ayllu no cobra ni guarda dinero."}</p>}
+          {modo === "gusta" && <p className="hint">{en ? "It is already saved in «Posts you liked» in your profile. " : "Ya está guardado en «Anuncios que te gustaron» de tu perfil. "}
+            <button type="button" className="linkbtn" onClick={() => { onClose(); irAjusteGustar(irPerfil, uid); }}>{en ? "Change what happens when you like" : "Cambiar qué pasa al dar me gusta"}</button></p>}
           {modo === "interesa" && <p className="hint">{en ? "It reaches them as a private message and you appear as «Interested»." : "Le llega como mensaje privado y apareces en «Interesados»."}</p>}
           <Msg text={m} />
           <div className="panel-actions">
             <button className="btn" type="submit" disabled={enviando}>{enviando ? (en ? "Sending…" : "Enviando…") : modo === "donar" ? (en ? "Send offer" : "Enviar oferta") : (en ? "Send" : "Enviar")}</button>
-            <button className="btn-ghost" type="button" onClick={onClose}>{en ? "Cancel" : "Cancelar"}</button>
-            {modo === "mensaje" && <button className="linkbtn" type="button" onClick={verChat}>{en ? "Open full conversation" : "Abrir la conversación"}</button>}
+            <button className="btn-ghost" type="button" onClick={onClose}>{modo === "gusta" ? (en ? "Just save it" : "Solo guardar") : (en ? "Cancel" : "Cancelar")}</button>
+            {(modo === "mensaje" || modo === "gusta") && <button className="linkbtn" type="button" onClick={verChat}>{en ? "Open full conversation" : "Abrir la conversación"}</button>}
           </div>
         </form>
       </div>

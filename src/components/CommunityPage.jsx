@@ -425,7 +425,8 @@ function GestionMiembros({ c, miembros, rangos }) {
             {pend.map((m) => (
               <li key={m.id}>
                 <span><b>{nombre(m)}</b> <span className="meta">· {m.rol_pedido === "representante" ? L("pide representar", "asks to represent") : L("pide ser miembro", "asks to be a member")}{m.cargo ? " · " + m.cargo : ""}</span></span>
-                {m.mensaje && <p className="meta nota">«{m.mensaje}»</p>}
+                {m.mensaje ? <p className="msg-solicitud"><b>{L("Su mensaje:", "Their message:")}</b> {m.mensaje}</p>
+                  : <p className="meta nota">{L("No ha escrito ningún mensaje.", "They did not write a message.")}</p>}
                 <span className="row">
                   <button type="button" className="btn-mini" onClick={() => env.enviar(() => cambiar("comunidad_miembros", m.id, { estado: "aceptada", rol: m.rol_pedido }))}>{m.rol_pedido === "representante" ? L("Aceptar como representante", "Accept as representative") : L("Aceptar", "Accept")}</button>
                   {m.rol_pedido === "representante" && <button type="button" className="btn-mini claro" onClick={() => env.enviar(() => cambiar("comunidad_miembros", m.id, { estado: "aceptada", rol: "miembro" }))}>{L("Solo como miembro", "Only as member")}</button>}
@@ -444,6 +445,7 @@ function GestionMiembros({ c, miembros, rangos }) {
             <li key={m.id}>
               <span><b>{nombre(m)}</b> <span className="meta">· {m.rol === "representante" ? L("Representante", "Representative") : L("Miembro", "Member")}{m.cargo ? " · " + m.cargo : ""}</span></span>
               <ElegirRango m={m} rangos={rangos} />
+              {m.mensaje && m.user_id !== c.by && <p className="msg-solicitud"><b>{L("Al entrar escribió:", "When joining they wrote:")}</b> {m.mensaje}</p>}
               {m.user_id !== uid && (
                 <span className="row">
                   <button type="button" className="linkbtn" onClick={() => env.enviar(() => cambiar("comunidad_miembros", m.id, { rol: m.rol === "representante" ? "miembro" : "representante" }))}>{m.rol === "representante" ? L("Quitar representación", "Remove representation") : L("Hacer representante", "Make representative")}</button>
