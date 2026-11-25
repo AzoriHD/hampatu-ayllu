@@ -1173,6 +1173,7 @@ end $$;
 --   solicitud → deciden sus representantes o la coordinación (lo de siempre; es el valor por defecto)
 --   cerrada   → no admite solicitudes nuevas (sus representantes sí pueden añadir gente)
 --   Quien creó la ficha de la comunidad entra siempre directamente como representante (la coordinación puede quitárselo).
+--   Los miembros aceptados salen siempre en la lista (publico = true); la comunidad puede hacer privada toda la lista (bloque 17).
 create or replace function public.comunidad_ingreso(c text) returns text
 language sql stable security definer set search_path = public as $$
   select coalesce((select case when d.data ->> 'ingreso' in ('abierta','solicitud','cerrada') then d.data ->> 'ingreso' end
@@ -1201,8 +1202,8 @@ begin
     end if;
     if new.estado <> 'solicitada' then new.decidido_por := auth.uid(); new.decidido_en := now();
     else new.decidido_por := null; new.decidido_en := null; end if;
-    if new.user_id <> auth.uid() then new.publico := false; new.mensaje := null; end if;
-    if new.estado <> 'aceptada' then new.publico := false; end if;
+    if new.user_id <> auth.uid() then new.mensaje := null; end if;
+    new.publico := new.estado = 'aceptada';
     new.created_at := now();
   else
     decide := public.es_coordinador() or public.representa(old.comunidad);
@@ -1215,11 +1216,13 @@ begin
     else
       new.decidido_por := old.decidido_por; new.decidido_en := old.decidido_en;
     end if;
-    if old.user_id <> auth.uid() then new.publico := old.publico; end if;
-    if new.estado <> 'aceptada' then new.publico := false; end if;
+    new.publico := new.estado = 'aceptada';
   end if;
   return new;
 end $$;
+
+-- Quien forma parte de una comunidad sale siempre en su lista de miembros (si la comunidad no la hace privada)
+update public.comunidad_miembros set publico = (estado = 'aceptada') where publico is distinct from (estado = 'aceptada');
 
 -- Cuántos miembros tiene cada comunidad (solo el número, sin nombres)
 create or replace function public.comunidad_cuentas() returns table (comunidad text, miembros int)

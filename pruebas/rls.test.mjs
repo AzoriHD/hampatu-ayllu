@@ -80,13 +80,13 @@ await espera("u3 crea C3", () => como("u3", `insert into docs (col,id,data) valu
 await espera("rep pide ser representante de C1", () => como("rep", `insert into comunidad_miembros (comunidad, rol_pedido, rol, estado, publico) values ('c1','representante','representante','aceptada', true) returning rol, estado`), (r, e) => !e && r.rows[0].rol === "miembro" && r.rows[0].estado === "solicitada");
 await espera("rep no se acepta a sí mismo", () => como("rep", `update comunidad_miembros set estado='aceptada', rol='representante' where comunidad='c1' returning estado, rol`), (r, e) => !e && r.rows[0].estado === "solicitada");
 await espera("comunidad inexistente", () => como("rep", `insert into comunidad_miembros (comunidad) values ('nope')`), error);
-await espera("coord acepta a rep", () => como("coord", `update comunidad_miembros set estado='aceptada', rol='representante' where comunidad='c1' returning estado, rol, decidido_por, publico`), (r, e) => !e && r.rows[0].estado === "aceptada" && r.rows[0].decidido_por === U.coord && r.rows[0].publico === false);
-await espera("rep decide salir en público", () => como("rep", `update comunidad_miembros set publico = true, cargo='Presidente' where comunidad='c1' returning publico`), (r, e) => !e && r.rows[0].publico === true);
-await espera("coord no cambia el consentimiento de rep", () => como("coord", `update comunidad_miembros set publico = false where comunidad='c1' returning publico`), (r, e) => !e && r.rows[0].publico === true);
+await espera("coord acepta a rep", () => como("coord", `update comunidad_miembros set estado='aceptada', rol='representante' where comunidad='c1' returning estado, rol, decidido_por, publico`), (r, e) => !e && r.rows[0].estado === "aceptada" && r.rows[0].decidido_por === U.coord && r.rows[0].publico === true);
+await espera("rep no puede ocultarse de la lista", () => como("rep", `update comunidad_miembros set publico = false, cargo='Presidente' where comunidad='c1' returning publico`), (r, e) => !e && r.rows[0].publico === true);
+await espera("coord tampoco puede ocultar a un miembro", () => como("coord", `update comunidad_miembros set publico = false where comunidad='c1' returning publico`), (r, e) => !e && r.rows[0].publico === true);
 await espera("rep2 pide C2", () => como("rep2", `insert into comunidad_miembros (comunidad, rol_pedido) values ('c2','representante')`), bien);
 await espera("rep (C1) no puede aceptar en C2", () => como("rep", `update comunidad_miembros set estado='aceptada' where comunidad='c2'`), afect(0));
 await espera("coord acepta rep2 en C2", () => como("coord", `update comunidad_miembros set estado='aceptada', rol='representante' where comunidad='c2'`), afect(1));
-await espera("anon ve representantes públicos", () => como("anon", `select * from comunidad_miembros`), filas(1));
+await espera("anon ve a los miembros aceptados", () => como("anon", `select * from comunidad_miembros`), filas(2));
 await espera("u2 pide C1", () => como("u2", `insert into comunidad_miembros (comunidad, mensaje) values ('c1','hola')`), bien);
 await espera("rep ve la solicitud de u2", () => como("rep", `select * from comunidad_miembros where comunidad='c1'`), filas(2));
 await espera("rep2 no ve solicitudes de C1 (solo públicos)", () => como("rep2", `select * from comunidad_miembros where comunidad='c1'`), filas(1));

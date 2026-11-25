@@ -66,8 +66,8 @@ export default function CommunityPage({ id }) {
   const d = datos || { miembros: [], vinculos: [], ops: [], infs: [], ps: [], res: [], total: 0 };
   const aceptados = d.vinculos.filter((v) => v.estado === "aceptada");
   const proy = (pid) => d.ps.find((p) => p.id === pid);
-  const reps = d.miembros.filter((m) => m.estado === "aceptada" && m.rol === "representante" && m.publico);
-  const otrosPublicos = d.miembros.filter((m) => m.estado === "aceptada" && m.rol === "miembro" && m.publico);
+  const reps = d.miembros.filter((m) => m.estado === "aceptada" && m.rol === "representante");
+  const otrosPublicos = d.miembros.filter((m) => m.estado === "aceptada" && m.rol === "miembro");
   const ocultos = Math.max(0, d.total - reps.length - otrosPublicos.length);
   const mio = meta.cuenta ? d.miembros.find((m) => m.user_id === uid) : null;
   const pend = d.miembros.filter((m) => m.estado === "solicitada" && m.user_id !== uid).length;
@@ -373,7 +373,6 @@ function MiEstado({ c, mio }) {
   return (
     <div className="mi-membresia">
       <p className="meta">{mio.rol === "representante" ? L("Representas a esta comunidad.", "You represent this community.") : L("Formas parte de esta comunidad.", "You are a member of this community.")}</p>
-      <label className="check-mini"><input type="checkbox" checked={mio.publico} onChange={(e) => env.enviar(() => cambiar("comunidad_miembros", mio.id, { publico: e.target.checked }))} />{L("Mostrar mi nombre en esta ficha", "Show my name on this page")}</label>
       <Confirmar texto={L("Dejar la comunidad", "Leave the community")} onSi={() => env.enviar(() => borrar("comunidad_miembros", mio.id))} />
       <Aviso texto={env.msg} />
     </div>
@@ -391,7 +390,7 @@ function GestionMiembros({ c, miembros }) {
   return (
     <div className="caja">
       <h3 className="sub">{L("Miembros y representación", "Members and representation")}</h3>
-      <p className="hint">{L("La comunidad decide quién la representa. Cada persona decide si su nombre sale en público; los datos de contacto nunca se publican sin su permiso.", "The community decides who represents it. Each person decides whether their name is public; contact details are never published without permission.")}</p>
+      <p className="hint">{L("La comunidad decide quién la representa. Sus miembros salen en la lista de la ficha; los datos de contacto nunca se publican sin su permiso.", "The community decides who represents it. Its members appear on the page's list; contact details are never published without permission.")}</p>
       {pend.length > 0 && (
         <>
           <h4>{L("Solicitudes", "Requests")}</h4>
@@ -416,7 +415,7 @@ function GestionMiembros({ c, miembros }) {
         <ul className="lista-gestion">
           {dentro.map((m) => (
             <li key={m.id}>
-              <span><b>{nombre(m)}</b> <span className="meta">· {m.rol === "representante" ? L("Representante", "Representative") : L("Miembro", "Member")}{m.cargo ? " · " + m.cargo : ""} · {m.publico ? L("visible", "visible") : L("oculto", "hidden")}</span></span>
+              <span><b>{nombre(m)}</b> <span className="meta">· {m.rol === "representante" ? L("Representante", "Representative") : L("Miembro", "Member")}{m.cargo ? " · " + m.cargo : ""}</span></span>
               {m.user_id !== uid && (
                 <span className="row">
                   <button type="button" className="linkbtn" onClick={() => env.enviar(() => cambiar("comunidad_miembros", m.id, { rol: m.rol === "representante" ? "miembro" : "representante" }))}>{m.rol === "representante" ? L("Quitar representación", "Remove representation") : L("Hacer representante", "Make representative")}</button>
