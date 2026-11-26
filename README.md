@@ -179,7 +179,7 @@ entero: se puede ejecutar más de una vez). Crea:
 | 13 | `donaciones`, `donaciones_eventos`, `movimientos` y la carpeta privada `justificantes` |
 | 14 | `informes`, la carpeta pública `documentos` y la función `cifras_publicas()` |
 | 15 | `auditoria` (registro de cambios) |
-| 20 | `entidades` (página «Colaboradoras»: entidades colaboradoras; solo la coordinación las añade y publica) |
+| 20 | `entidades` (página «Entidades colaboradoras»; solo la coordinación las añade y publica) |
 
 Los datos financieros privados (donaciones, movimientos, justificantes) nunca son públicos: lo público sale solo de
 `cifras_publicas()`, que suma registros verificados (pagos confirmados por la pasarela, movimientos verificados,
