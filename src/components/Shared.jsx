@@ -58,7 +58,9 @@ export function EmptyBox({ text, onClear }) {
   const { t } = useApp();
   return (
     <div className="empty">
-      <img className="sapo-vacio" src="/img/sapo-frente.webp" width="380" height="294" alt="" />
+      {/* De día el sapo amarillo y de noche el verde; el CSS enseña el que toca según el tema */}
+      <img className="sapo-vacio logo-tema logo-claro" src="/img/sapo-frente.webp?v=2" width="380" height="294" alt="" />
+      <img className="sapo-vacio logo-tema logo-noche" src="/img/sapo-frente-noche.webp" width="380" height="294" alt="" />
       <div>
         <p>{t(text)}</p>
         {onClear && <button type="button" className="linkbtn" onClick={onClear}>{t("Quitar filtros")}</button>}
