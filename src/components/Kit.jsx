@@ -74,9 +74,9 @@ export function Barra({ valor, total, etiqueta }) {
 export function Pestanas({ opciones, valor, onCambio, etiqueta }) {
   return (
     <div className="pestanas" role="group" aria-label={etiqueta}>
-      {opciones.map(([k, txt, n]) => (
+      {opciones.map(([k, txt, n, color]) => (
         <button key={k} type="button" className="chipbtn" aria-pressed={valor === k ? "true" : "false"} onClick={() => onCambio(k)}>
-          {txt}{n ? <span className="n">{n}</span> : null}
+          {txt}{n ? <span className={"n" + (color ? " n-color" : "")} style={color ? { "--nc": color } : undefined}>{n}</span> : null}
         </button>
       ))}
     </div>

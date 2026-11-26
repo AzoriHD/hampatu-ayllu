@@ -32,6 +32,18 @@ export default function Collaborate() {
     if (id) setTimeout(() => { const el = document.getElementById("o-" + id); if (el) { el.scrollIntoView({ block: "center" }); el.classList.add("flash"); } }, 0);
   }, [datos]);
 
+  /* Si se llega desde «Mi organización quiere colaborar», se abre ya la propuesta como organización
+     (sin cuenta, se pide entrar y se abre al volver) */
+  const [tipoProp, setTipoProp] = useState("");
+  useEffect(() => {
+    let t = "";
+    try { t = sessionStorage.getItem("hampatu-propuesta") || ""; } catch (e) { /* ignore */ }
+    if (!t) return;
+    if (!canPost) { pedirCuenta(L("Para proponer una colaboración necesitas una cuenta. Es gratis y tarda un minuto.", "To propose a collaboration you need an account. It is free and takes a minute.")); return; }
+    try { sessionStorage.removeItem("hampatu-propuesta"); } catch (e) { /* ignore */ }
+    setTipoProp(t); setForm("propuesta");
+  }, [canPost]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const abrir = (k) => {
     if (!canPost) { pedirCuenta(L("Para colaborar necesitas una cuenta. Es gratis y tarda un minuto.", "To get involved you need an account. It is free and takes a minute.")); return; }
     setForm(form === k ? "" : k);
@@ -53,7 +65,7 @@ export default function Collaborate() {
         </div>
       </div>
       {form === "necesidad" && <OportunidadForm onClose={() => setForm("")} />}
-      {form === "propuesta" && <CandidaturaForm proyectos={((datos && datos.ps) || []).filter((p) => p.publicado && !p.ejemplo)} onClose={() => setForm("")} />}
+      {form === "propuesta" && <CandidaturaForm key={tipoProp} tipoInicial={tipoProp} proyectos={((datos && datos.ps) || []).filter((p) => p.publicado && !p.ejemplo)} onClose={() => { setForm(""); setTipoProp(""); }} />}
 
       <div className="caja">
         <Pestanas etiqueta={L("Tipo de ayuda", "Type of help")} valor={cat} onCambio={setCat}
@@ -180,11 +192,11 @@ export function OportunidadForm({ o, presetProyecto, presetComunidad, onClose })
 }
 
 /* Ofrecerse a una necesidad o proponer una colaboración libre */
-export function CandidaturaForm({ oportunidad, proyectos = [], onClose }) {
+export function CandidaturaForm({ oportunidad, proyectos = [], tipoInicial, onClose }) {
   const L = useL(), et = useEt();
   const { msg, setMsg, ocupado, enviar } = useEnviar();
   const [hecho, setHecho] = useState(false);
-  const [f, setF] = useState({ tipo: "persona", organizacion: "", categoria: "voluntariado", proyecto: "", mensaje: "", experiencia: "", disponibilidad: "", contacto: "", aparecer: false, acepto: false });
+  const [f, setF] = useState({ tipo: TIPOS_CAND[tipoInicial] ? tipoInicial : "persona", organizacion: "", categoria: "voluntariado", proyecto: "", mensaje: "", experiencia: "", disponibilidad: "", contacto: "", aparecer: false, acepto: false });
   const set = (k, v) => setF((x) => ({ ...x, [k]: v }));
   const guardar = (ev) => {
     ev.preventDefault();

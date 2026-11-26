@@ -728,7 +728,7 @@ img.avatar{background:var(--maiz)}
 #v-descubre{--med:url(/img/med-lupino.webp)}
 .b-mensajes{position:relative;color:var(--ink);text-decoration:none}
 .b-mensajes[aria-current="page"]{background:var(--accent);border-color:var(--edge)}
-.badge-n{position:absolute;top:-4px;right:-5px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--need);color:#fff;font:800 12px/20px var(--body);text-align:center;border:2px solid var(--manta)}
+.badge-n{position:absolute;top:-4px;right:-5px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--nc,#c0392b);color:#fff;font:800 12px/20px var(--body);text-align:center;border:2px solid var(--manta)}
 .chat-marco{display:grid;grid-template-columns:minmax(240px,320px) 1fr;padding:0;overflow:hidden;height:min(76vh,720px);min-height:460px}
 .chat-lista{border-right:1.5px solid var(--line);display:flex;flex-direction:column;min-height:0}
 .chat-lista-h{margin:0;padding:16px 18px 12px;font:800 26px/1.1 var(--display);font-stretch:85%;border-bottom:1.5px dashed var(--line)}
@@ -1376,3 +1376,10 @@ g[tabindex]:focus-visible .g-hit{stroke:var(--link);stroke-width:2}
 .ent-marcas{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px 16px}
 .ent-marcas legend{font-size:15px;font-weight:700;margin-bottom:6px;padding:0}
 .ent-logo-ed{align-items:center}
+
+/* ---------- Numeritos de aviso en el menú (cada tipo con su color, ver src/lib/notis.js) ---------- */
+.nav a .badge-n.nav-n{position:static;display:inline-block;vertical-align:2px;margin-left:5px;min-width:19px;height:19px;font-size:11.5px;line-height:15px;border-width:2px}
+.bn-ico{position:relative;display:block;line-height:0}
+.abajo .bn-ico .badge-n{top:-3px;right:-2px;line-height:16px;height:20px}
+.chipbtn .n.n-color{opacity:1;color:#fff;background:var(--nc);border-radius:999px;padding:0 6px;min-width:20px;display:inline-block;text-align:center}
+.flecha-n{position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:var(--nc);border:2px solid var(--manta)}

@@ -8,6 +8,7 @@ import { CATEGORIAS_C, ESTADOS_CAND, ESTADOS_P, PROYECTOS_EJEMPLO, TIPOS_ACT, TI
 import { REMOTE } from "../lib/store.js";
 import { borrar, cambiar, crear, enlaceJustificante, filas, useCarga, useCifras } from "../lib/tablas.js";
 import { puede } from "../lib/permisos.js";
+import { NOTIS } from "../lib/notis.js";
 import { dinero, estadoDonaciones } from "../lib/donaciones.js";
 import { useAvistamientos } from "../lib/avistamientos.js";
 import { Autor } from "./People.jsx";
@@ -93,12 +94,12 @@ export default function Coordination() {
   }
   const tabs = [
     ["bandeja", L("Por hacer", "To do"), n.total],
-    ["proyectos", L("Proyectos", "Projects"), n.proyectos],
-    ["comunidades", L("Comunidades", "Communities"), n.comunidades],
-    ["candidaturas", L("Candidaturas", "Applications"), n.candidaturas],
-    ["finanzas", L("Dinero", "Money"), n.finanzas],
-    ["informes", L("Informes", "Reports"), n.informes],
-    ["resultados", L("Validar", "Validate"), n.resultados],
+    ["proyectos", L("Proyectos", "Projects"), n.proyectos, NOTIS.coordinacion.color],
+    ["comunidades", L("Comunidades", "Communities"), n.comunidades, NOTIS.solicitudes.color],
+    ["candidaturas", L("Candidaturas", "Applications"), n.candidaturas, NOTIS.propuestas.color],
+    ["finanzas", L("Dinero", "Money"), n.finanzas, NOTIS.coordinacion.color],
+    ["informes", L("Informes", "Reports"), n.informes, NOTIS.coordinacion.color],
+    ["resultados", L("Validar", "Validate"), n.resultados, NOTIS.coordinacion.color],
     ...(permisos.admin ? [["permisos", L("Equipo y permisos", "Team and permissions")]] : []),
     ["registro", L("Registro", "Log")],
   ];
