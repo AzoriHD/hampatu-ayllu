@@ -76,7 +76,7 @@ export default function Partners() {
           </div>
         </header>
         <div className="bar">
-          <a className="btn" href="#colabora">{L("Mi organización quiere colaborar", "My organisation wants to help")}</a>
+          <a className="btn" href="#colabora" onClick={() => { try { sessionStorage.setItem("hampatu-propuesta", "organizacion"); } catch (x) { /* ignore */ } }}>{L("Mi organización quiere colaborar", "My organisation wants to help")}</a>
           {coord && !falta && <button type="button" className="btn-ghost" onClick={() => setNueva(!nueva)}>{L("Añadir una entidad", "Add an organisation")}</button>}
         </div>
       </div>

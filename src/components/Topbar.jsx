@@ -5,7 +5,7 @@ import { useApp } from "../AppContext.jsx";
 import { SIMB } from "../data/constants.js";
 import { Svg } from "./Shared.jsx";
 import { AccountButton } from "./Account.jsx";
-import { sinLeerTotal, useMensajes } from "../lib/mensajes.js";
+import { NOTI_DE, NOTIS, textoNoti, useNotis } from "../lib/notis.js";
 
 /* Secciones: [vista, español, inglés, icono]. En el móvil van todas en la barra de abajo, que se desliza. */
 export const SECCIONES = [
@@ -75,6 +75,14 @@ function BotonMusica() {
   );
 }
 
+/* Numerito de aviso con el color de su tipo */
+export function Numerito({ tipo, n, className = "" }) {
+  const { en } = useApp();
+  if (!n) return null;
+  return <span className={"badge-n " + className} style={{ "--nc": NOTIS[tipo].color }} title={textoNoti(tipo, n, en)}>{n > 99 ? "99+" : n}</span>;
+}
+const rotulo = (txt, tipo, n, en) => (n ? txt + " (" + textoNoti(tipo, n, en) + ")" : undefined);
+
 function enlace(view, v) {
   return view === v || ACTIVA[view] === v ? "page" : undefined;
 }
@@ -83,6 +91,7 @@ function enlace(view, v) {
 export function Topbar() {
   const { en, view, irVista, oscuro, cambiarTema, cambiarIdioma, t, esApp } = useApp();
   const secciones = useSecciones();
+  const notis = useNotis();
   const navRef = useRef(null);
 
   /* Mantiene a la vista la sección activa cuando la fila de secciones no cabe */
@@ -99,7 +108,14 @@ export function Topbar() {
   const medir = useCallback(() => {
     const n = navRef.current; if (!n) return;
     const max = n.scrollWidth - n.clientWidth;
-    setBordes((b) => { const x = { izq: n.scrollLeft > 4, der: n.scrollLeft < max - 4 }; return x.izq === b.izq && x.der === b.der ? b : x; });
+    /* Si hay numeritos escondidos a un lado, la flecha de ese lado lleva un punto del mismo color */
+    let ci = "", cd = "";
+    n.querySelectorAll(".badge-n").forEach((el) => {
+      const a = el.closest("a"), c = el.style.getPropertyValue("--nc");
+      if (a.offsetLeft + a.offsetWidth - 8 > n.scrollLeft + n.clientWidth) cd = cd || c;
+      else if (a.offsetLeft + 8 < n.scrollLeft) ci = ci || c;
+    });
+    setBordes((b) => { const x = { izq: n.scrollLeft > 4, der: n.scrollLeft < max - 4, ci, cd }; return x.izq === b.izq && x.der === b.der && x.ci === b.ci && x.cd === b.cd ? b : x; });
   }, []);
   useEffect(() => {
     medir();
@@ -108,6 +124,8 @@ export function Topbar() {
     window.addEventListener("resize", medir);
     return () => { ro?.disconnect(); window.removeEventListener("resize", medir); };
   }, [medir, en, secciones.length]);
+  const firma = Object.values(notis).join(",");
+  useEffect(() => { medir(); }, [medir, firma]);
   const mover = (dir) => { const n = navRef.current; if (n) n.scrollBy({ left: dir * Math.max(160, n.clientWidth * 0.6), behavior: "smooth" }); };
   const rueda = (e) => { const n = navRef.current; if (n && Math.abs(e.deltaY) > Math.abs(e.deltaX) && n.scrollWidth > n.clientWidth) { n.scrollLeft += e.deltaY; } };
   const drag = useRef(null);
@@ -131,14 +149,16 @@ export function Topbar() {
           <span>Hampatu Ayllu</span>
         </a>
         <div className="nav-w" data-izq={bordes.izq ? "" : undefined} data-der={bordes.der ? "" : undefined}>
-          <button type="button" className="nav-flecha izq" tabIndex={-1} aria-hidden="true" onClick={() => mover(-1)}><Svg width="2.4" d='<path d="M15 18l-6-6 6-6"/>' /></button>
+          <button type="button" className="nav-flecha izq" tabIndex={-1} aria-hidden="true" onClick={() => mover(-1)}><Svg width="2.4" d='<path d="M15 18l-6-6 6-6"/>' />{bordes.ci && <span className="flecha-n" style={{ "--nc": bordes.ci }} />}</button>
           <nav className="nav" ref={navRef} aria-label={en ? "Sections" : "Secciones"} onScroll={medir} onWheel={rueda}
             onPointerDown={arrastrar} onPointerMove={arrastrando} onPointerUp={soltar} onPointerCancel={soltar} onClickCapture={sinClicTrasArrastre}>
             {secciones.map(([v, es, enl]) => (
-              <a key={v} href={"#" + v} id={"tab-" + v} aria-current={enlace(view, v)} draggable="false" className={v === "apoya" ? "nav-donar" : undefined}>{en ? enl : es}</a>
+              <a key={v} href={"#" + v} id={"tab-" + v} aria-current={enlace(view, v)} draggable="false" className={v === "apoya" ? "nav-donar" : undefined}
+                aria-label={NOTI_DE[v] ? rotulo(en ? enl : es, NOTI_DE[v], notis[NOTI_DE[v]], en) : undefined}>
+                {en ? enl : es}{NOTI_DE[v] && <Numerito tipo={NOTI_DE[v]} n={notis[NOTI_DE[v]]} className="nav-n" />}</a>
             ))}
           </nav>
-          <button type="button" className="nav-flecha der" tabIndex={-1} aria-hidden="true" onClick={() => mover(1)}><Svg width="2.4" d='<path d="M9 18l6-6-6-6"/>' /></button>
+          <button type="button" className="nav-flecha der" tabIndex={-1} aria-hidden="true" onClick={() => mover(1)}><Svg width="2.4" d='<path d="M9 18l6-6-6-6"/>' />{bordes.cd && <span className="flecha-n" style={{ "--nc": bordes.cd }} />}</button>
         </div>
         <div className="acciones">
           {!esApp && (
@@ -146,7 +166,7 @@ export function Topbar() {
               <Svg width="2" d={ICONO_APP} /><span>{en ? "Get the app" : "Descargar app"}</span>
             </a>
           )}
-          <BotonMensajes />
+          <BotonMensajes n={notis.mensajes} />
           <AccountButton />
           <BotonMusica />
           <button className="icono-btn" type="button" id="b-tema" aria-label={t(oscuro ? "Modo claro" : "Modo oscuro")} title={t(oscuro ? "Modo claro" : "Modo oscuro")} onClick={cambiarTema}>
@@ -161,16 +181,14 @@ export function Topbar() {
 }
 
 /* Mensajes privados, con el número de los que no se han leído */
-function BotonMensajes() {
-  const { en, meta, uid, view } = useApp();
-  const lista = useMensajes();
+function BotonMensajes({ n }) {
+  const { en, meta, view } = useApp();
   if (!meta.cuenta) return null;
-  const n = sinLeerTotal(lista, uid);
   const txt = (en ? "Messages" : "Mensajes") + (n ? " (" + n + (en ? " unread)" : " sin leer)") : "");
   return (
     <a className="icono-btn b-mensajes" href="#mensajes" id="b-mensajes" aria-label={txt} title={txt} aria-current={view === "mensajes" ? "page" : undefined}>
       <Svg width="2" d='<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>' />
-      {n > 0 && <span className="badge-n" aria-hidden="true">{n > 99 ? "99+" : n}</span>}
+      <Numerito tipo="mensajes" n={n} />
     </a>
   );
 }
@@ -180,6 +198,7 @@ function BotonMensajes() {
 export function BottomNav() {
   const { en, view } = useApp();
   const secciones = useSecciones();
+  const notis = useNotis();
   const fila = useRef(null);
   const [bordes, setBordes] = useState({ izq: false, der: false });
 
@@ -211,7 +230,9 @@ export function BottomNav() {
     <nav className="abajo" aria-label={en ? "Sections" : "Secciones"}>
       <div className="abajo-fila" ref={fila} onScroll={medir} data-izq={bordes.izq ? "" : undefined} data-der={bordes.der ? "" : undefined}>
         {secciones.map(([v, es, enl, d]) => (
-          <a key={v} href={"#" + v} id={"bn-" + v} aria-current={enlace(view, v)}><Svg width="1.9" d={d} /><span>{en ? enl : es}</span></a>
+          <a key={v} href={"#" + v} id={"bn-" + v} aria-current={enlace(view, v)}
+            aria-label={NOTI_DE[v] ? rotulo(en ? enl : es, NOTI_DE[v], notis[NOTI_DE[v]], en) : undefined}>
+            <span className="bn-ico"><Svg width="1.9" d={d} />{NOTI_DE[v] && <Numerito tipo={NOTI_DE[v]} n={notis[NOTI_DE[v]]} />}</span><span>{en ? enl : es}</span></a>
         ))}
       </div>
     </nav>
