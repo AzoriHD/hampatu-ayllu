@@ -291,8 +291,9 @@ instaladas con npm, así que la primera vez que lo bajes haz `npm install`.
   próxima vez). En el móvil cuelga debajo del botón y se esconde solo a los 4 segundos; con la música puesta,
   un toque lo vuelve a sacar y otro apaga. En iPhone y iPad no sale: la web no puede cambiar el volumen
   allí, se usan los botones del móvil.
-- El sapo de la portada (`sapo-paseo.webp`, 6 fotogramas lentos) camina por el borde de la manta, se sienta,
-  se da la vuelta y vuelve (`pasear`, `girar`, `andar` y `sentar` en `src/styles.css`).
+- El sapo de la portada y del pie (`src/components/Paseo.jsx`, amarillo o verde) camina por el borde de la
+  manta (`sapo-<color>-anda.webp`), se sienta (`sapo-<color>-sentado.webp`), a veces caza una mosca
+  (`sapo-<color>-caza.webp`), se da la vuelta y vuelve (`pasear`, `girar`, `andar` y `sentar` en `src/styles.css`).
 - La especie, la lámina: las dos coloraciones conocidas (verde y negro, amarillo y marrón). Arriba, de perfil y
   exactamente al mismo tamaño: `public/img/morfo-verde-v2.webp` y `morfo-amarillo-v2.webp` (736 × 486, fondo
   transparente, el sapo ocupa 720 px de ancho en las dos). Debajo, el lomo, el vientre y de frente
