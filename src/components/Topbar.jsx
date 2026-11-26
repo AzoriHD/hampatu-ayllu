@@ -19,6 +19,7 @@ export const SECCIONES = [
   ["artesania", "Artesanía", "Crafts", '<path d="M12 2.8 21.2 12 12 21.2 2.8 12z"/><path d="M12 7.6 16.4 12 12 16.4 7.6 12z"/><path d="M12 11v2"/>'],
   ["especie", "La especie", "The species", SIMB.sapo[2]],
   ["impacto", "Impacto", "Impact", '<path d="M4 20.5h16"/><rect x="5.5" y="12.5" width="3" height="5.5" rx="1"/><rect x="10.5" y="8.5" width="3" height="9.5" rx="1"/><rect x="15.5" y="4.5" width="3" height="13.5" rx="1"/>'],
+  ["entidades", "Colaboradoras", "Partners", '<path d="M2.5 12.5 6 9l3.2 1.6L12 8.5l2.8 2.1L18 9l3.5 3.5"/><path d="M6 9v6.5l3 2.5M18 9v6.5l-3 2.5"/><path d="m9.2 10.6 3.6 3.2a1.2 1.2 0 0 1-1.6 1.8l-2-1.8M12.8 13.8l1.4 1.3a1.2 1.2 0 0 1-1.6 1.7l-1.2-1"/>'],
   ["apoya", "Donar", "Donate", '<path d="M12 20.3s-7.8-4.6-7.8-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.8 2.5c0 5.6-7.8 10.2-7.8 10.2z"/>'],
   ["recompensas", "Recompensas", "Rewards", '<circle cx="12" cy="9" r="5.6"/><path d="M8.7 13.4 7.2 21l4.8-2.6 4.8 2.6-1.5-7.6"/><path d="m12 6.4.8 1.7 1.8.2-1.3 1.2.3 1.8-1.6-.9-1.6.9.3-1.8-1.3-1.2 1.8-.2z"/>'],
 ];

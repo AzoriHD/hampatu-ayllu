@@ -238,7 +238,7 @@ export function hayEjemplos() { return COLS.some((c) => Object.keys(state[c]).so
 export async function uploadPhoto(blob) {
   if (REMOTE) {
     const uid = await ensureUid();
-    const path = uid + "/" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8) + ".jpg";
+    const path = uid + "/" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8) + (blob.type === "image/png" ? ".png" : ".jpg");
     const { error } = await sb.storage.from("fotos").upload(path, blob, { contentType: blob.type || "image/jpeg", cacheControl: "31536000" });
     if (error) throw { code: "foto" };
     return sb.storage.from("fotos").getPublicUrl(path).data.publicUrl;

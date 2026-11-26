@@ -31,6 +31,7 @@ const ProjectPage = lazy(() => import("./components/Projects.jsx").then((m) => (
 const CommunityPage = lazy(() => import("./components/CommunityPage.jsx"));
 const Collaborate = lazy(() => import("./components/Collaborate.jsx"));
 const Impact = lazy(() => import("./components/Impact.jsx"));
+const Partners = lazy(() => import("./components/Partners.jsx"));
 const Coordination = lazy(() => import("./components/Coordination.jsx"));
 
 function leer(clave, porDefecto) {
@@ -292,6 +293,7 @@ export default function App() {
           {view === "comunidad" && detalle && <CommunityPage key={detalle.id} id={detalle.id} />}
           {view === "colabora" && <Collaborate />}
           {view === "impacto" && <Impact />}
+          {view === "entidades" && <Partners />}
           {view === "coordinacion" && <Coordination />}
           {view === "apoya" && <Support />}
         </Suspense>
