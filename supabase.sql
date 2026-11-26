@@ -1511,3 +1511,32 @@ end $$;
 drop trigger if exists miembros_relevo on public.comunidad_miembros;
 create trigger miembros_relevo after update or delete on public.comunidad_miembros
   for each row execute function public.miembros_relevo();
+
+-- 20. ENTIDADES COLABORADORAS: organizaciones que apoyan el proyecto (página «Colaboradoras»).
+-- Si la base de datos ya existe, pega solo este bloque. Las lee todo el mundo cuando están publicadas;
+-- las que no (p. ej. aún en conversaciones) solo la coordinación, que es la única que las añade, cambia o borra.
+create table if not exists public.entidades (
+  id uuid primary key default gen_random_uuid(),
+  nombre text not null check (char_length(nombre) between 2 and 140),
+  pais text check (pais is null or char_length(pais) <= 80),
+  tipo text not null default 'ong' check (tipo in ('ong','asociacion','academica','publica','area','empresa','comunitaria','otra')),
+  web text check (web is null or (char_length(web) <= 300 and web ~* '^https://')),
+  logo text check (logo is null or (char_length(logo) <= 500 and logo ~* '^https://')),
+  descripcion text check (descripcion is null or char_length(descripcion) <= 2000),
+  apoyos jsonb not null default '[]'::jsonb check (jsonb_typeof(apoyos) = 'array' and jsonb_array_length(apoyos) <= 12),
+  publicada boolean not null default false,
+  orden integer not null default 0,
+  by uuid default auth.uid(),
+  created_at timestamptz not null default now()
+);
+alter table public.entidades enable row level security;
+drop policy if exists "entidades: leer" on public.entidades;
+drop policy if exists "entidades: crear" on public.entidades;
+drop policy if exists "entidades: cambiar" on public.entidades;
+drop policy if exists "entidades: borrar" on public.entidades;
+create policy "entidades: leer" on public.entidades for select to anon, authenticated using (publicada or public.es_coordinador());
+create policy "entidades: crear" on public.entidades for insert to authenticated with check (public.es_coordinador());
+create policy "entidades: cambiar" on public.entidades for update to authenticated using (public.es_coordinador()) with check (public.es_coordinador());
+create policy "entidades: borrar" on public.entidades for delete to authenticated using (public.es_coordinador());
+drop trigger if exists entidades_auditar on public.entidades;
+create trigger entidades_auditar after insert or update or delete on public.entidades for each row execute function public.auditar();

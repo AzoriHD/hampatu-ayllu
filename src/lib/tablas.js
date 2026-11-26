@@ -49,7 +49,7 @@ const ahora = () => new Date().toISOString();
 const AUTOR = { proyectos: "by", proyecto_comunidades: "by", proyecto_actualizaciones: "by", proyecto_comentarios: "by",
   proyecto_seguidores: "user_id", comunidad_miembros: "user_id", oportunidades: "by", candidaturas: "by",
   movimientos: "registrado_por", informes: "by", proyecto_equipo: "by", roles_usuario: "by",
-  comunidad_eventos: "by", comunidad_asistencias: "user_id" };
+  comunidad_eventos: "by", comunidad_asistencias: "user_id", entidades: "by" };
 const DEF = {
   proyectos: { estado: "preparacion", publicado: false, revision_pedida: false, ejemplo: false, acepta_donaciones: false, moneda: "pen",
     objetivos: [], actividades: [], calendario: [], necesidades: [], fotos: [], documentos: [] },
@@ -63,6 +63,7 @@ const DEF = {
   informes: { publicado: false, tipo: "actividad", archivos: [] },
   comunidad_rangos: { color: "tierra", orden: 0 },
   comunidad_eventos: { tipo: "reunion" },
+  entidades: { tipo: "ong", apoyos: [], publicada: false, orden: 0 },
 };
 
 function cumple(r, { eq, en, no } = {}) {
