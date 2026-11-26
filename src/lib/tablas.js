@@ -102,6 +102,16 @@ function efectosL(db, tabla, fila, antes, uid) {
     if (tabla === "proyectos" && fila.publicado) fila.revision_pedida = false;
   }
 }
+/* Una comunidad con miembros nunca se queda sin representante: si se va (o deja de serlo) el único,
+   pasa a representarla el miembro más antiguo. En Supabase lo hace miembros_relevo() (bloque 19). */
+function relevoL(db, antes) {
+  if (!antes || antes.rol !== "representante" || antes.estado !== "aceptada") return;
+  const ms = (db.comunidad_miembros || []).filter((m) => m.comunidad === antes.comunidad && m.estado === "aceptada");
+  if (ms.some((m) => m.rol === "representante")) return;
+  const llegada = (m) => m.decidido_en || m.created_at || "";
+  const sig = ms.filter((m) => m.id !== antes.id).sort((a, b) => (llegada(a) < llegada(b) ? -1 : llegada(a) > llegada(b) ? 1 : 0))[0];
+  if (sig) { sig.rol = "representante"; sig.rol_pedido = "representante"; }
+}
 function cascadaL(db, tabla, id) {
   if (tabla === "comunidad_rangos") (db.comunidad_miembros || []).forEach((m) => { if (m.rango === id) m.rango = null; });
   if (tabla === "comunidad_eventos") db.comunidad_asistencias = (db.comunidad_asistencias || []).filter((a) => a.evento !== id);
@@ -182,6 +192,7 @@ export async function cambiar(tabla, id, parte, campo = "id") {
   Object.assign(f, parte);
   if ("actualizado" in antes || tabla === "proyectos" || tabla === "oportunidades") f.actualizado = ahora();
   efectosL(db, tabla, f, antes, uid);
+  if (tabla === "comunidad_miembros") relevoL(db, antes);
   guardarL(db);
   avisar();
   return { ...f };
@@ -197,7 +208,9 @@ export async function borrar(tabla, id, campo = "id") {
     return;
   }
   const db = leerL();
+  const ido = (db[tabla] || []).find((r) => r[campo] === id);
   db[tabla] = (db[tabla] || []).filter((r) => r[campo] !== id);
+  if (tabla === "comunidad_miembros") relevoL(db, ido);
   cascadaL(db, tabla, id);
   guardarL(db);
   avisar();

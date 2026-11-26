@@ -215,7 +215,7 @@ export default function CommunityPage({ id }) {
               {!otrosPublicos.length && !ocultos && <p className="meta">{L("Todavía no hay miembros.", "No members yet.")}</p>}
             </>
           )}
-          <MiEstado c={c} mio={mio} />
+          <MiEstado c={c} mio={mio} miembros={d.miembros} />
         </Apartado>
       )}
 
@@ -393,13 +393,23 @@ function Propuestas({ vinculos, proy }) {
 }
 
 /* Lo mío en esta comunidad: salir o no en público y dejarla */
-function MiEstado({ c, mio }) {
+function MiEstado({ c, mio, miembros = [] }) {
+  const { perfilDe } = useApp();
   const L = useL();
   const env = useEnviar();
   if (!mio || mio.estado !== "aceptada") return null;
+  /* Si se va el único representante, la base de datos pasa el cargo al miembro más antiguo (bloque 19) */
+  const otros = miembros.filter((m) => m.estado === "aceptada" && m.id !== mio.id);
+  const unico = mio.rol === "representante" && !otros.some((m) => m.rol === "representante");
+  const llegada = (m) => m.decidido_en || m.created_at || "";
+  const relevo = unico ? [...otros].sort((a, b) => (llegada(a) < llegada(b) ? -1 : llegada(a) > llegada(b) ? 1 : 0))[0] : null;
+  const nombreRelevo = relevo ? (perfilDe(relevo.user_id) || {}).nombre || L("el miembro más antiguo", "the longest-standing member") : "";
   return (
     <div className="mi-membresia">
       <p className="meta">{mio.rol === "representante" ? L("Representas a esta comunidad.", "You represent this community.") : L("Formas parte de esta comunidad.", "You are a member of this community.")}</p>
+      {unico && <p className="hint">{relevo
+        ? L("Eres su único representante: si te vas, pasará a representarla ", "You are its only representative: if you leave, the community will be represented by ") + nombreRelevo + L(" (el miembro más antiguo).", " (the longest-standing member).")
+        : L("Eres su único miembro: si te vas, la comunidad se quedará sin representantes y decidirá la coordinación.", "You are its only member: if you leave, the community will have no representatives and the coordination team will decide.")}</p>}
       <Confirmar texto={L("Dejar la comunidad", "Leave the community")} onSi={() => env.enviar(() => borrar("comunidad_miembros", mio.id))} />
       <Aviso texto={env.msg} />
     </div>

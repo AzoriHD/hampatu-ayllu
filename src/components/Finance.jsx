@@ -23,10 +23,10 @@ function totales(l) {
   return m;
 }
 
-export function Movimientos({ proyecto }) {
+export function Movimientos({ proyecto, abrir }) {
   const { en, permisos } = useApp();
   const L = useL(), et = useEt();
-  const [form, setForm] = useState(false);
+  const [form, setForm] = useState(!!abrir);
   const [filtro, setFiltro] = useState("");
   const { datos, error, cargando } = useCarga(async () => {
     const [movs, ps] = await Promise.all([

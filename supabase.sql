@@ -1444,3 +1444,70 @@ begin
 end $$;
 drop trigger if exists docs_comunidad_extra on public.docs;
 create trigger docs_comunidad_extra after delete on public.docs for each row execute function public.comunidad_borrar_extra();
+
+-- 19. RELEVO DE REPRESENTANTE: una comunidad con miembros nunca se queda sin representante.
+-- Si se va (o deja de serlo) su único representante, pasa a representarla el miembro más antiguo (el veterano).
+-- Si ya no queda nadie, la comunidad se queda sin representantes y decide la coordinación.
+-- Si la base de datos ya existe, pega solo este bloque. Se puede ejecutar más de una vez.
+create or replace function public.miembros_antes() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare decide boolean; ingreso text; creador boolean;
+begin
+  if public.es_servidor() then return new; end if;
+  -- El relevo automático de representante (más abajo) lo hace la propia base de datos: se respeta tal cual
+  if pg_trigger_depth() > 1 then return new; end if;
+  if tg_op = 'INSERT' then
+    if not public.comunidad_existe(new.comunidad) then raise exception 'La comunidad no existe' using errcode = '23503'; end if;
+    decide := public.es_coordinador() or public.representa(new.comunidad);
+    creador := new.user_id = auth.uid() and public.con_cuenta() and exists (select 1 from public.docs d
+      where d.col = 'comunidades' and d.id = new.comunidad and d.by = auth.uid());
+    if creador then
+      -- Quien creó la comunidad entra ya como representante, sin esperar a nadie
+      new.rol := 'representante'; new.rol_pedido := 'representante'; new.estado := 'aceptada';
+    elsif not decide then
+      ingreso := public.comunidad_ingreso(new.comunidad);
+      if ingreso = 'cerrada' then raise exception 'Esta comunidad no admite solicitudes' using errcode = '42501'; end if;
+      new.user_id := auth.uid(); new.rol := 'miembro';
+      new.estado := case when ingreso = 'abierta' and new.rol_pedido = 'miembro' then 'aceptada' else 'solicitada' end;
+    end if;
+    if new.estado <> 'solicitada' then new.decidido_por := auth.uid(); new.decidido_en := now();
+    else new.decidido_por := null; new.decidido_en := null; end if;
+    if new.user_id <> auth.uid() then new.mensaje := null; end if;
+    new.publico := new.estado = 'aceptada';
+    new.created_at := now();
+  else
+    decide := public.es_coordinador() or public.representa(old.comunidad);
+    new.comunidad := old.comunidad; new.user_id := old.user_id; new.created_at := old.created_at;
+    new.rol_pedido := old.rol_pedido; new.mensaje := old.mensaje;
+    if not decide then
+      new.estado := old.estado; new.rol := old.rol; new.decidido_por := old.decidido_por; new.decidido_en := old.decidido_en;
+    elsif (new.estado, new.rol) is distinct from (old.estado, old.rol) then
+      new.decidido_por := auth.uid(); new.decidido_en := now();
+    else
+      new.decidido_por := old.decidido_por; new.decidido_en := old.decidido_en;
+    end if;
+    new.publico := new.estado = 'aceptada';
+  end if;
+  return new;
+end $$;
+
+create or replace function public.miembros_relevo() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare sig uuid;
+begin
+  if not (old.rol = 'representante' and old.estado = 'aceptada') then return null; end if;
+  if tg_op = 'UPDATE' and new.rol = 'representante' and new.estado = 'aceptada' then return null; end if;
+  if not public.comunidad_existe(old.comunidad) then return null; end if;  -- se está borrando la comunidad
+  if exists (select 1 from public.comunidad_miembros m
+    where m.comunidad = old.comunidad and m.rol = 'representante' and m.estado = 'aceptada') then return null; end if;
+  select m.id into sig from public.comunidad_miembros m
+    where m.comunidad = old.comunidad and m.estado = 'aceptada' and m.id <> old.id
+    order by coalesce(m.decidido_en, m.created_at) asc, m.created_at asc limit 1;
+  if sig is not null then
+    update public.comunidad_miembros set rol = 'representante', rol_pedido = 'representante' where id = sig;
+  end if;
+  return null;
+end $$;
+drop trigger if exists miembros_relevo on public.comunidad_miembros;
+create trigger miembros_relevo after update or delete on public.comunidad_miembros
+  for each row execute function public.miembros_relevo();

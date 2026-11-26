@@ -332,3 +332,51 @@ test("comunidades: rangos, calendario y asistencia", async () => {
 
   assert.equal(fallosLista.length, 0, "Fallan:\n" + fallosLista.join("\n"));
 });
+
+test("comunidades: relevo automático de representante", async () => {
+  const db = await nueva();
+  const U = { rep: "00000000-0000-0000-0000-000000000021", m1: "00000000-0000-0000-0000-000000000022",
+    m2: "00000000-0000-0000-0000-000000000023", coord: "00000000-0000-0000-0000-00000000002c" };
+  for (const [k, id] of Object.entries(U)) await db.query("insert into auth.users values ($1, $2)", [id, k + "@x.pe"]);
+  await db.query("insert into public.roles_usuario (user_id, rol) values ($1, 'coordinador')", [U.coord]);
+  async function como(quien, q, p = []) {
+    await db.exec(`set role authenticated; select set_config('request.jwt.claims', '${JSON.stringify({ sub: U[quien], email: quien + "@x.pe", role: "authenticated", is_anonymous: false })}', false);`);
+    try { return await db.query(q, p); } finally { await db.exec("reset role; select set_config('request.jwt.claims', '', false);"); }
+  }
+  const rol = async (u) => ((await db.query("select rol from comunidad_miembros where comunidad='r1' and user_id=$1", [U[u]])).rows[0] || {}).rol;
+  const reps = async (c) => (await db.query("select count(*)::int n from comunidad_miembros where comunidad=$1 and rol='representante' and estado='aceptada'", [c])).rows[0].n;
+
+  await como("rep", `insert into docs (col,id,data) values ('comunidades','r1', $1)`, [{ nombre: "R1", by: U.rep, ingreso: "abierta" }]);
+  await como("rep", `insert into comunidad_miembros (comunidad) values ('r1')`);
+  await como("m1", `insert into comunidad_miembros (comunidad) values ('r1')`);
+  await como("m2", `insert into comunidad_miembros (comunidad) values ('r1')`);
+  assert.equal(await rol("rep"), "representante");
+  assert.equal(await rol("m2"), "miembro");
+
+  await como("m1", `update comunidad_miembros set rol='representante' where user_id=$1`, [U.m1]);
+  assert.equal(await rol("m1"), "miembro", "un miembro no se hace representante a sí mismo");
+
+  await como("rep", `delete from comunidad_miembros where comunidad='r1' and user_id=$1`, [U.rep]);
+  assert.equal(await rol("m1"), "representante", "al irse el único representante, representa el miembro más antiguo");
+  assert.equal(await rol("m2"), "miembro");
+  assert.equal(await reps("r1"), 1);
+
+  await como("m1", `update comunidad_miembros set rol='miembro' where user_id=$1`, [U.m1]);
+  assert.equal(await rol("m2"), "representante", "si deja de representar, pasa al siguiente (no a sí mismo)");
+  assert.equal(await rol("m1"), "miembro");
+
+  await como("coord", `insert into comunidad_miembros (comunidad, user_id, estado, rol, rol_pedido) values ('r1', $1, 'aceptada', 'representante', 'representante')`, [U.coord]);
+  await como("m2", `delete from comunidad_miembros where comunidad='r1' and user_id=$1`, [U.m2]);
+  assert.equal(await rol("m1"), "miembro", "si queda otro representante, no hay relevo");
+  assert.equal(await reps("r1"), 1);
+
+  await como("coord", `delete from comunidad_miembros where comunidad='r1' and user_id=$1`, [U.coord]);
+  assert.equal(await rol("m1"), "representante");
+  await como("m1", `delete from comunidad_miembros where comunidad='r1' and user_id=$1`, [U.m1]);
+  assert.equal(await reps("r1"), 0, "sin miembros, la comunidad se queda sin representantes");
+
+  await como("rep", `insert into comunidad_miembros (comunidad) values ('r1')`);
+  await como("m1", `insert into comunidad_miembros (comunidad) values ('r1')`);
+  await db.query("delete from docs where col='comunidades' and id='r1'");
+  assert.equal((await db.query("select count(*)::int n from comunidad_miembros where comunidad='r1'")).rows[0].n, 0, "borrar la comunidad sigue funcionando");
+});
