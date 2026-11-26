@@ -262,7 +262,7 @@ La web es también una app (PWA): se instala gratis desde la propia web, sin tie
 - Aviso flotante «Instala la app» a los pocos segundos de entrar (no sale si ya está instalada o si se cierra).
 - Dentro de la app instalada no aparece nada sobre la app (ni el botón de descargar, ni la página #app, ni el aviso del pie):
   `esApp` en `src/App.jsx` lo detecta con `display-mode` (y `navigator.standalone` en iPhone).
-- Icono: el sapo en su roca, a sangre y sin marco. `icon-192/512.png` (cuadrado con esquinas redondeadas,
+- Icono: el logo (corazón con el mapa de Perú, el comunero y el sapo arlequín) sobre fondo oscuro. `icon-192/512.png` (cuadrado con esquinas redondeadas,
   para ordenadores y la web), `icon-maskable-*.png` y `apple-touch-icon.png` (cuadrados llenos: Android e
   iPhone les ponen su propia forma, círculo o cuadrado redondeado, y el sapo queda grande y centrado).
 - Sin conexión se abre y muestra lo último que se cargó (`public/sw.js`). Al publicar, `vite.config.js`

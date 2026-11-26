@@ -125,8 +125,8 @@ export function Topbar() {
     <header className="topbar">
       <div className="topbar-in">
         <a className="marca" href="#tablon" onClick={inicio} aria-label={en ? "Hampatu Ayllu, home" : "Hampatu Ayllu, inicio"}>
-          <img className="logo-tema logo-claro" src="/img/logo-claro.svg?v=7" width="789" height="843" alt="" />
-          <img className="logo-tema logo-noche" src="/img/logo-noche.svg?v=7" width="789" height="843" alt="" />
+          <img className="logo-tema logo-claro" src="/img/logo-claro.svg?v=11" width="789" height="843" alt="" />
+          <img className="logo-tema logo-noche" src="/img/logo-noche.svg?v=11" width="789" height="843" alt="" />
           <span>Hampatu Ayllu</span>
         </a>
         <div className="nav-w" data-izq={bordes.izq ? "" : undefined} data-der={bordes.der ? "" : undefined}>

@@ -50,8 +50,8 @@ function anunciarTema() {
     artist: "Comunidad del Sapo",
     album: "Música de Hampatu Ayllu",
     artwork: [
-      { src: "/icon-maskable-192.png", sizes: "192x192", type: "image/png" },
-      { src: "/icon-maskable-512.png", sizes: "512x512", type: "image/png" },
+      { src: "/icon-maskable-192.png?v=11", sizes: "192x192", type: "image/png" },
+      { src: "/icon-maskable-512.png?v=11", sizes: "512x512", type: "image/png" },
     ],
   });
 }

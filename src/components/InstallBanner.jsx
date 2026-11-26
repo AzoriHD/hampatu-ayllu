@@ -46,7 +46,7 @@ function Ayuda({ lang, cerrar }) {
   return (
     <div className="instalar-fondo" onClick={cerrar}>
       <div className="instalar-ayuda" role="dialog" aria-modal="true" aria-labelledby="instalar-ayuda-t" lang={lang} onClick={(e) => e.stopPropagation()}>
-        <img src="/icon-192.png?v=6" alt="" width="56" height="56" />
+        <img src="/icon-192.png?v=11" alt="" width="56" height="56" />
         <strong id="instalar-ayuda-t">{en ? "Install Hampatu Ayllu" : "Instala Hampatu Ayllu"}</strong>
         <ol>{pasos(en).map((p) => <li key={p}>{p}</li>)}</ol>
         <button className="instalar-si" type="button" onClick={cerrar} autoFocus>{en ? "Got it" : "Entendido"}</button>
@@ -88,7 +88,7 @@ export default function InstallBanner() {
 
   return (
     <div className="instalar-app" id="instalar" role="region" aria-label={T.titulo} lang={lang}>
-      <img src="/icon-192.png?v=6" alt="" width="48" height="48" />
+      <img src="/icon-192.png?v=11" alt="" width="48" height="48" />
       <div className="instalar-txt">
         <strong>{T.titulo}</strong>
         <span>{T.sub}</span>

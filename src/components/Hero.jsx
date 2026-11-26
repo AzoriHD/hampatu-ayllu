@@ -18,9 +18,9 @@ export default function Hero() {
           {/* El sapo verde pasea por el borde de arriba: va, se sienta (y a veces caza una mosca), se da la vuelta y vuelve */}
           <Paseo color="verde" />
           {/* Logo: versión clara y versión de noche; el CSS enseña la que toca según el tema */}
-          <img className="manta-logo logo-tema logo-claro" src="/img/logo-claro.svg?v=10" width="789" height="843"
+          <img className="manta-logo logo-tema logo-claro" src="/img/logo-claro.svg?v=11" width="789" height="843"
             alt={en ? "Hampatu Ayllu logo: a heart with the map of Peru, holding a villager and a harlequin toad back to back" : "Logo de Hampatu Ayllu: un corazón con el mapa de Perú, y dentro un comunero y un sapo arlequín espalda con espalda"} />
-          <img className="manta-logo logo-tema logo-noche" src="/img/logo-noche.svg?v=10" width="789" height="843"
+          <img className="manta-logo logo-tema logo-noche" src="/img/logo-noche.svg?v=11" width="789" height="843"
             alt={en ? "Hampatu Ayllu logo: a heart with the map of Peru, holding a villager and a harlequin toad back to back" : "Logo de Hampatu Ayllu: un corazón con el mapa de Perú, y dentro un comunero y un sapo arlequín espalda con espalda"} />
           <HeroText />
           <p className="cifras" id="stats" aria-live="polite">
