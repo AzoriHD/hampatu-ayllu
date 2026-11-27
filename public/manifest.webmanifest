@@ -14,8 +14,8 @@
   "icons": [
     { "src": "/icon-192.png?v=12", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "/icon-512.png?v=12", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/icon-maskable-192.png?v=11", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "/icon-maskable-512.png?v=11", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "/icon-maskable-192.png?v=12", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-maskable-512.png?v=12", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "screenshots": [
     { "src": "/img/app-computadora.webp", "sizes": "1280x800", "type": "image/webp", "form_factor": "wide", "label": "Hampatu Ayllu en la computadora" },
