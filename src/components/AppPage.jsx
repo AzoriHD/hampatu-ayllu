@@ -127,11 +127,11 @@ export default function AppPage() {
 
       <div className="app-instalar">
         <div className="app-equipos" aria-hidden="true">
-          <div className="pc"><div className="pc-pantalla"><img src="/img/app-computadora.webp" width="1280" height="800" alt="" loading="lazy" /></div><div className="pc-base"></div></div>
-          <div className="cel"><div className="cel-pantalla"><img src="/img/app-celular.webp" width="824" height="1784" alt="" loading="lazy" /></div></div>
+          <div className="pc"><div className="pc-pantalla"><img src="/img/app-computadora.webp?v=2" width="1280" height="800" alt="" loading="lazy" /></div><div className="pc-base"></div></div>
+          <div className="cel"><div className="cel-pantalla"><img src="/img/app-celular.webp?v=2" width="824" height="1784" alt="" loading="lazy" /></div></div>
         </div>
         <div className="app-accion">
-          <img className="app-icono" src="/img/icono-app.png?v=12" width="512" height="512" alt="" />
+          <img className="app-icono" src="/img/icono-app.png?v=13" width="512" height="512" alt="" />
           <p className="app-nombre"><strong>Hampatu Ayllu</strong><span>{en ? "Free for Android, iPhone, Windows, Mac and Linux" : "Gratis para Android, iPhone, Windows, Mac y Linux"}</span></p>
           {estado}
           <p className="msg soft" role="status" hidden={!aviso}>{aviso}</p>
