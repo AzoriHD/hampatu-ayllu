@@ -2,7 +2,7 @@
    «Por hacer» reúne en una sola bandeja todo lo que espera una decisión (lo que más tiempo lleva esperando, primero)
    y deja resolverlo sin salir de ella. El resto de pestañas sirven para buscar, revisar y corregir.
    Lo ven la administración y la coordinación; la base de datos comprueba cada acción (supabase.sql). */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useApp } from "../AppContext.jsx";
 import { CATEGORIAS_C, ESTADOS_CAND, ESTADOS_P, PROYECTOS_EJEMPLO, TIPOS_ACT, TIPOS_CAND, TIPOS_INF } from "../data/proyectos.js";
 import { REMOTE } from "../lib/store.js";
@@ -16,6 +16,8 @@ import { CandidaturasRecibidas } from "./Collaborate.jsx";
 import { DonacionesLista, Movimientos } from "./Finance.jsx";
 import { InformeForm, InformesLista } from "./Impact.jsx";
 import { Aviso, Cargando, Confirmar, ErrorCarga, EstadoP, fechaCorta, Pestanas, useEnviar, useEt, useL, Vacio } from "./Kit.jsx";
+
+const MapaAvistamientos = lazy(() => import("./MapaAvistamientos.jsx"));
 
 /* ---------- ayudas ---------- */
 const TAB_KEY = "hampatu-coord-tab";
@@ -100,6 +102,8 @@ export default function Coordination() {
     ["finanzas", L("Dinero", "Money"), n.finanzas, NOTIS.coordinacion.color],
     ["informes", L("Informes", "Reports"), n.informes, NOTIS.coordinacion.color],
     ["resultados", L("Validar", "Validate"), n.resultados, NOTIS.coordinacion.color],
+    /* los avistamientos solo los lee quien tiene permiso en la base de datos (is_admin) */
+    ...(meta.admin || !REMOTE ? [["mapa", L("Mapa", "Map")]] : []),
     ...(permisos.admin ? [["permisos", L("Equipo y permisos", "Team and permissions")]] : []),
     ["registro", L("Registro", "Log")],
   ];
@@ -126,6 +130,7 @@ export default function Coordination() {
       {actual === "finanzas" && <TabFinanzas abrir={abrir === "movimiento"} />}
       {actual === "informes" && <TabInformes abrir={abrir === "informe"} />}
       {actual === "resultados" && <TabResultados />}
+      {actual === "mapa" && <Suspense fallback={<div className="caja"><Cargando /></div>}><MapaAvistamientos /></Suspense>}
       {actual === "permisos" && permisos.admin && <TabPermisos />}
       {actual === "registro" && <TabRegistro />}
     </section>

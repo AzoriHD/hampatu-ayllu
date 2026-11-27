@@ -1383,3 +1383,18 @@ g[tabindex]:focus-visible .g-hit{stroke:var(--link);stroke-width:2}
 .abajo .bn-ico .badge-n{top:-3px;right:-2px;line-height:16px;height:20px}
 .chipbtn .n.n-color{opacity:1;color:#fff;background:var(--nc);border-radius:999px;padding:0 6px;min-width:20px;display:inline-block;text-align:center}
 .flecha-n{position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:var(--nc);border:2px solid var(--manta)}
+
+/* Mapa de avistamientos (Coordinación) */
+.mapa-avist .pestanas{justify-content:flex-start}
+.mapa-ctrl{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:12px 0}
+.mapa-ctrl .chips{margin:0}
+.mapa-w{height:min(68vh,560px);min-height:340px;border:2px solid var(--edge);border-radius:var(--r);overflow:hidden;z-index:0;background:#dfe6d8}
+.mapa-ley{list-style:none;display:flex;flex-wrap:wrap;gap:6px 16px;padding:0;margin:10px 0 4px;font-size:15px}
+.mapa-ley li{display:inline-flex;align-items:center;gap:6px}
+.mapa-ley span{width:14px;height:14px;border-radius:50%;border:2px solid #2b190b}
+.mapa-avist .leaflet-popup-content-wrapper{border-radius:12px;font-family:var(--body);color:#2b190b}
+.mapa-pop{display:grid;gap:4px;font-size:15px}
+.mapa-avist .leaflet-popup-content .mapa-pop p{margin:0}
+.mapa-avist .leaflet-popup-content{margin:12px 16px}
+.mapa-pop .meta{color:#6a4523;font-size:14px}
+.mapa-est{justify-self:start;border:2px solid var(--c);border-radius:999px;padding:0 9px;font-size:13px;font-weight:700}
